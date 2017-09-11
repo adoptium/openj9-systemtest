@@ -1,0 +1,14 @@
+<!-- 
+  This is a minimal inventory intended for sharedclasses tests which want to be able
+  to generate a load which can be used for testing the sharedclasses capabilities.  Some
+  tests need to be able to predict approximately how much of the shared classes cache
+  should be used in the test, so if the contents of the inventories are changed this might
+  affect the results of those tests (the 'Softmx' tests).
+-->
+
+<inventory>
+	<include inventory="/openjdk.test.load/config/inventories/mix/mini-mix.xml"/>
+	<include inventory="/openjdk.test.load/config/inventories/nio/nio.xml"/>
+	<include inventory="/openjdk.test.load/config/inventories/classloading/classloading.xml"/>
+	<include inventory="/openj9.test.load/config/inventories/daa/daaAll.xml"/>
+</inventory>

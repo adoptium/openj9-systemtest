@@ -1,0 +1,30 @@
+<inventory>
+	<arbitraryJava class="net.openj9.test.decimals.DecimalTestRunner" method="invokeTest"/>
+	<arbitraryJava class="net.openj9.test.MarshallingTestRunner" method="invokeTest"/>
+	<arbitraryJava class="net.openj9.test.PD2Primitive.I2PD_PD2ITestRunner" method="invokeTest"/>
+	<junit class="net.openj9.test.arithmetics.TestArithmeticOperations"/>
+	<junit class="net.openj9.test.binaryData.TestBinaryConverters"/>
+	<junit class="net.openj9.test.binaryData.TestByteArray2Double"/>
+	<junit class="net.openj9.test.binaryData.TestByteArray2Float"/>
+	<junit class="net.openj9.test.binaryData.TestByteArray2Integer"/>
+	<junit class="net.openj9.test.binaryData.TestByteArray2IntegerNumBytes"/>
+	<junit class="net.openj9.test.binaryData.TestByteArray2Long"/>
+	<junit class="net.openj9.test.binaryData.TestByteArray2LongNumBytes"/>
+	<junit class="net.openj9.test.binaryData.TestByteArray2Short"/>
+	<junit class="net.openj9.test.binaryData.TestByteArray2ShortNumBytes"/>
+	<junit class="net.openj9.test.binaryData.TestDouble2ByteArray"/>
+	<junit class="net.openj9.test.binaryData.TestFloat2ByteArray"/>
+	<junit class="net.openj9.test.binaryData.TestInteger2ByteArray"/>
+	<junit class="net.openj9.test.binaryData.TestInteger2ByteArrayNumBytes"/>
+	<junit class="net.openj9.test.binaryData.TestLong2ByteArray"/>
+	<junit class="net.openj9.test.binaryData.TestLong2ByteArrayNumBytes"/>
+	<junit class="net.openj9.test.binaryData.TestShort2ByteArray"/>
+	<junit class="net.openj9.test.binaryData.TestShort2ByteArrayNumBytes"/>
+	<junit class="net.openj9.test.decimals.TestED2PD"/>
+	<junit class="net.openj9.test.decimals.TestPD2ED"/>
+	<junit class="net.openj9.test.decimals.TestPD2UD"/>
+	<junit class="net.openj9.test.decimals.TestUD2PD"/>
+	<junit class="net.openj9.test.PD2Primitive.RandomTests"/>
+	<junit class="net.openj9.test.PD2Primitive.TestI2PD"/>
+	<junit class="net.openj9.test.PD2Primitive.TestPD2I"/>
+</inventory>

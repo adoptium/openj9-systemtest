@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src/test.sharedClasses.jvmti"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/stf.core"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/stf.load"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/openj9.stf.extensions"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/openj9.test.sharedClasses"/>
+	<classpathentry kind="lib" path="/systemtest_prereqs/junit-4.12/junit-4.12.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

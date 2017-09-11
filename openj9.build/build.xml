@@ -1,0 +1,68 @@
+<?xml version="1.0"?>
+<!--
+Copyright (c) 2017 IBM Corp.
+
+This program and the accompanying materials are made available under the
+terms of the Eclipse Public License 2.0 which accompanies this distribution
+and is available at http://eclipse.org/legal/epl-2.0 or the Apache License, 
+Version 2.0 which accompanies this distribution and is available at 
+https://www.apache.org/licenses/LICENSE-2.0.
+
+This Source Code may also be made available under the following Secondary
+Licenses when the conditions for such availability set forth in the 
+Eclipse Public License, v. 2.0 are satisfied: GNU General Public License,
+version 2 with the GNU Classpath Exception [1] and GNU General Public License,
+version 2 with the OpenJDK Assembly Exception [2].
+
+[1] https://www.gnu.org/software/classpath/license.html
+[2] http://openjdk.java.net/legal/assembly-exception.html
+
+SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+-->
+
+<project name="openj9.build" default="build">
+
+	<!-- Set default for source_root.  -->
+	<property name="source_root" location=".."/>
+
+	<!-- Set default for STF and openjdk-systemtest repository locations.  -->
+	<!-- Assumes source repositories are checked out under a common root - e.g. and the repository
+		has been built in-situ - i.e.
+		stf repository: /home/userid/git/stf
+        openjdk-systemtest repository: /home/userid/git/openjdk-systemtest
+        openj9-systemtest repository: /home/userid/git/openj9-systemtest
+		If the stf repository has been cloned or built to a different location, the stf_root and
+        openjdk_systemtest_root properties	must be set on the command line -
+        e.g. -Dstf_root=/my_stf_build_dir -Dopenjdk_systemtest_root=/my_openjdk_systemtest_build_dir
+	-->
+    <property name="stf_root" location="${source_root}/../stf"/>
+    <property name="openjdk_systemtest_root" location="${source_root}/../openjdk-systemtest"/>
+
+	<!-- Import settings used by multiple projects.  -->
+	<import file="${source_root}/openj9.build/include/top.xml"/>
+
+	<!-- target to build all projects in the repository.  -->
+	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
+	<!-- Also make sure stf is built -->
+	<target name="build-dependencies">
+		<ant antfile="${stf_root}/stf.build/build.xml" dir="${stf_root}/stf.build" inheritAll="false"/>
+        <ant antfile="${openjdk_systemtest_root}/openjdk.build/build.xml" dir="${openjdk_systemtest_root}/openjdk.build" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.stf.extensions/build.xml" dir="${source_root}/openj9.stf.extensions" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.daa/build.xml" dir="${source_root}/openj9.test.daa" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.load/build.xml" dir="${source_root}/openj9.test.load" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
+	</target>
+
+	<target name="build" depends="build-dependencies">
+	</target>
+
+	<target name="clean">
+		<ant antfile="${source_root}/openj9.stf.extensions/build.xml" target="clean" dir="${source_root}/openj9.stf.extensions" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.daa/build.xml" target="clean" dir="${source_root}/openj9.test.daa" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.load/build.xml" target="clean" dir="${source_root}/openj9.test.load" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
+	</target>
+
+</project>

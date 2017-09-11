@@ -1,0 +1,21 @@
+<inventory>
+	<arbitraryJava class="net.openj9.test.simple.ConvertDecimal" method="invokeTest" />
+	<arbitraryJava class="net.openj9.test.simple.MarshalUnmarshalBinary" method="invokeTest" />
+	<junit class="net.openj9.test.arithmetics.TestArithmeticOperations"/>
+	<junit class="net.openj9.test.arithmetics.TestArithmeticInline"/>
+	<junit class="net.openj9.test.arithmetics.TestArithmetics"/>
+	<junit class="net.openj9.test.arithmetics.TestComparisonEquals"/>
+	<junit class="net.openj9.test.arithmetics.TestPDComparisons"/>
+	<junit class="net.openj9.test.arithmetics.TestPerformance"/>
+	<junit class="net.openj9.test.arithmetics.TestSubExceptions"/>
+	<junit class="net.openj9.test.arithmetics.TestValidityChecking"/>
+	<junit class="net.openj9.test.binaryData.LongIntegerComparison"/>
+	<junit class="net.openj9.test.binaryData.TestOptimizer"/>
+	<junit class="net.openj9.test.decimals.TestBD2PD2BD"/>
+	<junit class="net.openj9.test.decimals.TestDecimalData"/>
+	<junit class="net.openj9.test.decimals.TestDecimalData2"/>
+	<junit class="net.openj9.test.PD2Primitive.TestPD2Primitives2PD"/>
+	<junit class="net.openj9.test.PDMoveShifts.TestShiftsAndConvert"/>
+	<junit class="net.openj9.test.PDMoveShifts.TestPDMove"/>
+	<arbitraryJava class="net.openj9.test.PDMoveShifts.ShiftTestRunner" method="invokeTest"/>
+</inventory>
