@@ -1,0 +1,4 @@
+<inventory>
+    <include inventory="/openjdk.test.load/config/inventories/mix/mini-mix.xml"/>
+    <arbitraryJava class="net.adoptopenjdk.test.gc.heaphog.ObjectTree" method="runTest" methodArguments="120000000" weighting="13"/> 
+</inventory>

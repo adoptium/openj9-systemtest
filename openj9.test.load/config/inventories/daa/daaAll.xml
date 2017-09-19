@@ -1,0 +1,5 @@
+<inventory>
+    <include inventory="/openj9.test.load/config/inventories/daa/daa1.xml"/>
+    <include inventory="/openj9.test.load/config/inventories/daa/daa2.xml"/>
+    <include inventory="/openj9.test.load/config/inventories/daa/daa3.xml"/>
+</inventory>

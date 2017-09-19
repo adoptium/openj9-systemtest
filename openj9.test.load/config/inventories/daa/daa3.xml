@@ -1,0 +1,3 @@
+<inventory>
+	<junit class="net.openj9.test.arithmetics.TestArithmeticOperations"/>
+</inventory>
