@@ -21,7 +21,6 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 -->
 
 <project name="openj9.build" default="build">
-
 	<!-- Set default for source_root.  -->
 	<property name="source_root" location=".."/>
 
@@ -52,6 +51,8 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 		<ant antfile="${source_root}/openj9.test.load/build.xml" dir="${source_root}/openj9.test.load" inheritAll="false"/>
 		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
 		<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.idle/build.xml" dir="${source_root}/openj9.test.idle" inheritAll="false"/>
+
 	</target>
 
 	<target name="build" depends="build-dependencies">
