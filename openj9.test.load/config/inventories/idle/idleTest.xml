@@ -1,0 +1,5 @@
+<inventory> 
+	<arbitraryJava class="net.openj9.test.IdleMicroBenchmark" method="runTest" methodArguments="--workload=transactional" />
+	<arbitraryJava class="net.openj9.test.IdleMicroBenchmark" method="runTest" methodArguments="--workload=image" />
+	<arbitraryJava class="net.openj9.test.IdleMicroBenchmark" method="runTest" methodArguments="--workload=spike" />
+</inventory>

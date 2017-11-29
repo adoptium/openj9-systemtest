@@ -532,6 +532,18 @@ test.SharedClasses.SCM23.MultiThreadMultiCL:
 	echo Running target $@
 	$(STF_COMMAND) -test=SharedClasses -test-args="sharedClassMode=SCM23,sharedClassTest=MultiThreadMultiCL" $(LOG)
 	echo Target $@ completed
+test.IdleBenchMark_MinIdleWaitTime:
+	echo Running target $@
+	$(STF_COMMAND) -test=IdleLoadTest -java-args="-XX:IdleTuningMinIdleWaitTime=180 -Xmx1024m -Xjit:verbose={compilePerformance},vlog=jitlog" $(LOG)
+	echo Target $@ completed
+test.IdleBenchMark_GcOnIdle:
+	echo Running target $@
+	$(STF_COMMAND) -test=IdleLoadTest -java-args="-XX:+IdleTuningGcOnIdle -Xtune:virtualized -XX:IdleTuningMinIdleWaitTime=120 -Xmx1024m -verbose:gc -Xverbosegclog:gc.verbose -Xjit:verbose={compilePerformance},vlog=jitlog" $(LOG)
+	echo Target $@ completed
+test.IdleBenchMark_CompactOnIdle:
+	echo Running target $@
+	$(STF_COMMAND) -test=IdleLoadTest -java-args="-XX:+IdleTuningCompactOnIdle -Xtune:virtualized -XX:IdleTuningMinIdleWaitTime=120 -Xmx1024m -verbose:gc -Xverbosegclog:gc.verbose -Xjit:verbose={compilePerformance},vlog=jitlog" $(LOG)
+	echo Target $@ completed 
 
 help:
 	@echo make or make build: Builds openj9-systemtest projects
