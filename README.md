@@ -26,15 +26,15 @@ mkdir -p $HOME/git
 
 # 2. Clone the STF repository
 cd $HOME/git
-git clone git@github.com/AdoptOpenJDK/stf.git stf
+git clone git@github.com:AdoptOpenJDK/stf.git stf
 
 # 3. Clone the openjdk-systemtest repository
 cd $HOME/git
-git clone git@github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
+git clone git@github.com:AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
 
 # 4. Clone the openj9-systemtest repository
 cd $HOME/git
-git clone git@github.com/eclipse/openj9/openj9-systemtest.git openj9-systemtest
+git clone git@github.com:eclipse/openj9/openj9-systemtest.git openj9-systemtest
 
 # 5. Set JAVA_HOME to a Java 8 or later Java
 
@@ -72,15 +72,15 @@ mkdir c:\%USERPROFILE%\git
 
 REM 2. Clone the STF repository
 cd c:\%USERPROFILE%\git
-git clone git@github.com/AdoptOpenJDK/stf.git stf
+git clone git@github.com:AdoptOpenJDK/stf.git stf
 
 REM 3. Clone the openjdk-systemtest repository
 cd c:\%USERPROFILE%\git
-git clone git@github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
+git clone git@github.com:AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
 
 REM 4. Clone the openj9-systemtest repository
 cd c:\%USERPROFILE%\git
-git clone git@github.com/eclipse/openj9/openj9-systemtest.git openj9-systemtest
+git clone git@github.com:eclipse/openj9/openj9-systemtest.git openj9-systemtest
 
 REM 5. Set JAVA_HOME to a Java 9 or later Java
 SET JAVA_HOME=<java-home>
