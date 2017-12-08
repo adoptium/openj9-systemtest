@@ -2,7 +2,7 @@
 
 This repository contains the test cases which can be run against the OpenJ9 java implmentation but not OpenJDK.
 
-The tests all run under the [STF System Test Framework](https:github.com/adoptopenjdk/stf).
+The tests all run under the [STF System Test Framework](https://github.com/AdoptOpenJDK/stf).
 
 [Quick start (Unix)](#unix)  
 [Quick start (Windows)](#windows)  
