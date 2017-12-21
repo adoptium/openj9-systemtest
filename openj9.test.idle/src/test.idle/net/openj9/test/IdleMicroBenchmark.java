@@ -116,15 +116,15 @@ public class IdleMicroBenchmark {
 				if (optionValue.equals("transactional") || optionValue.equals("image") || optionValue.equals("spike")) {
 					workloadType = optionValue;
 					if (optionValue.equals("transactional")) {
-						nThreads = 15;
+						nThreads = 8;
 						workloadTypeNum = 1;
 					}
 					if (optionValue.equals("image")) {
-						nThreads = 10;
+						nThreads = 5;
 						workloadTypeNum = 3;
 					}
 					if (optionValue.equals("spike")) {
-						nThreads = 5;
+						nThreads = 3;
 						workloadTypeNum = 0;
 					}
 				} else {
@@ -167,6 +167,7 @@ public class IdleMicroBenchmark {
 		try {
 			IdleMicroBenchmark imbm1 = new IdleMicroBenchmark();
 			long memoryLimitInBytes = memoryLimit * 1024 * 1024;
+			//multiply sleepTime by 1000L to convert seconds to milliseconds as it is passed to Thread.sleep();
 			sleepTime = sleepTime * 1000L;
 			System.setProperty("isIdle", "false");
 
@@ -219,7 +220,7 @@ public class IdleMicroBenchmark {
 	void induceCombinedLoad(int threads, int interval, int workloadTypeNum, long runFor, long  memoryLimit, ExecutorService executor) {
 
 		List<Future<Long>> combinedWorkerList = new ArrayList<Future<Long>>();
-		long stopRunning = System.currentTimeMillis() + 1000L * runFor;
+		long stopRunning = System.currentTimeMillis() + 1000L * runFor; 
 		java.lang.management.MemoryMXBean membean = ManagementFactory.getMemoryMXBean();
 		long heapInBytes = 0;
 		int iter = 1;
@@ -264,12 +265,6 @@ public class IdleMicroBenchmark {
 
 				System.out.println("CombinedLoad Load: Iteration: " + iter + ": Complete. Time: " + timeDiff + " Heap: " + heapInBytes);
 
-				try {
-					//Thread.sleep(10000);
-				} catch (Exception e) {
-					e.printStackTrace();
-					System.exit(1);
-				}
 			}
 
 			iter++;
