@@ -16,7 +16,7 @@ REM
 REM [1] https://www.gnu.org/software/classpath/license.html
 REM [2] http://openjdk.java.net/legal/assembly-exception.html
 REM 
-REM SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
+REM SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR LicenseRef-GPL-2.0 WITH Assembly-exception
 REM *******************************************************************************/
 
 REM Save current directory
