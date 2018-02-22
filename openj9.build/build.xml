@@ -54,15 +54,28 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
 	</target>
 
-	<target name="build" depends="build-dependencies">
+	<target name="build">
+		<if>
+			<!-- We only want to build openj9 specific tests while we are testing an OpenJ9 SDK-->
+			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<then>
+				<antcall target="build-dependencies"/>
+			</then>
+		</if>
 	</target>
 
 	<target name="clean">
-		<ant antfile="${source_root}/openj9.stf.extensions/build.xml" target="clean" dir="${source_root}/openj9.stf.extensions" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.daa/build.xml" target="clean" dir="${source_root}/openj9.test.daa" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.load/build.xml" target="clean" dir="${source_root}/openj9.test.load" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
+		<if>
+			<!-- We only want to clean openj9 specific tests while we are testing an OpenJ9 SDK-->
+			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<then>
+				<ant antfile="${source_root}/openj9.stf.extensions/build.xml" target="clean" dir="${source_root}/openj9.stf.extensions" inheritAll="false"/>
+				<ant antfile="${source_root}/openj9.test.daa/build.xml" target="clean" dir="${source_root}/openj9.test.daa" inheritAll="false"/>
+				<ant antfile="${source_root}/openj9.test.load/build.xml" target="clean" dir="${source_root}/openj9.test.load" inheritAll="false"/>
+				<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
+				<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
+			</then>
+		</if>
 	</target>
 
 </project>

@@ -63,7 +63,15 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
 	</target>
 
-	<target name="build" depends="build-no-natives, build-natives">
+	<target name="build">
+		<if>
+			<contains string="${JVM_VERSION}" substring="openj9"/>
+			<then>
+				<!--Disable building this test for now, ref: eclipse/openj9/issues/1252
+				<antcall target="build-no-natives"/>
+				<antcall target="build-natives"/>-->
+			</then>
+		</if>
 	</target>
 
 	<target name="build-no-natives" depends="build-dependencies, check-prereqs, build-archives">
