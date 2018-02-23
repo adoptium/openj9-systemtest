@@ -137,6 +137,7 @@ ifeq ($(PLATFORM),linux_x86-32)
 endif
 
 ifeq ($(PLATFORM),linux_x86-64)
+	echo "Arghya: JAVA_HOME= " $(JAVA_HOME)
     CFLAGS=-fPIC -fno-omit-frame-pointer -static-libgcc -O0 -g3 -pedantic -Wall -std=c99 -c -fPIC -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
     LFLAGS=-shared -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
