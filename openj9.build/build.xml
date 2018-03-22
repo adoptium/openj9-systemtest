@@ -52,6 +52,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<ant antfile="${source_root}/openj9.test.load/build.xml" dir="${source_root}/openj9.test.load" inheritAll="false"/>
 		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
 		<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
+		<ant antfile="${source_root}/openj9.test.jlm/build.xml" dir="${source_root}/openj9.test.jlm" inheritAll="false"/>
 	</target>
 
 	<target name="build">
@@ -74,6 +75,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 				<ant antfile="${source_root}/openj9.test.load/build.xml" target="clean" dir="${source_root}/openj9.test.load" inheritAll="false"/>
 				<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
 				<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
+				<ant antfile="${source_root}/openj9.test.jlm/build.xml" target="clean" dir="${source_root}/openj9.test.jlm" inheritAll="false"/>
 			</then>
 		</if>
 	</target>
