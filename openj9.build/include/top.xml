@@ -175,7 +175,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		or by following the instructions in stf.build/build.md.
 		All prereqs are installed under the same ${prereqs_root} directory.
 	-->
-	<target name="configure" depends="check-for-wget,
+	<target name="configure" depends="check-for-download-tool,
 									  run-stf-configure, run-openjdk-systemtest-configure,
 									  check-for-junit-4.12, configure-junit-4.12, print-junit-4.12-location, print-junit-4.12-error,
 									  check-for-hamcrest-core-1.3, configure-hamcrest-core-1.3, print-hamcrest-core-1.3-location, print-hamcrest-core-1.3-error,
@@ -205,7 +205,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		Target to get junit from https://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar
 		Copy to ${prereqs_root}/junit-4.12/junit-4.12.jar
 	-->
-	<target name="configure-junit-4.12" unless="${junit_4.12_available}">
+	<target name="configure-junit-4.12" unless="junit_4.12_available">
 		<download-file destdir="${prereqs_root}/junit-4.12" destfile="junit-4.12.jar" srcurl="https://search.maven.org/remotecontent?filepath=junit/junit/4.12/junit-4.12.jar"/>
 		<available file="${junit_4.12}" property="junit_4.12_available"/>
 	</target>
@@ -222,7 +222,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		Target to get hamcrest core from https://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar
 		Copy to PREREQS_ROOT/junit-4.12/hamcrest-core-1.3.jar
 	-->
-	<target name="configure-hamcrest-core-1.3" unless="${hamcrest_core_1.3_available}">
+	<target name="configure-hamcrest-core-1.3" unless="hamcrest_core_1.3_available">
 		<download-file destdir="${prereqs_root}/junit-4.12" destfile="hamcrest-core-1.3.jar" srcurl="https://search.maven.org/remotecontent?filepath=org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar"/>
 		<available file="${hamcrest_core_1.3}" property="hamcrest_core_1.3_available"/>
 	</target>
@@ -246,7 +246,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		Target to get log4j 2.3 from https://archive.apache.org/dist/logging/log4j/2.3/apache-log4j-2.3-bin.zip
 		Copy to PREREQS_ROOT/log4j-2.3/log4j-api-2.3.jar and PREREQS_ROOT/log4j-2.3/log4j-core-2.3.jar
 	-->
-	<target name="configure-log4j-2.3" unless="${log4j_2.3_available}">
+	<target name="configure-log4j-2.3" unless="log4j_2.3_available">
 		<download-file destdir="${java.io.tmpdir}/log4j-2.3" destfile="apache-log4j-2.3-bin.zip" srcurl="https://archive.apache.org/dist/logging/log4j/2.3/apache-log4j-2.3-bin.zip"/>
 		<unzip src="${java.io.tmpdir}/log4j-2.3/apache-log4j-2.3-bin.zip" dest="${java.io.tmpdir}/log4j-2.3"/>
 		<copy file="${java.io.tmpdir}/log4j-2.3/apache-log4j-2.3-bin/log4j-api-2.3.jar" tofile="${log4j_api_2.3}"/>
@@ -260,8 +260,17 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		</condition>
 	</target>
 
+	<target name="check-for-download-tool" depends="check-for-wget, check-for-curl">
+		<condition property="downloadtool_available" value="true">
+			<or>
+				<isset property="wget_available"/>
+				<isset property="curl_available"/>
+			</or>
+		</condition>
+	</target>
+	
 	<!-- Target to check if wget is available. -->
-	<target name="check-for-wget">
+	<target name="check-for-wget" unless="useCurl">
 		<!-- wget will be used to download files. -->
 		<!-- If it cannot be found on the PATH then the build will fail when the download-file macro (in macrodefs.xml) is invoked. -->
 		<echo message="Looking for wget on PATH"/>
@@ -271,49 +280,73 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<available file="wget.exe" filepath="${env.Path}" property="wget_available"/>
 	</target>
 
+	<!-- Target to check if curl is available. -->
+	<target name="check-for-curl" if="useCurl">
+		<!-- curl will be used to download files. -->
+		<!-- If it cannot be found on the PATH then the build will fail when the download-file macro (in macrodefs.xml) is invoked. -->
+		<echo message="Looking for curl on PATH"/>
+		<available file="curl" filepath="${env.PATH}" property="curl_available"/>
+	</target>
+	
+	<condition property="useCurl" value="true">
+			<equals arg1="${os.name}" arg2="z/OS"/>
+	</condition>
+			
+	<condition property="download-tool" value="curl" else="wget">
+		<isset property="useCurl"/>
+	</condition>
+	
+	<condition property="download-tool-security-options" value="-k" else="--no-check-certificate">
+		<isset property="useCurl"/>
+	</condition>
+	
+	<condition property="download-tool-srcfile-option" value="-o" else="-O">
+		<isset property="useCurl"/>
+	</condition>
+
 	<macrodef name="download-file" description="Use wget to download a file">
 		<attribute name="srcurl" description="URL of file to download"/>
 		<attribute name="destdir" description="Directory in which to place the downloaded file"/>
 		<attribute name="destfile" description="File name of the downloaded file"/>
 		<sequential>
 			<echo message="Executing macro download-file"/>
-			<echo message="srcurl is @{srcurl}"/>
-			<echo message="destdir is @{destdir}"/>
-			<echo message="destfile is @{destfile}"/>
-			<fail unless="wget_available" message="Cannot find wget (or wget.exe) on PATH, needed to download @{srcurl}. Either install wget or add it to PATH and retry.  If you are running the build from the Ant view in Eclipse, add wget to your PATH before starting Eclipse."/>
+			<echo message="File to download: @{srcurl}"/>
+			<echo message="Destination: @{destdir}/@{destfile}"/>
+			<echo message="Download tool: ${download-tool}"/>
+			<fail unless="downloadtool_available" message="Cannot find ${download-tool} on PATH, needed to download @{srcurl}. Either install ${download-tool} or add it to PATH and retry.  If you are running the build from the Ant view in Eclipse, add ${download-tool} to your PATH before starting Eclipse."/>
 			<mkdir dir="@{destdir}"/>
-			<exec executable="wget">
-				<arg value="--no-check-certificate"/>
-				<arg value="-O"/>
+			<exec executable="${download-tool}">
+				<arg value="${download-tool-security-options}"/>
+				<arg value="${download-tool-srcfile-option}"/>
 				<arg value="@{destdir}/@{destfile}"/>
 				<arg value="@{srcurl}"/>
 			</exec>
-		</sequential>			
+		</sequential>
 	</macrodef>
-
-	<target name="print-junit-4.12-location" if="${junit_4.12_available}">
+	
+	<target name="print-junit-4.12-location" if="junit_4.12_available">
 		<echo message="Using junit-4.12 from ${junit_4.12}"/>
 	</target>
 
-	<target name="print-hamcrest-core-1.3-location" if="${hamcrest_core_1.3_available}">
+	<target name="print-hamcrest-core-1.3-location" if="hamcrest_core_1.3_available">
 		<echo message="Using hamcrest-core-1.3 from ${hamcrest_core_1.3}"/>
 	</target>
 
-	<target name="print-log4j-2.3-location" if="${log4j_2.3_available}">
+	<target name="print-log4j-2.3-location" if="log4j_2.3_available">
 		<echo message="Using log4j-api-2.3 from ${log4j_api_2.3} and log4j-core-2.3 from ${log4j_core_2.3}"/>
 	</target>
 
-	<target name="print-junit-4.12-error" unless="${junit_4.12_available}">
+	<target name="print-junit-4.12-error" unless="junit_4.12_available">
 		<echo message="ERROR: Cannot find junit-4.12 at ${junit_4.12}"/>
 		<property name="fail_run" value="true"/>
 	</target>
 
-	<target name="print-hamcrest-core-1.3-error" unless="${hamcrest_core_1.3_available}">
+	<target name="print-hamcrest-core-1.3-error" unless="hamcrest_core_1.3_available">
 		<echo message="ERROR: Cannot find hamcrest-core-1.3 at ${hamcrest_core_1.3}"/>
 		<property name="fail_run" value="true"/>
 	</target>
 
-	<target name="print-log4j-2.3-error" unless="${log4j_2.3_available}">
+	<target name="print-log4j-2.3-error" unless="log4j_2.3_available">
 		<echo message="ERROR: Cannot find log4j-api-2.3 at ${log4j_api_2.3} and / or log4j-core-2.3 at ${log4j_core_2.3}"/>
 		<property name="fail_run" value="true"/>
 	</target>
@@ -395,6 +428,11 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 					<contains string="@{osname}" substring="390"/>
 				</and>
 			</condition>
+			<condition property="@{property}" value="zos">
+				<and>
+					<contains string="@{osname}" substring="z/OS"/>
+				</and>
+			</condition>			
 			<condition property="@{property}" value="sol">
 				<and>
 					<contains string="@{osname}" substring="Solaris"/>
