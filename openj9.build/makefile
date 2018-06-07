@@ -416,11 +416,19 @@ test.SharedClasses.SCM23.MultiThread \
 test.SharedClasses.SCM23.MultiThreadMultiCL
 SHARED_CLASSES_TESTS:=$(filter-out $(EXCLUDE),$(SHARED_CLASSES_TESTS))
 
+JLM_TESTS:=test.TestIBMJlmLocal \
+test.TestIBMJlmRemoteClassAuth \
+test.TestIBMJlmRemoteClassNoAuth \
+test.TestIBMJlmRemoteMemoryAuth \
+test.TestIBMJlmRemoteMemoryNoAuth 
+JLM_TESTS:=$(filter-out $(EXCLUDE),$(JLM_TESTS))
+
 TEST_TARGETS:=test.list \
 test.help \
 $(DAA_TESTS) \
 $(GC_TESTS) \
-$(SHARED_CLASSES_TESTS)
+$(SHARED_CLASSES_TESTS) \
+$(JLM_TESTS)
 TEST_TARGETS:=$(filter-out $(EXCLUDE),$(TEST_TARGETS))
 
 .PHONY: build configure clean refresh_source test $(TEST_TARGETS)
@@ -447,6 +455,7 @@ test: $(TEST_TARGETS)
 test.daa: $(DAA_TESTS)
 test.gc: $(GC_TESTS)
 test.SharedClasses: $(SHARED_CLASSES_TESTS)
+test.jlm: $(JLM_TESTS)
 
 test.list:
 	echo Running target $@
@@ -531,6 +540,26 @@ test.SharedClasses.SCM01.MultiThreadMultiCL:
 test.SharedClasses.SCM23.MultiThreadMultiCL:
 	echo Running target $@
 	$(STF_COMMAND) -test=SharedClasses -test-args="sharedClassMode=SCM23,sharedClassTest=MultiThreadMultiCL" $(LOG)
+	echo Target $@ completed
+test.TestIBMJlmLocal:
+	echo Running target $@
+	$(STF_COMMAND) -test=TestIBMJlmLocal $(LOG)
+	echo Target $@ completed
+test.TestIBMJlmRemoteClassAuth:
+	echo Running target $@
+	$(STF_COMMAND) -test=TestIBMJlmRemoteClassAuth $(LOG)
+	echo Target $@ completed
+test.TestIBMJlmRemoteClassNoAuth:
+	echo Running target $@
+	$(STF_COMMAND) -test=TestIBMJlmRemoteClassNoAuth $(LOG)
+	echo Target $@ completed
+test.TestIBMJlmRemoteMemoryAuth:
+	echo Running target $@
+	$(STF_COMMAND) -test=TestIBMJlmRemoteMemoryAuth $(LOG)
+	echo Target $@ completed
+test.TestIBMJlmRemoteMemoryNoAuth:
+	echo Running target $@
+	$(STF_COMMAND) -test=TestIBMJlmRemoteMemoryNoAuth $(LOG)
 	echo Target $@ completed
 
 help:
