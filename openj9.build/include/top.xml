@@ -304,7 +304,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<isset property="useCurl"/>
 	</condition>
 
-	<macrodef name="download-file" description="Use wget to download a file">
+	<macrodef name="download-file" description="Use ${download-tool} to download a file">
 		<attribute name="srcurl" description="URL of file to download"/>
 		<attribute name="destdir" description="Directory in which to place the downloaded file"/>
 		<attribute name="destfile" description="File name of the downloaded file"/>
