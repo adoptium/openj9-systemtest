@@ -63,21 +63,23 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
 	</target>
 
-	<target name="build">
-		<if>
-			<contains string="${JVM_VERSION}" substring="openj9"/>
-			<then>
-				<!--Disable building this test for now, ref: eclipse/openj9/issues/1252
-				<antcall target="build-no-natives"/>
-				<antcall target="build-natives"/>-->
-			</then>
-		</if>
+	<condition property="isOpenJ9" value="true">
+		<contains string="${JVM_VERSION}" substring="openj9"/>
+	</condition>
+	
+	<condition property="isWindows">
+		<os family="windows" />
+	</condition>
+	
+	<target name="build" if="isOpenJ9">
+		<antcall target="build-no-natives"/>
+		<antcall target="build-natives"/>
+	</target>
+	
+	<target name="build-no-natives" depends="check-prereqs, build-dependencies, check-prereqs, build-archives">
 	</target>
 
-	<target name="build-no-natives" depends="build-dependencies, check-prereqs, build-archives">
-	</target>
-
-	<target name="build-natives" depends="setup-native-build-command, build-natives-windows, build-natives-unix">
+	<target name="build-natives" depends="check-prereqs, setup-native-build-command, build-natives-windows, build-natives-unix">
 	</target>
 
 	<target name="setup-native-build-command">
@@ -86,13 +88,13 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<tempfile property="native_build_command_file" destDir="${java.io.tmpdir}" prefix="openj9.build.command."/>
 	</target>
 
-	<target name="build-natives-windows" if="${is_windows}">
+	<target name="build-natives-windows" if="isWindows">
 		<echo message="${native_build_command}" file="${native_build_command_file}.bat"/>
 		<exec executable="${native_build_command_file}.bat" failonerror="true"/>
 		<delete file="${native_build_command_file}.bat" verbose="true"/>
 	</target>
 
-	<target name="build-natives-unix" unless="${is_windows}">
+	<target name="build-natives-unix" unless="isWindows">
 		<echo message="${native_build_command}" file="${native_build_command_file}.sh"/>
 		<exec executable="/bin/sh" failonerror="true">
 			<arg value="${native_build_command_file}.sh"/>
@@ -141,5 +143,4 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 	<target name="clean">
 		<delete dir="${bin_dir}"/>
 	</target>
-
 </project>
