@@ -33,7 +33,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 	<condition property="exe_suffix" value=".exe" else="" >
 		<os family="windows" />
 	</condition>
-	<condition property="is_windows" value="true" else="false" >
+	<condition property="is_windows">
 		<os family="windows" />
 	</condition>
 
