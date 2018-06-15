@@ -435,7 +435,7 @@ test.help \
 $(DAA_TESTS) \
 $(GC_TESTS) \
 $(SHARED_CLASSES_TESTS) \
-$(IDLE_TESTS)
+$(IDLE_TESTS) \
 $(JLM_TESTS)
 
 TEST_TARGETS:=$(filter-out $(EXCLUDE),$(TEST_TARGETS))
