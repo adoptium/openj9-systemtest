@@ -3585,6 +3585,7 @@ public class TestShiftsAndConvert
         // Test precision of 1 digit, shifted right by 1, no rounding - checkOverflow
         inputArray[1] = 0x5D;
         expectedArray[2] = 0x0D;
+        expectedArray2[2] = 0x0C;
         PackedDecimal.shiftRightPackedDecimal(outputArray, 2, 1, inputArray, 1, 1, 1, false, true);
         isExpectedResult = Arrays.equals(expectedArray, outputArray) || Arrays.equals(expectedArray2, outputArray);
         assertTrue("testShiftRightUnitCases - Test precision of 1 >> 1 to precision 1 no rounding check overflow", isExpectedResult);
