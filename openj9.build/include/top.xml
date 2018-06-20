@@ -459,7 +459,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			</condition>
 			<condition property="@{property}" value="ppcle">
 				<and>
-					<contains string="@{arch}" substring="ppcle"/>
+					<contains string="@{arch}" substring="ppc64le"/>
 				</and>
 			</condition>
 			<condition property="@{property}" value="ppc">
