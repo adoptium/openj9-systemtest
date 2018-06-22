@@ -1,0 +1,65 @@
+#################################################################################
+# Copyright (c) 2017 IBM Corp.
+#
+# This program and the accompanying materials are made available under the
+# terms of the Eclipse Public License 2.0 which accompanies this distribution
+# and is available at http://eclipse.org/legal/epl-2.0 or the Apache License, 
+# Version 2.0 which accompanies this distribution and is available at 
+# https://www.apache.org/licenses/LICENSE-2.0.
+#
+# This Source Code may also be made available under the following Secondary
+# Licenses when the conditions for such availability set forth in the 
+# Eclipse Public License, v. 2.0 are satisfied: GNU General Public License,
+# version 2 with the GNU Classpath Exception [1] and GNU General Public License,
+# version 2 with the OpenJDK Assembly Exception [2].
+#
+# [1] https://www.gnu.org/software/classpath/license.html
+# [2] http://openjdk.java.net/legal/assembly-exception.html
+#
+# SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR LicenseRef-GPL-2.0 WITH Assembly-exception
+#################################################################################
+
+# The default for text files
+* git-encoding=iso8859-1 working-tree-encoding=ibm-1047
+
+# Specific types of files remain as ASCII
+*.xml git-encoding=iso8859-1 working-tree-encoding=iso8859-1
+*.dtd git-encoding=iso8859-1 working-tree-encoding=iso8859-1
+*.xsd git-encoding=iso8859-1 working-tree-encoding=iso8859-1
+*.classpath git-encoding=iso8859-1 working-tree-encoding=iso8859-1
+
+
+# Default - treat files as text as convert line ending to LF
+* text eol=lf
+
+# Overrides for files to be left untouched - treat as binary
+*.bin binary
+*.bmp binary
+*.ciphertext binary
+*.class binary
+*.dat binary
+*.dict binary
+*.dll binary
+*.doc binary
+*.ear binary
+*.exe binary
+*.gif binary
+*.ico binary
+*.idx binary
+*.iv binary
+*.jar binary
+*.jks binary
+*.jpeg binary
+*.jpg binary
+*.key binary
+*.o binary
+*.obj binary
+*.odg binary
+*.pack binary
+*.pdf binary
+*.png binary
+*.rtf binary
+*.ser binary
+*.so binary
+*.war binary
+*.zip binary
