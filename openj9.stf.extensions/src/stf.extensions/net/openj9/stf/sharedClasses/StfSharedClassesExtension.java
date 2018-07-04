@@ -256,8 +256,9 @@ public class StfSharedClassesExtension implements StfExtension {
 						"CacheOperation:", cacheOperation,
 						"ExpectedCacheName:", expectedCacheName,
 						"ExpectedNum:", Integer.toString(noOfExpectedCaches));
-
-		String cacheRegex  = "Java[6789]"; // This is a common pattern for all caches
+		
+		
+		String cacheRegex  = "Java[" + environmentCore.primaryJvm().getJavaVersion() + "]"; // This is a common pattern for all caches
 		
 		// Build the command to be run
 		JavaProcessDefinition javaDefinition = new JavaProcessDefinition(environmentCore)
