@@ -173,7 +173,7 @@ public class SharedClassesWorkload implements SharedClassesPluginInterface {
 		sharedClasses.doVerifySharedClassesCache("List all caches", jvmOptions + "${cacheOperation}", cacheName, cacheDir, expectedCacheName, expectedCaches);
 			
 		// Print the status of the cache and check that the cache is 1-100% full
-		String[] expectedMessages = {"Cache is (100%|[1-9][0-9]%|[1-9]%) full"}; // Ensure the cache is 1-100% full
+		String[] expectedMessages = {"Cache is (100%|[1-9][0-9]%|[1-9]%) (soft )*full"}; // Ensure the cache is 1-100% 'full' or 'soft full' (in case of Java 10 and up)
 		sharedClasses.doPrintAndVerifyCache("Print Shared Classes Cache Stats", jvmOptions + "${cacheOperation}", cacheName, cacheDir, expectedMessages);
 	}
 
