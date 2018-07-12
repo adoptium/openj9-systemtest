@@ -257,7 +257,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		if (mode == Modes.noSC) {
 			sharedClasses.doVerifySharedClassesCache("Ensure no cache is found", "-Xshareclasses" + "${cacheOperation}", cacheName, cacheDir, "", 0);
 		} else {
-			String[] expectedMessages = {"Cache is (100%|[1-9][0-9]%|[1-9]%) full"}; // Ensure the cache is 1-100% full
+			String[] expectedMessages = {"Cache is (100%|[1-9][0-9]%|[1-9]%) (soft )*full"}; // Ensure the cache is 1-100% 'full' or 'soft full' (in case of Java 10 and up)
 			sharedClasses.doPrintAndVerifyCache("Print Shared Classes Cache Stats", scOptions, cacheName, cacheDir, expectedMessages);
 		}
 	}
