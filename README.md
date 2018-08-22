@@ -39,7 +39,7 @@ git clone git@github.com:AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
 
 # 4. Clone the openj9-systemtest repository
 cd $HOME/git
-git clone git@github.com:eclipse/openj9/openj9-systemtest.git openj9-systemtest
+git clone git@github.com:eclipse/openj9-systemtest.git openj9-systemtest
 
 # 5. Set JAVA_HOME to a Java 8 or later Java
 export JAVA_HOME=<java-home>
@@ -90,7 +90,7 @@ git clone git@github.com:AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
 
 REM 4. Clone the openj9-systemtest repository
 cd %USERPROFILE%\git
-git clone git@github.com:eclipse/openj9/openj9-systemtest.git openj9-systemtest
+git clone git@github.com:eclipse/openj9-systemtest.git openj9-systemtest
 
 REM 5. Set JAVA_HOME to a Java 9 or later Java
 SET JAVA_HOME=<java-home>
