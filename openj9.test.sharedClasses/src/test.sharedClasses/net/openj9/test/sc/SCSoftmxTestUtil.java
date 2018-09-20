@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corp.
+* Copyright (c) 2017, 2018 IBM Corp.
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -102,14 +102,22 @@ public class SCSoftmxTestUtil {
 
 			if (aotValue2 > aotValue1) {
 				System.out.println("New AOT data was written to the AOT space after softmx increase");
+			} else if (aotValue2 == aotValue1){
+				System.out.println("AOT data remained the same after softmx increase");
 			} else {
-				throw new StfException("No new AOT data was written to the AOT space after softmx increase");
+				throw new StfException("Incorrect AOT bytes value after softmx increase.\n"
+						+ "Before Softmx increase, AOT data = " + aotValue1 + "\n"
+								+ "After Softmx increase, AOT data = " + aotValue2);
 			}
 	
 			if (jitdataValue2 > jitdataValue1) {
-				System.out.println("New JIT data was written to the AOT space after softmx increase");
+				System.out.println("New JIT data was written to the JIT space after softmx increase");
+			} else if (jitdataValue2 == jitdataValue1){
+				System.out.println("JIT data remained the same after softmx increase");
 			} else {
-				throw new StfException("No new JIT data was written to the AOT space after softmx increase");
+				throw new StfException("Incorrect JIT bytes value after softmx increase.\n"
+						+ "Before Softmx increase, JIT data = " + jitdataValue1 + "\n"
+								+ "After Softmx increase, JIT data = " + jitdataValue2);
 			}
 		} else {
 			System.out.println("Wrong task type provided");
