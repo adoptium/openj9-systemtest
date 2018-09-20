@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corp.
+* Copyright (c) 2017, 2018 IBM Corp.
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -233,10 +233,10 @@ public class SharedClassesWorkloadTest_Softmx_Increase_JitAot implements SharedC
 				"PS2", ECHO_OFF, ExpectedOutcome.exitValue(1).within("1m"), cacheStatsVM);
 
 		// Compare the AOT and JIT data bytes written to the cache before and after the softmx increase
-		// and make sure the latter is a larger value  
-		test.doRunForegroundProcess("Compare AOT and JITdata space before and after softmx was increased. "
+		// and make sure the latter is a larger or equal value  
+		test.doRunForegroundProcess("Compare AOT and JITdata bytes before and after softmx was increased. "
 				+ "This process will return a non-zero value if AOT and / or JITdata space "
-				+ "after the softmx was increased is not greater than what they were before the increase "
+				+ "after the softmx was increased is not greater than or equal to what they were before the increase "
 				+ "was made", "SL0", 
 				ECHO_OFF, ExpectedOutcome.exitValue(0).within("1m"), 
 				test.createJavaProcessDefinition()
