@@ -44,7 +44,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 	<!-- target to build all projects in the repository.  -->
 	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
 	<!-- Also make sure stf is built -->
-	<target name="build-dependencies">
+	<target name="build-dependencies" if="isOpenJ9">
 		<ant antfile="${stf_root}/stf.build/build.xml" dir="${stf_root}/stf.build" inheritAll="false"/>
         <ant antfile="${openjdk_systemtest_root}/openjdk.build/build.xml" dir="${openjdk_systemtest_root}/openjdk.build" inheritAll="false"/>
 		<ant antfile="${source_root}/openj9.stf.extensions/build.xml" dir="${source_root}/openj9.stf.extensions" inheritAll="false"/>
@@ -56,11 +56,16 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 	</target>
 
 	<condition property="isOpenJ9" value="true">
-		<contains string="${JVM_VERSION}" substring="openj9"/>
+		<contains string="${java8_vm_version}" substring="openj9"/>
+	</condition>
+
+	<condition property="isOpenJ9" value="true">
+		<contains string="${java9_vm_version}" substring="openj9"/>
 	</condition>
 	
 	<!-- We only want to build openj9 specific tests while we are testing an OpenJ9 SDK-->
-	<target name="build" if="isOpenJ9">
+	<!-- check-prereqs sets an isOpenJ9 property which is used as a guard for executing build-dependencies. -->
+	<target name="build" depends="check-prereqs">
 		<antcall target="build-dependencies"/>
 	</target>
 
