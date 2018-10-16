@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corp.
+* Copyright (c) 2017, 2018 IBM Corp.
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -55,12 +55,12 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 	private enum Tests {
 		// 							     expected  	        usesDefault  uses 		usesGroup  uses
 		// Test						    CacheCount   api     Location    Utilities  Access	   IteratorCache
-		DefaultLocationGroupAccessJava(		 4,	    "java",    true,     false,    	true,	   false),
-		DefaultLocationUtilitiesJava(		 4,	    "java",    true,	 true,     	false,	   false),		
+		DefaultLocationGroupAccessJava(		 5,	    "java",    true,     false,    	true,	   false),
+		DefaultLocationUtilitiesJava(		 5,	    "java",    true,	 true,     	false,	   false),		
 		DefinedLocationGroupAccessJava(		 4,	    "java",    false,	 false,    	true,	   false),
 		DefinedLocationUtilitiesJava(		 4,	    "java",    false,	 true,     	false,	   false),
 		DefinedLocationFromCommandLineJava(	 5,	    "java",    false,	 false,    	true,	   true),    
-		DefaultLocationGroupAccessJVMTI(	 4,	    "jvmti",   true,	 false,    	true,	   false),
+		DefaultLocationGroupAccessJVMTI(	 5,	    "jvmti",   true,	 false,    	true,	   false),
 		DefaultLocationUtilitiesJVMTI(		 4,	    "jvmti",   true,	 true,     	false,	   false),		
 		DefinedLocationGroupAccessJVMTI(	 4,	    "jvmti",   false,	 false,    	true,	   false),
 		DefinedLocationUtilitiesJVMTI(		 4,	    "jvmti",   false,	 true,     	false,	   false),
@@ -133,23 +133,38 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 				cacheDir= "cacheDir=" + cacheDirLocation;
 			}
 			
-			String iteratorCache = "";
+			String sharedClassesOption = "-Xshareclasses";
 			String configCacheLocation = cacheDir;
 			if (apiTest.usesIteratorCache) {
 				// When usesIteratorCache is true, an additional cache is created when the JVM runs during the
 				// verification stage. In addition, the expected cache location for all caches is provided in the 
 				// command line to the class, rather than going by the cacheDir parameter in the configuration file.
 				configCacheLocation = "cacheDir="; // This ensures the SharedClassesCacheChecker class is working as expected.
-				iteratorCache = "-Xshareclasses:" + cacheDir + ",name=" +  apiTest.name() + "Iterator";
-			}		
-
-			String utilities = (apiTest.usesUtilities ? "-Xshareclasses:utilities" : "");
+				sharedClassesOption += ":";
+				sharedClassesOption += (apiTest.usesGroupAccess ? "groupAccess," : "");
+				sharedClassesOption += (cacheDir.isEmpty()? "" : (cacheDir + ","));
+				sharedClassesOption +=  "name=" +  apiTest.name() + "Iterator";
+			} else {
+				if (apiTest.usesGroupAccess) {
+					if (apiTest.usesUtilities) {
+						sharedClassesOption = "-Xshareclasses:groupAccess,utilities";
+					} else {
+						sharedClassesOption = "-Xshareclasses:groupAccess";
+					}
+				} else {
+					if (apiTest.usesUtilities) {
+						sharedClassesOption = "-Xshareclasses:utilities";
+					} else {
+						/* do nothing, sharedClassesOption is -Xshareclasses */
+					}
+				}
+			}
 			
 			// Start a workload process for each cache.
-			StfProcess wl1 = startWorkload(test, apiTest, "WL1", cacheDir, ",persistent");
-			StfProcess wl2 = startWorkload(test, apiTest, "WL2", cacheDir, ",persistent");
-			StfProcess wl3 = startWorkload(test, apiTest, "WL3", cacheDir, ",nonpersistent");
-			StfProcess wl4 = startWorkload(test, apiTest, "WL4", cacheDir, ",nonpersistent");
+			StfProcess wl1 = startWorkload(test, apiTest, "WL1", cacheDir, "persistent");
+			StfProcess wl2 = startWorkload(test, apiTest, "WL2", cacheDir, "persistent");
+			StfProcess wl3 = startWorkload(test, apiTest, "WL3", cacheDir, "nonpersistent");
+			StfProcess wl4 = startWorkload(test, apiTest, "WL4", cacheDir, "nonpersistent");
 
 			// Monitor the workload processes to completion.
 			test.doMonitorProcesses(commentPrefix + "Monitor workload processes", wl1, wl2, wl3, wl4);
@@ -180,8 +195,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 						ECHO_ON,
 						ExpectedOutcome.cleanRun().within("10m"), 
 						test.createJavaProcessDefinition()
-							.addJvmOption(utilities)
-							.addJvmOption(iteratorCache)
+							.addJvmOption(sharedClassesOption)
 							.addJvmOption("-DconfigFile=" + configFile.getSpec())
 							.addProjectToClasspath("openj9.test.sharedClasses.jvmti")
 							.runClass(SharedClassesCacheChecker.class));
@@ -205,8 +219,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 					
 					sharedClasses.doVerifyCachesUsingJVMTI(commentPrefix + "Verify caches using JVMTI",
 							apiTest.name(), 
-							utilities,
-							iteratorCache,
+							sharedClassesOption,
 							"-agentpath:" + agent + "=" + agentOptions);
 				}
 			}
@@ -221,6 +234,9 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 		
 		String inventoryFile = "/openjdk.test.load/config/inventories/mix/mini-mix.xml";
 		int totalTests = InventoryData.getNumberOfTests(test, inventoryFile);
+		if (!cacheDir.isEmpty()) {
+			cacheDir = cacheDir + ",";
+		}
 		LoadTestProcessDefinition loadTestSpecification = test.createLoadTestSpecification()
 				.addJvmOption("-Xshareclasses:name=" + cacheName + "," + cacheDir + persistantStatus + groupAccess)
 				.addPrereqJarToClasspath(JavaProcessDefinition.JarId.JUNIT)
