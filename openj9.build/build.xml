@@ -56,11 +56,11 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 	</target>
 
 	<condition property="isOpenJ9" value="true">
-		<contains string="${java8_vm_version}" substring="openj9"/>
+		<istrue value="${java8_isopenj9}"/>
 	</condition>
 
 	<condition property="isOpenJ9" value="true">
-		<contains string="${java9_vm_version}" substring="openj9"/>
+		<istrue value="${java9_isopenj9}"/>
 	</condition>
 	
 	<!-- We only want to build openj9 specific tests while we are testing an OpenJ9 SDK-->
