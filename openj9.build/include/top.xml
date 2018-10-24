@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-Copyright (c) 2017 IBM Corp.
+Copyright (c) 2017, 2018 IBM Corp.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -66,6 +66,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 								 osname.property="java8_osname"
 								 arch.property="java8_arch"
 								 bits.property="java8_bits"
+								 isopenj9.property="java8_isopenj9"
 								 java.home="${java8_home}"
 								 java.id="java8"/>
 		<echo message="java8_platformclass set to ${java8_platformclass}"/>
@@ -76,6 +77,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<echo message="java8_arch set to ${java8_arch}"/>
 		<echo message="java8_bits set to ${java8_bits}"/>
 		<property name="java8_compiler" location="${java8_bindir}/javac${exe_suffix}"/>
+		<echo message="java8_isopenj9 set to ${java8_isopenj9}"/>
 		<echo message="java8_home set to ${java8_home}"/>
 		<echo message="java8_compiler set to ${java8_compiler}"/>
 	</target>
@@ -92,6 +94,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 								 osname.property="java9_osname"
 								 arch.property="java9_arch"
 								 bits.property="java9_bits"
+								 isopenj9.property="java9_isopenj9"
 								 java.home="${java9_home}"
 								 java.id="java9"/>
 		<echo message="java9_platformclass set to ${java9_platformclass}"/>
@@ -101,6 +104,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<echo message="java9_arch set to ${java9_arch}"/>
 		<echo message="java9_bits set to ${java9_bits}"/>
 		<property name="java9_compiler" location="${java9_bindir}/javac${exe_suffix}"/>
+		<echo message="java9_isopenj9 set to ${java9_isopenj9}"/>
 		<echo message="java9_home set to ${java9_home}"/>
 		<echo message="java9_compiler set to ${java9_compiler}"/>
 	</target>
@@ -368,6 +372,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<attribute name="osname.property" description="The property to put the osname in e.g. win, linux"/>
 		<attribute name="arch.property" description="The property to put the architecture in - e.g. x86, ppcle, 390"/>
 		<attribute name="bits.property" description="The property to put the bits in - e.g. 31, 32, 64"/>
+		<attribute name="isopenj9.property" description="The property to set to true if the vm is openj9."/>
 		<attribute name="java.home" description="The JAVA_HOME directory of the java to query"/>
 		<attribute name="java.id" description="A unique identifier to prefix the properties for the java instance with"/>
 		<sequential>
@@ -394,11 +399,30 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			</echoproperties>
 			<delete file="${properties_file}" verbose="true"/>
 			<echo message="${properties_file} deleted"/>
+			<set-isopenj9 property="@{isopenj9.property}" vm="${@{java.id}.java.vm.name}"/>
 			<get-platform-prefix property="@{osname.property}" osname="${@{java.id}.os.name}"/>
 			<get-platform-arch property="@{arch.property}" arch="${@{java.id}.os.arch}"/>
 			<get-platform-bits property="@{bits.property}" bits="${@{java.id}.sun.arch.data.model}"/>
 			<property name="@{platform.property}" value="${@{osname.property}}_${@{arch.property}}-${@{bits.property}}"/>
 			<property name="@{platformclass.property}" value="${@{osname.property}}_${@{arch.property}}"/>
+		</sequential>
+	</macrodef>
+
+	<macrodef name="set-isopenj9" description="Sets a property to true if the input attribute contains J9, otherwise sets it to false.">
+		<attribute name="property" description="The property to set"/>
+		<attribute name="vm"/>
+		<sequential>
+			<echo message="vm is @{vm}"/>
+			<condition property="@{property}" value="true">
+				<and>
+					<contains string="@{vm}" substring="J9"/>
+				</and>
+			</condition>
+			<condition property="@{property}" value="false">
+				<not>
+					<contains string="@{vm}" substring="J9"/>
+				</not>
+			</condition>
 		</sequential>
 	</macrodef>
 
