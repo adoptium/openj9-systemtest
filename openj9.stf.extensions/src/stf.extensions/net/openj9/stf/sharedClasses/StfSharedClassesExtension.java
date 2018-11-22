@@ -326,19 +326,17 @@ public class StfSharedClassesExtension implements StfExtension {
 	 * @param agentOptions are the native agent JVM options.
 	 * @throws StfException if anything goes wrong.
 	 */
-	public void doVerifyCachesUsingJVMTI(String comment, String testName, String utilities, String iteratorCache, String agentOptions) throws StfException {
+	public void doVerifyCachesUsingJVMTI(String comment, String testName, String sharedClassesOption, String agentOptions) throws StfException {
 		generator.startNewCommand(comment, "java", "Verify caches using JVMTI", 
 				"TestName:", testName,
-				"Utilities:", utilities,
-				"IteratorCache:", iteratorCache,
+				"sharedClassesOption:", sharedClassesOption,
 				"AgentOptions:", agentOptions); 
 		
 		// Start a JVM with a dummy class and a native agent
 		StfProcess process = extensionBase.runForegroundProcess(testName + " - Check Shared Classes Caches", "JVMT", ECHO_ON,
 				ExpectedOutcome.cleanRun().within("10m"), 
 					new JavaProcessDefinition(environmentCore)
-						.addJvmOption(utilities)
-						.addJvmOption(iteratorCache)
+						.addJvmOption(sharedClassesOption)
 						.addJvmOption(agentOptions)
 						.addProjectToClasspath("openj9.stf.extensions")
 						.runClass(DummySleeper.class));
