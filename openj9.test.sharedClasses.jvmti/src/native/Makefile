@@ -145,7 +145,7 @@ endif
 ifeq ($(PLATFORM),osx_x86-64)
     CFLAGS=-fPIC -fno-omit-frame-pointer -O0 -g3 -pedantic -Wall -std=c99 -c -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
     LFLAGS=-shared -o
-    IFLAGS=-I. -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/darwin -I/usr/include
+    IFLAGS=-I. -I$(JAVA_HOME)/include -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/include/darwin -I$(JAVA_HOME)/../include/darwin -I/usr/include
 endif
 
 ifeq ($(PLATFORM),win_x86-32)
