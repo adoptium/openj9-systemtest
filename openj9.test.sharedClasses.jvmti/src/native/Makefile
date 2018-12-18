@@ -207,7 +207,7 @@ build: $(_OUTDIR) $(DESTDIR) $(DESTDIR)/$(PREFIX)sharedClasses$(SUFFIX)
 ######################
 
 $(DESTDIR)/$(PREFIX)sharedClasses$(SUFFIX) : $(OBJDIR)/sharedClasses$(OSUFFIX)
-	$(LD) $(LFLAGS)$@ $<
+	$(LD) $(LFLAGS)$ @ $<
 ifneq ($(WIN),1)
 	$(CHMOD) 755 $@
 endif
