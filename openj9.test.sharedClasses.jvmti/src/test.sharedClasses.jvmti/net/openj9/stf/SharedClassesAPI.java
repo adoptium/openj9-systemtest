@@ -244,6 +244,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 				.addProjectToClasspath("openjdk.test.lang")  // For mini-mix inventory
 				.addProjectToClasspath("openjdk.test.util")  // For mini-mix inventory
 				.addProjectToClasspath("openjdk.test.math")  // For mini-mix inventory
+				.generateCoreDumpAtFirstLoadTestFailure(false)
 				.addSuite("mini-mix")
 				.setSuiteInventory(inventoryFile)
 				.setSuiteThreadCount(3)

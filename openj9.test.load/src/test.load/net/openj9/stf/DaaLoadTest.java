@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corp.
+* Copyright (c) 2017, 2018 IBM Corp.
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -101,6 +101,7 @@ public class DaaLoadTest implements StfPluginInterface {
 				.addPrereqJarToClasspath(JavaProcessDefinition.JarId.JUNIT)
 				.addPrereqJarToClasspath(JavaProcessDefinition.JarId.HAMCREST)
 				.addProjectToClasspath("openj9.test.daa")
+				.generateCoreDumpAtFirstLoadTestFailure(true)
 				.addSuite("daa")
 				.setSuiteThreadCount(cpuCount - 2, 2)  
 				.setSuiteNumTests(numDaaTests * workload.multiplier)

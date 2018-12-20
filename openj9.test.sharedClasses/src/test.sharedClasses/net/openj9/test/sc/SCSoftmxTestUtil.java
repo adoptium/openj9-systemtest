@@ -137,6 +137,7 @@ public class SCSoftmxTestUtil {
 			.addProjectToClasspath("openjdk.test.classloading")  // For sharedclasses-mix inventory
 			.addProjectToClasspath("openjdk.test.nio")           // For sharedclasses-mix inventory
 			.addProjectToClasspath("openj9.test.daa")         // For sharedclasses-mix inventory
+		   	.generateCoreDumpAtFirstLoadTestFailure(false)
 			.addSuite("sharedclasses-mix")
 			.setSuiteInventory(inventoryFile)
 			.setSuiteThreadCount(cpuCount - 1, 2)
@@ -154,6 +155,7 @@ public class SCSoftmxTestUtil {
 			.addPrereqJarToClasspath(JavaProcessDefinition.JarId.HAMCREST)
 			.addProjectToClasspath("openjdk.test.classloading")
 			.setAbortIfOutOfMemory(false)
+			.generateCoreDumpAtFirstLoadTestFailure(false)
 			.addSuite("classloading")
 			.setSuiteThreadCount(cpuCount - 1, 2) 
 			.setSuiteInventory(inventoryFile)
