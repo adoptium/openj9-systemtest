@@ -58,7 +58,7 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 	
 	private final int CACHESIZE_HARD_LIMIT_MB = 40;
 	private final int CACHESIZE_SOFTLIMIT_INITIAL_MB = 10; 
-	private final int CACHESIZE_SOFTLIMIT_INTERMIEDIATE_INCREASED_MB = 30;
+	private final int CACHESIZE_SOFTLIMIT_INTERMIEDIATE_INCREASED_MB = 25;
 	private final String CACHE_NAME = "workload_cache";
 	
 	private DirectoryRef cacheDirLocation;
