@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -71,7 +71,7 @@ public class HeapHogLoadTest implements StfPluginInterface {
 				.addProjectToClasspath("openjdk.test.lang")    // For mini-mix inventory
 				.addProjectToClasspath("openjdk.test.util")    // For mini-mix inventory
 				.addProjectToClasspath("openjdk.test.math")    // For mini-mix inventory
-				.generateCoreDumpAtFirstLoadTestFailure(true)
+				.generateCoreDumpAtFirstLoadTestFailure(false)
 				.addSuite("HeapHog")
 				.setSuiteThreadCount(cpuCount - 2, 2)   // Leave 1 CPU for the JIT, one for GC, but never less then two threads on machines with one or two CPUs 
 				.setSuiteNumTests(numTests * 150)   // About 5 minutes run time with no -X options
