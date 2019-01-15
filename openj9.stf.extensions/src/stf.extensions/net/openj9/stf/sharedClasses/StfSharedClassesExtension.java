@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -126,7 +126,7 @@ public class StfSharedClassesExtension implements StfExtension {
 	 * @throws StfException if anything goes wrong.
 	 */
 	public void doDestroySpecificCache(String comment, String scOptions, String cacheName, String cacheDir) throws StfException {
-		String cacheOperation =  ",destroyAll";
+		String cacheOperation =  ",destroy";
 		
 		generator.startNewCommand(comment, "java", "Destroy specific shared classes cache",
 						"Options:", scOptions,
@@ -134,7 +134,7 @@ public class StfSharedClassesExtension implements StfExtension {
 						"CacheDir:", cacheDir,
 						"CacheOperation:", cacheOperation); 
 
-		String[] expectedMessages = {"shared cache \"" + cacheName + "\" has been destroyed", "cache \"" + cacheName + "\" is destroyed"};
+		String[] expectedMessages = {"shared cache \"" + cacheName + "\" has been destroyed", "cache \"" + cacheName + "\" is destroyed", "No shared class caches available", "Cache does not exist"};
 		
 		runSharedClassesCacheCommand(comment, StfDuration.ofMinutes(1), expectedMessages, resolveSharedClassesOptions(scOptions, cacheName, cacheDir, cacheOperation));
 	}
@@ -153,7 +153,7 @@ public class StfSharedClassesExtension implements StfExtension {
 	 * @throws StfException if anything goes wrong.
 	 */
 	public void doDestroySpecificNonPersistentCache(String comment, String scOptions, String cacheName, String cacheDir) throws StfException {
-		String cacheOperation =  ",destroyAll,nonpersistent";
+		String cacheOperation =  ",destroy,nonpersistent";
 		
 		generator.startNewCommand(comment, "java", "Destroy specific non-persistent shared classes cache",
 				"Options:", scOptions,
@@ -161,7 +161,7 @@ public class StfSharedClassesExtension implements StfExtension {
 				"CacheDir:", cacheDir,
 				"CacheOperation:", cacheOperation); 
 		
-		String[] expectedMessages = {"shared cache \"" + cacheName + "\" has been destroyed", "cache \"" + cacheName + "\" is destroyed"};		
+		String[] expectedMessages = {"shared cache \"" + cacheName + "\" has been destroyed", "cache \"" + cacheName + "\" is destroyed", "No shared class caches available", "Cache does not exist"};		
 		
 		runSharedClassesCacheCommand(comment, StfDuration.ofMinutes(1), expectedMessages, resolveSharedClassesOptions(scOptions, cacheName, cacheDir, cacheOperation));
 	}

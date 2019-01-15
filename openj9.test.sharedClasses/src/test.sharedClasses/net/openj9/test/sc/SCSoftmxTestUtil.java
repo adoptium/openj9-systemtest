@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -37,6 +37,7 @@ public class SCSoftmxTestUtil {
 	public static final String SLEEP = "sleep";
     public static final String MERGE_FILE = "MergeFile";
     public static final String COMPARE_AOT_JIT_DATA_SPACE = "CompareAOTJITData";
+    public static final String CACHE_NAME = "SCC_SysTest_Workload_Cache";
 	
 	public static void main (String [] args) throws Exception {
 		String task = System.getProperty("task");

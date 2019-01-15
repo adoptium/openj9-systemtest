@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -31,6 +31,7 @@ import net.adoptopenjdk.stf.processes.definitions.LoadTestProcessDefinition;
 import net.adoptopenjdk.stf.runner.modes.HelpTextGenerator;
 import net.openj9.stf.sharedClasses.SharedClassesPluginInterface;
 import net.openj9.stf.sharedClasses.StfSharedClassesExtension;
+import net.openj9.test.sc.SCSoftmxTestUtil;
 
 /**
  * 
@@ -48,7 +49,6 @@ import net.openj9.stf.sharedClasses.StfSharedClassesExtension;
  */
 public class SharedClassesWorkload implements SharedClassesPluginInterface {
 	private DirectoryRef cacheDirLocation;
-	private String cacheName;
 	private String cacheDir;
 	private String jvmOptions;
 	
@@ -72,10 +72,7 @@ public class SharedClassesWorkload implements SharedClassesPluginInterface {
 		// Define the location for cache.
 		cacheDirLocation = test.env().getResultsDir().childDirectory("cache");
 		cacheDir = cacheDirLocation.toString();
-		
-		// Specify the cache specific variables.
-		cacheName = "workload_cache";
-		jvmOptions = "-Xshareclasses:" + "name=" + cacheName + "," + "cacheDir=" + cacheDirLocation;
+		jvmOptions = "-Xshareclasses:" + "name=" + SCSoftmxTestUtil.CACHE_NAME + "," + "cacheDir=" + cacheDirLocation;
 	}
 
 	
@@ -83,10 +80,10 @@ public class SharedClassesWorkload implements SharedClassesPluginInterface {
 		// Create the directories for the cache.
 		test.doMkdir("Create the cache directory", cacheDirLocation);
 		
-		// To ensure we run from a clean state, attempt to destroy all persistent/non-persistent caches 
+		// To ensure we run from a clean state, attempt to destroy all test related persistent/non-persistent caches 
 		// from the default cache location which may have been left behind by a previous failed test.
-		sharedClasses.doDestroyAllPersistentCaches("Destroy Persistent Shared Classes Caches");
-		sharedClasses.doDestroyAllNonPersistentCaches("Destroy Non-Persistent Shared Classes Caches");
+		sharedClasses.doDestroySpecificCache("Destroy cache", jvmOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", jvmOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 	}
 
 
@@ -120,7 +117,7 @@ public class SharedClassesWorkload implements SharedClassesPluginInterface {
 				loadTestSpecification);
 		
 		// Check that the expected cache was created and no other caches exist.
-		verifyAndPrintCache(sharedClasses, cacheName, cacheDir, cacheName, 1);
+		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1);
 		
 		// Access the existing cache using another workload process.
 		test.doRunForegroundProcess("Access cache using another workload process", 
@@ -131,13 +128,13 @@ public class SharedClassesWorkload implements SharedClassesPluginInterface {
 
 		// Confirm that only the expected cache exists and no other caches were 
 		// created by the "SCL2" workload process.
-		verifyAndPrintCache(sharedClasses, cacheName, cacheDir, cacheName, 1);
+		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1);
 		
 		// Destroy the existing cache.
-		sharedClasses.doDestroySpecificCache("Destroy cache", jvmOptions + "${cacheOperation}", cacheName, cacheDir);
+		sharedClasses.doDestroySpecificCache("Destroy cache", jvmOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 		
 		// Confirm that the deletion was successful.
-		sharedClasses.doVerifySharedClassesCache("Verify caches", jvmOptions + "${cacheOperation}", cacheName, cacheDir, "", 0);
+		sharedClasses.doVerifySharedClassesCache("Verify caches", jvmOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir, "", 0);
 		
 		// Create a new cache using multiple workload processes.
 		test.doRunForegroundProcesses("Run multiple workload processes", 
@@ -148,7 +145,7 @@ public class SharedClassesWorkload implements SharedClassesPluginInterface {
 				loadTestSpecification);
 		
 		// Check that the expected cache was created and no other caches exist
-		verifyAndPrintCache(sharedClasses, cacheName, cacheDir, cacheName, 1);
+		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1);
 		
 		// Access the existing cache using more workload processes
 		test.doRunForegroundProcesses("Access cache using more workload processes", 
@@ -160,13 +157,13 @@ public class SharedClassesWorkload implements SharedClassesPluginInterface {
 		
 		// Confirm that only the expected cache exists and no other caches were 
 		// created by the last run of "SCL" workload processes.
-		verifyAndPrintCache(sharedClasses, cacheName, cacheDir, cacheName, 1);
+		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1);
 		
 		// Destroy the existing cache.
-		sharedClasses.doDestroySpecificCache("Destroy cache", jvmOptions + "${cacheOperation}", cacheName, cacheDir);
+		sharedClasses.doDestroySpecificCache("Destroy cache", jvmOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 		
 		// Confirm that the deletion was successful 
-		sharedClasses.doVerifySharedClassesCache("List all caches", jvmOptions + "${cacheOperation}", cacheName, cacheDir, "", 0);	
+		sharedClasses.doVerifySharedClassesCache("List all caches", jvmOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir, "", 0);	
 	}
 		
 	private void verifyAndPrintCache(StfSharedClassesExtension sharedClasses, String cacheName, String cacheDir, String expectedCacheName, int expectedCaches) throws Exception {
@@ -180,10 +177,10 @@ public class SharedClassesWorkload implements SharedClassesPluginInterface {
 
 	
 	public void tearDown(StfCoreExtension test, StfSharedClassesExtension sharedClasses) throws Exception {
-		// Destroy all persistent/non-persistent caches from the default cache location which may
+		// Destroy all test related persistent/non-persistent caches from the default cache location which may
 		// have been left behind by a failure. We don't care about caches left behind in results
 		// as those will get deleted together with results.
-		sharedClasses.doDestroyAllPersistentCaches("Destroy Persistent Shared Classes Caches");
-		sharedClasses.doDestroyAllNonPersistentCaches("Destroy Non-Persistent Shared Classes Caches");
+		sharedClasses.doDestroySpecificCache("Destroy cache", jvmOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", jvmOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 	}
 }

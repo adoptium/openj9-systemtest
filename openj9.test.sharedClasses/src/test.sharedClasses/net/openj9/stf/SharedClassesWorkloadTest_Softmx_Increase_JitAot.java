@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -70,8 +70,6 @@ import net.openj9.test.sc.SCSoftmxTestUtil;
  */
 public class SharedClassesWorkloadTest_Softmx_Increase_JitAot implements SharedClassesPluginInterface {
 
-	private final String CACHE_NAME = "workload_cache";
-
 	private final String CACHESIZE_HARD_LIMIT = "20m";
 	
 	private final String MAX_JITDATA = "10k"; 
@@ -89,8 +87,8 @@ public class SharedClassesWorkloadTest_Softmx_Increase_JitAot implements SharedC
 	private final long ADJUSTED_MINAOT_IN_BYTES = toBytes(ADJUSTED_MIN_AOT);
 	private final long ADJUSTED_MAXAOT_IN_BYTES = toBytes(ADJUSTED_MAX_AOT);
 	
-	private final String AOT_SPACE_FULL_MESSAGE = "JVMSHRC773I The space for AOT data in shared cache \"workload_cache\" is full.";
-	private final String JIT_SPACE_FULL_MESSAGE = "JVMSHRC774I The space for JIT data in shared cache \"workload_cache\" is full.";
+	private final String AOT_SPACE_FULL_MESSAGE = "JVMSHRC773I The space for AOT data in shared cache \"" + SCSoftmxTestUtil.CACHE_NAME + "\" is full.";
+	private final String JIT_SPACE_FULL_MESSAGE = "JVMSHRC774I The space for JIT data in shared cache \"" + SCSoftmxTestUtil.CACHE_NAME + "\" is full.";
 	private final String COMBINED_ERR_FILE_NAME = "stderr_combined.txt"; 
 
 	private DirectoryRef cacheDirLocation;
@@ -124,7 +122,7 @@ public class SharedClassesWorkloadTest_Softmx_Increase_JitAot implements SharedC
 		cacheDir = cacheDirLocation.toString();
 
 		// Specify the cache specific variables.
-		cacheSpecificGeneralOptions = "-Xshareclasses:addtestjithints,verbose," + "name=" + CACHE_NAME + "," + "cacheDir=" + cacheDirLocation;
+		cacheSpecificGeneralOptions = "-Xshareclasses:addtestjithints,verbose," + "name=" + SCSoftmxTestUtil.CACHE_NAME + "," + "cacheDir=" + cacheDirLocation;
 
 		// Create the directories for the cache.
 		test.doMkdir("Create the cache directory", cacheDirLocation);
@@ -144,10 +142,10 @@ public class SharedClassesWorkloadTest_Softmx_Increase_JitAot implements SharedC
 		finalCacheSizeOptions = cacheSpecificGeneralOptions  
 				+ " -Xaot:forceAot,disableAsyncCompilation,count=0";
 
-		// To ensure we run from a clean state, attempt to destroy all persistent/non-persistent caches 
+		// To ensure we run from a clean state, attempt to destroy the test related persistent/non-persistent caches 
 		// from the default cache location which may have been left behind by a previous failed test.
-		sharedClasses.doDestroyAllPersistentCaches("Destroy Persistent Shared Classes Caches");
-		sharedClasses.doDestroyAllNonPersistentCaches("Destroy Non-Persistent Shared Classes Caches");
+		sharedClasses.doDestroySpecificCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 	}
 
 	public void execute(StfCoreExtension test, StfSharedClassesExtension sharedClasses) throws Exception {
@@ -168,7 +166,7 @@ public class SharedClassesWorkloadTest_Softmx_Increase_JitAot implements SharedC
 				.addJvmOption(finalCacheSizeOptions), 500); 
 
 		JavaProcessDefinition cacheStatsVM = test.createJavaProcessDefinition()
-				.addJvmOption("-Xshareclasses:name=" + CACHE_NAME + ",cacheDir=" + cacheDir + ",verboseIO,printStats")
+				.addJvmOption("-Xshareclasses:name=" + SCSoftmxTestUtil.CACHE_NAME + ",cacheDir=" + cacheDir + ",verboseIO,printStats")
 				.runClass("");
 
 		// Run 2 JVMs at the beginning. Both Jvm1 and Jvm2 run workload processes in background mode 
@@ -248,18 +246,18 @@ public class SharedClassesWorkloadTest_Softmx_Increase_JitAot implements SharedC
 				.runClass(net.openj9.test.sc.SCSoftmxTestUtil.class));
 
 		// Destroy the existing cache.
-		sharedClasses.doDestroySpecificCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 
 		// Confirm that the deletion was successful.
-		sharedClasses.doVerifySharedClassesCache("Verify caches", cacheSpecificGeneralOptions + "${cacheOperation}", CACHE_NAME, cacheDir, "", 0);
+		sharedClasses.doVerifySharedClassesCache("Verify caches", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir, "", 0);
 	}
 
 	public void tearDown(StfCoreExtension test, StfSharedClassesExtension sharedClasses) throws Exception {
-		// Destroy all persistent/non-persistent caches from the default cache location which may
+		// Destroy all test related persistent/non-persistent caches from the default cache location which may
 		// have been left behind by a failure. We don't care about caches left behind in results
 		// as those will get deleted together with results.
-		sharedClasses.doDestroyAllPersistentCaches("Destroy Persistent Shared Classes Caches");
-		sharedClasses.doDestroyAllNonPersistentCaches("Destroy Non-Persistent Shared Classes Caches");
+		sharedClasses.doDestroySpecificCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 	}
 	
 	private long toBytes(String size) {
