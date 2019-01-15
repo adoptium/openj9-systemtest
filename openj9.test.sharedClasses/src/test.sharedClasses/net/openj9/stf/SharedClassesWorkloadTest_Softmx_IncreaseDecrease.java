@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -102,7 +102,7 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 								"adjustsoftmx=" + CACHESIZE_SOFTLIMIT_INTERMIEDIATE_INCREASED_MB + "m";
 		
 		cacheSizeAdjustmentOptions_Final_SoftmxDecreased = cacheSpecificGeneralOptions + "," + 
-								"adjustsoftmx=" + (CACHESIZE_SOFTLIMIT_INTERMIEDIATE_INCREASED_MB /2) + "m";
+								"adjustsoftmx=" + (CACHESIZE_SOFTLIMIT_INTERMIEDIATE_INCREASED_MB /4) + "m";
 				
 		// Create the directories for the cache.
 		test.doMkdir("Create the cache directory", cacheDirLocation);
@@ -159,15 +159,11 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 		// Wait for jvm1 and jvm2 to complete 
 		test.doMonitorProcesses("Wait for processes to complete", jvm1, jvm2);
 		
-		// Ensure that, at this point that, the cache is more than 50% but less than 100% full. 
-		String[] expectedMessages1 = {"Cache is (99%|[5-8][0-9]%|[9][0-8]%) soft full"}; 
-		verifyAndPrintCache(sharedClasses, CACHE_NAME, cacheDir, CACHE_NAME, 1, expectedMessages1);
-		
-		// Attempt to decrease the cache size to half of its existing soft limit.
+		// Attempt to decrease the cache size to 1/4th its existing soft limit.
 		// Since the cache is more than half full right now, adjustsoftmx should result in 
-		// shrinking the softmx size to the amount of bytes that exist in the cache.  
+		// shrinking the softmx size to, or below the amount of bytes that exists in the cache.  
 		// The cache should be 100% soft-full after this adjustment has been made. 
-		cacheAdjuster = test.doRunForegroundProcess("Decrease cache size to " + CACHESIZE_SOFTLIMIT_INTERMIEDIATE_INCREASED_MB / 2 + 
+		cacheAdjuster = test.doRunForegroundProcess("Decrease cache size to " + CACHESIZE_SOFTLIMIT_INTERMIEDIATE_INCREASED_MB / 4 + 
 				"mb via -Xshareclasses:adjustsoftmx option", "AD2", ECHO_OFF, ExpectedOutcome.exitValue(1).within("1m"), 
 				test.createJavaProcessDefinition()
 					.addJvmOption(cacheSizeAdjustmentOptions_Final_SoftmxDecreased)
