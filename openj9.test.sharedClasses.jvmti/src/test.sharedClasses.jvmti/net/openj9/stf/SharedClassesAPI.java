@@ -24,6 +24,9 @@ package net.openj9.stf;
 import static net.adoptopenjdk.stf.extensions.core.StfCoreExtension.Echo.ECHO_OFF;
 import static net.adoptopenjdk.stf.extensions.core.StfCoreExtension.Echo.ECHO_ON;
 
+import java.util.ArrayList;
+import java.util.Iterator;
+
 import net.adoptopenjdk.loadTest.InventoryData;
 import net.openj9.sc.api.SharedClassesCacheChecker;
 import net.adoptopenjdk.stf.environment.DirectoryRef;
@@ -88,6 +91,8 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 	private DirectoryRef cacheDirLocation;
 	private DirectoryRef configDirLocation;
 	
+	private ArrayList<String> testCachesCreatedInDefaultLocation = new ArrayList<String>(); 
+	
 	
 	public void help(HelpTextGenerator help) {
 		help.outputSection("Shared Classes API test");
@@ -115,14 +120,9 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 		test.doMkdir("Create the cache directory", cacheDirLocation);
 		test.doMkdir("Create the config directory", configDirLocation);
 		
-		//We are running 5 Workloads namely WL1,..WL4. Each creates its own cache, so we should clean up each one of them
-		for (Tests apiTest : Tests.values()) {
-			for (int i = 1 ; i < 5 ; i++) {
-				String cacheName = apiTest.name() + "WL1" + i;
-				sharedClasses.doDestroySpecificCache("Destroy cache", "-Xshareclasses:name=" + cacheName + ",cacheDir=" + cacheDirLocation.getSpec() + "${cacheOperation}", cacheName, cacheDirLocation.getSpec());
-				sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", "-Xshareclasses:name=" + cacheName + ",cacheDir=" + cacheDirLocation.getSpec() + "${cacheOperation}", cacheName, cacheDirLocation.getSpec());
-			}
-		}
+		// Destroy all test specific caches from the test specific cacheDir to begin with a clean slate
+		sharedClasses.doDestroyAllPersistentCachesInCacheDir("Destroy all persistent caches in test cacheDir", cacheDirLocation.getSpec());
+		sharedClasses.doDestroyAllNonPersistentCachesInCacheDir("Destroy all nonpersistent caches in test cacheDir", cacheDirLocation.getSpec());	
 	}
 
 
@@ -132,10 +132,13 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 
 		for (Tests apiTest : Tests.values()) {
 			String commentPrefix = apiTest.name() + ": ";
+			String cacheName = apiTest.name() + "Iterator";
 			
 			String cacheDir = "";	
 			if (!apiTest.usesDefaultLocation) {
 				cacheDir= "cacheDir=" + cacheDirLocation.toString();
+			} else {
+				testCachesCreatedInDefaultLocation.add(cacheName);
 			}
 			
 			String sharedClassesOption = "-Xshareclasses";
@@ -144,21 +147,22 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 				// When usesIteratorCache is true, an additional cache is created when the JVM runs during the
 				// verification stage. In addition, the expected cache location for all caches is provided in the 
 				// command line to the class, rather than going by the cacheDir parameter in the configuration file.
-				configCacheLocation = "cacheDir="; // This ensures the SharedClassesCacheChecker class is working as expected.
+				configCacheLocation = "cacheDir=" + cacheDir; // This ensures the SharedClassesCacheChecker class is working as expected.
 				sharedClassesOption += ":";
 				sharedClassesOption += (apiTest.usesGroupAccess ? "groupAccess," : "");
 				sharedClassesOption += (cacheDir.isEmpty()? "" : (cacheDir + ","));
-				sharedClassesOption +=  "name=" +  apiTest.name() + "Iterator";
+				sharedClassesOption +=  "name=" +  cacheName;
 			} else {
+				cacheName = apiTest.name() + "NoIterator";
 				if (apiTest.usesGroupAccess) {
 					if (apiTest.usesUtilities) {
-						sharedClassesOption = "-Xshareclasses:groupAccess,utilities";
+						sharedClassesOption = "-Xshareclasses:name=" + cacheName + "groupAccess,utilities";
 					} else {
-						sharedClassesOption = "-Xshareclasses:groupAccess";
+						sharedClassesOption = "-Xshareclasses:name=" + cacheName + "groupAccess";
 					}
 				} else {
 					if (apiTest.usesUtilities) {
-						sharedClassesOption = "-Xshareclasses:utilities";
+						sharedClassesOption = "-Xshareclasses:name=" + cacheName + "utilities";
 					} else {
 						/* do nothing, sharedClassesOption is -Xshareclasses */
 					}
@@ -202,6 +206,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 						test.createJavaProcessDefinition()
 							.addJvmOption(sharedClassesOption)
 							.addJvmOption("-DconfigFile=" + configFile.getSpec())
+							.addJvmOption("-DcacheName=" + cacheName)
 							.addProjectToClasspath("openj9.test.sharedClasses.jvmti")
 							.runClass(SharedClassesCacheChecker.class));
 			} else {
@@ -280,16 +285,17 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 
 	
 	public void tearDown(StfCoreExtension test, StfSharedClassesExtension sharedClasses) throws Exception {
-		// Destroy all test specific persistent/non-persistent caches from the default cache location which may
+		// Destroy all test specific persistent/non-persistent caches from the test cacheDir location which may
 		// have been left behind by a failure. We don't care about caches left behind in results
-		// as those will get deleted together with results.
-		// We are running 5 Workloads namely WL1,..WL4. Each creates its own cache, so we should clean up each one of them
-		for (Tests apiTest : Tests.values()) {
-			for (int i = 1 ; i < 5 ; i++) {
-				String cacheName = apiTest.name() + "WL1" + i;
-				sharedClasses.doDestroySpecificCache("Destroy cache", "-Xshareclasses:name=" + cacheName + ",cacheDir=" + cacheDirLocation.getSpec() + "${cacheOperation}", cacheName, cacheDirLocation.getSpec());
-				sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", "-Xshareclasses:name=" + cacheName + ",cacheDir=" + cacheDirLocation.getSpec() + "${cacheOperation}", cacheName, cacheDirLocation.getSpec());
-			}
+		sharedClasses.doDestroyAllPersistentCachesInCacheDir("Destroy all persistent caches in test cacheDir", cacheDirLocation.getSpec());
+		sharedClasses.doDestroyAllNonPersistentCachesInCacheDir("Destroy all nonpersistent caches in test cacheDir", cacheDirLocation.getSpec());
+		
+		// Destroy all test specific caches that may have been left in the default location 
+		Iterator<String> i = testCachesCreatedInDefaultLocation.iterator(); 
+		while (i.hasNext()) {
+			String cacheName = i.next();
+			sharedClasses.doDestroySpecificCache("Destroy test specific persistent cache from default location", "-Xshareclasses:name=" + cacheName + "${cacheOperation}", cacheName, "");
+			sharedClasses.doDestroySpecificNonPersistentCache("Destroy test specific non-persistent cache from default location", "-Xshareclasses:name=" + cacheName + "${cacheOperation}", cacheName, "");
 		}
 	}
 }
