@@ -208,6 +208,46 @@ public class StfSharedClassesExtension implements StfExtension {
 	
 	
 	/**
+	 * Destroys all the persistent shared classes caches from the given shared classes 
+	 * cache location, and checks the output for "No shared class caches available" 
+	 * or "shared cache (.*) has been destroyed" if the return code is not 0.
+	 * It does this validation because it is unknown if a cache exists and the destroy 
+	 * shared classes command always returns code 1.
+	 * 
+	 * @param comment is a comment from the test summarising why it's running a child process.
+	 * @throws StfException if anything goes wrong.
+	 */
+	public void doDestroyAllPersistentCachesInCacheDir(String comment, String cacheDir) throws StfException {
+		generator.startNewCommand(comment, "java", "Destroy all persistent caches");
+
+		String defaultJavaOptions =  "-Xshareclasses:destroyAll,cacheDir=" + cacheDir;
+		String[] expectedMessages = {"No shared class caches available", "Cache does not exist", "shared cache (.*) has been destroyed", "cache (.*) is destroyed"};
+		
+		runSharedClassesCacheCommand(comment, StfDuration.ofMinutes(1), expectedMessages, defaultJavaOptions);
+	}
+
+
+	/**
+	 * Destroys all the non-persistent shared classes caches from the given shared classes 
+	 * cache location, and checks the output for "No shared class caches available" 
+	 * or "shared cache (.*) has been destroyed" if the return code is not 0.
+	 * It does this validation because it is unknown if a cache exists and the destroy 
+	 * shared classes command always returns code 1.
+	 * 
+	 * @param comment is a comment from the test summarising why it's running a child process.
+	 * @throws StfException if anything goes wrong.
+	 */
+	public void doDestroyAllNonPersistentCachesInCacheDir(String comment, String cacheDir) throws StfException {
+		generator.startNewCommand(comment, "java", "Destroy all non-persistent caches");
+
+		String defaultJavaOptions = "-Xshareclasses:destroyAll,nonpersistent,cacheDir=" + cacheDir;
+		String[] expectedMessages = {"No shared class caches available", "Cache does not exist", "shared cache (.*) has been destroyed", "cache (.*) is destroyed"};
+
+		runSharedClassesCacheCommand(comment, StfDuration.ofMinutes(1), expectedMessages, defaultJavaOptions);
+	}
+	
+	
+	/**
 	 * Prints the Shared Classes cache status and checks the output for "Cache is 100% full"
 	 * if the return code is not 0. 	 
 	 * It does this validation because the shared classes cache is expected to get full and 

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -68,6 +68,8 @@ public class SharedClassesCacheChecker {
 	private static final String CACHE_DIR_PROP = "cacheDir";
 
 	private static final String CONFIG_FILE_PROP = "configFile";
+	
+	private static final String CACHE_NAME_PROP = "cacheName";
 
 	private static final String EXPECTED_CACHE_COUNT_PROP = "expectedCacheCount";
 	
@@ -93,8 +95,12 @@ public class SharedClassesCacheChecker {
 	// The retrieved list of shared classes caches
 	List<SharedClassCacheInfo> caches;
 	
-	public SharedClassesCacheChecker(Properties config) {
+	// Name of the Shared Classes Cache 
+	private String cacheName; 
+	
+	public SharedClassesCacheChecker(Properties config, String cacheName) {
 		this.config = config;
+		this.cacheName = cacheName; 
 		cacheDir = config.getProperty(CACHE_DIR_PROP);
 		if (cacheDir == null || cacheDir.equals("default")) {
 			logger.info("Using default cache directory");
@@ -146,8 +152,8 @@ public class SharedClassesCacheChecker {
 				persistence = SharedClassUtilities.PERSISTENT;
 			}
 			int answer = SharedClassUtilities.destroySharedCache(this.cacheDir,
-					persistence, info.getCacheName(), false);
-			logger.info("Attempting to delete cache: " + info.getCacheName()
+					persistence, cacheName, false);
+			logger.info("Attempting to delete cache: " + cacheName
 					+ " and return value from delete call was: " + answer);
 			
 			switch (answer) {
@@ -347,6 +353,12 @@ public class SharedClassesCacheChecker {
 			System.out.println("No config file name supplied via system property 'configFile'");
 			System.exit(1);
 		}
+		
+		String cacheName = System.getProperty(CACHE_NAME_PROP);
+		if (cacheName == null) {
+			System.out.println("No cacheName supplied via system property 'cacheName'");
+			System.exit(1);
+		}
 
 		Properties config = new Properties();
 		try {
@@ -358,7 +370,7 @@ public class SharedClassesCacheChecker {
 		}
 		
 		
-		SharedClassesCacheChecker checker = new SharedClassesCacheChecker(config);
+		SharedClassesCacheChecker checker = new SharedClassesCacheChecker(config, cacheName);
 		try {
 			checker.loadExpectedCacheData();
 		} catch (IOException e) {
