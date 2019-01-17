@@ -59,7 +59,6 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 	private final int CACHESIZE_HARD_LIMIT_MB = 40;
 	private final int CACHESIZE_SOFTLIMIT_INITIAL_MB = 10; 
 	private final int CACHESIZE_SOFTLIMIT_INTERMIEDIATE_INCREASED_MB = 25;
-	private final String CACHE_NAME = "workload_cache";
 	
 	private DirectoryRef cacheDirLocation;
 	private String cacheSpecificGeneralOptions;
@@ -92,7 +91,7 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 		cacheDir = cacheDirLocation.toString();
 		
 		// Specify the cache specific variables.
-		cacheSpecificGeneralOptions = "-Xshareclasses:" + "name=" + CACHE_NAME + "," + 
+		cacheSpecificGeneralOptions = "-Xshareclasses:" + "name=" + SCSoftmxTestUtil.CACHE_NAME + "," + 
 									  "cacheDir=" + cacheDirLocation + "," + "verboseIO";
 		
 		initialCacheSizeOptions = cacheSpecificGeneralOptions + " -XX:SharedCacheHardLimit=" + CACHESIZE_HARD_LIMIT_MB + "m " + 
@@ -107,10 +106,10 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 		// Create the directories for the cache.
 		test.doMkdir("Create the cache directory", cacheDirLocation);
 
-		// To ensure we run from a clean state, attempt to destroy all persistent/non-persistent caches 
+		// To ensure we run from a clean state, attempt to destroy test specific persistent/non-persistent caches 
 		// from the default cache location which may have been left behind by a previous failed test.
-		sharedClasses.doDestroyAllPersistentCaches("Destroy Persistent Shared Classes Caches");
-		sharedClasses.doDestroyAllNonPersistentCaches("Destroy Non-Persistent Shared Classes Caches");
+		sharedClasses.doDestroySpecificCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 	}
 	
 	public void execute(StfCoreExtension test, StfSharedClassesExtension sharedClasses) throws Exception {
@@ -177,7 +176,7 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 		
 		// Make sure that the cache is 100% soft full. 
 		String[] expectedMessages2 = {"Cache is 100% soft full"};
-		verifyAndPrintCache(sharedClasses, CACHE_NAME, cacheDir, CACHE_NAME, 1, expectedMessages2);
+		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1, expectedMessages2);
 				
 		// Run the third workload (jvm3) in background mode that drives a new workload. 
 		// This should trigger a cache write failure.
@@ -198,10 +197,10 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 				"Failed to store class");
 		
 		// Destroy the existing cache.
-		sharedClasses.doDestroySpecificCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 		
 		// Confirm that the deletion was successful.
-		sharedClasses.doVerifySharedClassesCache("Verify caches", cacheSpecificGeneralOptions + "${cacheOperation}", CACHE_NAME, cacheDir, "", 0);
+		sharedClasses.doVerifySharedClassesCache("Verify caches", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir, "", 0);
 	}
 
 	private void verifyAndPrintCache(StfSharedClassesExtension sharedClasses, String cacheName, String cacheDir, String expectedCacheName, int expectedCaches, String[] expectedMessages) throws Exception {
@@ -213,10 +212,10 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 	}
 	
 	public void tearDown(StfCoreExtension test, StfSharedClassesExtension sharedClasses) throws Exception {
-		// Destroy all persistent/non-persistent caches from the default cache location which may
+		// Destroy the test specific persistent/non-persistent caches from the default cache location which may
 		// have been left behind by a failure. We don't care about caches left behind in results
 		// as those will get deleted together with results.
-		sharedClasses.doDestroyAllPersistentCaches("Destroy Persistent Shared Classes Caches");
-		sharedClasses.doDestroyAllNonPersistentCaches("Destroy Non-Persistent Shared Classes Caches");
+		sharedClasses.doDestroySpecificCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 	}
 }

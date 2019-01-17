@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -39,6 +39,7 @@ import net.openj9.test.sc.LoaderSlaveMultiCL;
 import net.openj9.test.sc.LoaderSlaveMultiJar;
 import net.openj9.test.sc.LoaderSlaveMultiThread;
 import net.openj9.test.sc.LoaderSlaveMultiThreadMultiCL;
+import net.openj9.test.sc.SCSoftmxTestUtil;
 
 
 /**
@@ -135,7 +136,6 @@ public class SharedClasses implements SharedClassesPluginInterface {
 	private String scOptions;
 	private String[] defaultScOptions;
 	
-	private String cacheName;
 	private String cacheDir;
 	
 	private String localSharedClassesResources;
@@ -170,8 +170,6 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		scTest = testArgs.decodeEnum("sharedClassTest", Tests.class);
 		mode = testArgs.decodeEnum("sharedClassMode", Modes.class);
 		
-		// Define the cache name and location.
-		cacheName = "sc_java6";
 		cacheDir = test.env().getResultsDir().childDirectory("caches").toString();
 		String cacheOperation = "";
         
@@ -179,7 +177,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		scOptions = mode.sharedClassesModeStr;
 		
 		// And the (default) shared classes JVM options without the cache operation.
-		defaultScOptions = sharedClasses.resolveSharedClassesOptions(scOptions, cacheName, cacheDir, cacheOperation);
+		defaultScOptions = sharedClasses.resolveSharedClassesOptions(scOptions, SCSoftmxTestUtil.CACHE_NAME, cacheDir, cacheOperation);
 	}
 
 	
@@ -228,10 +226,10 @@ public class SharedClasses implements SharedClassesPluginInterface {
 			localSharedClassesResources = localSharedClassesJar.getSpec();
 		}
 		
-		// To ensure we run from a clean state, attempt to destroy all persistent/non-persistent caches 
+		// To ensure we run from a clean state, attempt to destroy all test related persistent/non-persistent caches 
 		// from the default cache location which may have been left behind by a previous failed test.
-		sharedClasses.doDestroyAllPersistentCaches("Destroy Persistent Shared Classes Caches");
-		sharedClasses.doDestroyAllNonPersistentCaches("Destroy Non-Persistent Shared Classes Caches");
+		sharedClasses.doDestroySpecificCache("Destroy cache", "-Xshareclasses:name=" + SCSoftmxTestUtil.CACHE_NAME + ",cacheDir=" + cacheDir + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", "-Xshareclasses:name=" + SCSoftmxTestUtil.CACHE_NAME + ",cacheDir=" + cacheDir + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 	}
 
 
@@ -240,7 +238,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		test.env().verifyUsingIBMJava();
 		
 		// Reset/create test-specific cache.
-		sharedClasses.doResetSharedClassesCache("Reset Shared Classes Cache", scOptions, cacheName, cacheDir);
+		sharedClasses.doResetSharedClassesCache("Reset Shared Classes Cache", scOptions, SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 
 		// Launch 5 Java processes concurrently to populate the Shared Classes cache.
 		String comment = "Start java processes using " + scTest.testClass.getSimpleName();
@@ -264,18 +262,17 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		// Ensure no cache is found if the noSC (no shared classes) mode is used 
 		// else print the cache and check the output to ensure the cache has been created/populated.
 		if (mode == Modes.noSC) {
-			sharedClasses.doVerifySharedClassesCache("Ensure no cache is found", "-Xshareclasses" + "${cacheOperation}", cacheName, cacheDir, "", 0);
+			sharedClasses.doVerifySharedClassesCache("Ensure no cache is found", "-Xshareclasses" + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir, "", 0);
 		} else {
 			String[] expectedMessages = {"Cache is (100%|[1-9][0-9]%|[1-9]%) (soft )*full"}; // Ensure the cache is 1-100% 'full' or 'soft full' (in case of Java 10 and up)
-			sharedClasses.doPrintAndVerifyCache("Print Shared Classes Cache Stats", scOptions, cacheName, cacheDir, expectedMessages);
+			sharedClasses.doPrintAndVerifyCache("Print Shared Classes Cache Stats", scOptions, SCSoftmxTestUtil.CACHE_NAME, cacheDir, expectedMessages);
 		}
 	}
 
 	
 	public void tearDown(StfCoreExtension test, StfSharedClassesExtension sharedClasses) throws Exception {
-		// Destroy the (persistent) cache created by the test if the noSC mode is not used.
-		if (mode != Modes.noSC) {
-			sharedClasses.doDestroySpecificCache("Destroy Persistent cache created by the test", scOptions, cacheName, cacheDir);
-		}
+		// Destroy all caches created by the test 
+		sharedClasses.doDestroySpecificCache("Destroy cache", "-Xshareclasses:name=" + SCSoftmxTestUtil.CACHE_NAME + ",cacheDir=" + cacheDir + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
+		sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", "-Xshareclasses:name=" + SCSoftmxTestUtil.CACHE_NAME + ",cacheDir=" + cacheDir + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 	}
 }

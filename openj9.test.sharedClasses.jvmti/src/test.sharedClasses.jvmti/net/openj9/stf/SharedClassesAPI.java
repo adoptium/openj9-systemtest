@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -37,6 +37,7 @@ import net.adoptopenjdk.stf.processes.definitions.LoadTestProcessDefinition;
 import net.adoptopenjdk.stf.runner.modes.HelpTextGenerator;
 import net.openj9.stf.sharedClasses.SharedClassesPluginInterface;
 import net.openj9.stf.sharedClasses.StfSharedClassesExtension;
+import net.openj9.test.sc.SCSoftmxTestUtil;
 
 /**
  * This test plugin is aimed at stress testing the IBM Shared Classes API which allows querying the status of shared 
@@ -114,10 +115,14 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 		test.doMkdir("Create the cache directory", cacheDirLocation);
 		test.doMkdir("Create the config directory", configDirLocation);
 		
-		// To ensure we run from a clean state, attempt to destroy all persistent/non-persistent caches 
-		// from the default cache location which may have been left behind by a previous failed test.
-		sharedClasses.doDestroyAllPersistentCaches("Destroy Persistent Shared Classes Caches");
-		sharedClasses.doDestroyAllNonPersistentCaches("Destroy Non-Persistent Shared Classes Caches");
+		//We are running 5 Workloads namely WL1,..WL4. Each creates its own cache, so we should clean up each one of them
+		for (Tests apiTest : Tests.values()) {
+			for (int i = 1 ; i < 5 ; i++) {
+				String cacheName = apiTest.name() + "WL1" + i;
+				sharedClasses.doDestroySpecificCache("Destroy cache", "-Xshareclasses:name=" + cacheName + ",cacheDir=" + cacheDirLocation.getSpec() + "${cacheOperation}", cacheName, cacheDirLocation.getSpec());
+				sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", "-Xshareclasses:name=" + cacheName + ",cacheDir=" + cacheDirLocation.getSpec() + "${cacheOperation}", cacheName, cacheDirLocation.getSpec());
+			}
+		}
 	}
 
 
@@ -130,7 +135,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 			
 			String cacheDir = "";	
 			if (!apiTest.usesDefaultLocation) {
-				cacheDir= "cacheDir=" + cacheDirLocation;
+				cacheDir= "cacheDir=" + cacheDirLocation.toString();
 			}
 			
 			String sharedClassesOption = "-Xshareclasses";
@@ -161,10 +166,10 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 			}
 			
 			// Start a workload process for each cache.
-			StfProcess wl1 = startWorkload(test, apiTest, "WL1", cacheDir, "persistent");
-			StfProcess wl2 = startWorkload(test, apiTest, "WL2", cacheDir, "persistent");
-			StfProcess wl3 = startWorkload(test, apiTest, "WL3", cacheDir, "nonpersistent");
-			StfProcess wl4 = startWorkload(test, apiTest, "WL4", cacheDir, "nonpersistent");
+			StfProcess wl1 = startWorkload(test, apiTest, "WL1", cacheDir, "persistent", sharedClasses);
+			StfProcess wl2 = startWorkload(test, apiTest, "WL2", cacheDir, "persistent", sharedClasses);
+			StfProcess wl3 = startWorkload(test, apiTest, "WL3", cacheDir, "nonpersistent", sharedClasses);
+			StfProcess wl4 = startWorkload(test, apiTest, "WL4", cacheDir, "nonpersistent", sharedClasses);
 
 			// Monitor the workload processes to completion.
 			test.doMonitorProcesses(commentPrefix + "Monitor workload processes", wl1, wl2, wl3, wl4);
@@ -227,11 +232,9 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 	}
 
 	// This method starts a workload for a specific cache
-	private StfProcess startWorkload(StfCoreExtension test, Tests apiTest, String workloadName, String cacheDir, String persistantStatus) throws Exception {
+	private StfProcess startWorkload(StfCoreExtension test, Tests apiTest, String workloadName, String cacheDir, String persistantStatus, StfSharedClassesExtension sharedClasses) throws Exception {
 		String groupAccess	= (apiTest.usesGroupAccess ? ",groupAccess" : "");
-
-		String cacheName = apiTest.name() + workloadName;
-		
+		String cacheName = apiTest.name() + workloadName;	
 		String inventoryFile = "/openjdk.test.load/config/inventories/mix/mini-mix.xml";
 		int totalTests = InventoryData.getNumberOfTests(test, inventoryFile);
 		if (!cacheDir.isEmpty()) {
@@ -277,10 +280,16 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 
 	
 	public void tearDown(StfCoreExtension test, StfSharedClassesExtension sharedClasses) throws Exception {
-		// Destroy all persistent/non-persistent caches from the default cache location which may
+		// Destroy all test specific persistent/non-persistent caches from the default cache location which may
 		// have been left behind by a failure. We don't care about caches left behind in results
 		// as those will get deleted together with results.
-		sharedClasses.doDestroyAllPersistentCaches("Destroy Persistent Shared Classes Caches");
-		sharedClasses.doDestroyAllNonPersistentCaches("Destroy Non-Persistent Shared Classes Caches");
+		// We are running 5 Workloads namely WL1,..WL4. Each creates its own cache, so we should clean up each one of them
+		for (Tests apiTest : Tests.values()) {
+			for (int i = 1 ; i < 5 ; i++) {
+				String cacheName = apiTest.name() + "WL1" + i;
+				sharedClasses.doDestroySpecificCache("Destroy cache", "-Xshareclasses:name=" + cacheName + ",cacheDir=" + cacheDirLocation.getSpec() + "${cacheOperation}", cacheName, cacheDirLocation.getSpec());
+				sharedClasses.doDestroySpecificNonPersistentCache("Destroy cache", "-Xshareclasses:name=" + cacheName + ",cacheDir=" + cacheDirLocation.getSpec() + "${cacheOperation}", cacheName, cacheDirLocation.getSpec());
+			}
+		}
 	}
 }
