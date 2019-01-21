@@ -23,6 +23,7 @@ package net.openj9.sc.api;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -95,6 +96,10 @@ public class SharedClassesCacheChecker {
 	// The retrieved list of shared classes caches
 	List<SharedClassCacheInfo> caches;
 	
+	// This list is to keep track of caches that have already successfully been deleted
+	// So that we don't attempt to delete it more than once 
+	ArrayList<String> alreadySuccesfullyDeletedCaches;
+	
 	// Name of the Shared Classes Cache 
 	private String cacheName; 
 	
@@ -131,7 +136,8 @@ public class SharedClassesCacheChecker {
 			logger.info("Command line value for shared classes directory will be ignored during search for caches");
 		}
 		
-		this.caches = SharedClassUtilities.getSharedCacheInfo(cacheDir, SharedClassUtilities.NO_FLAGS, commandLineValues);			
+		this.caches = SharedClassUtilities.getSharedCacheInfo(cacheDir, SharedClassUtilities.NO_FLAGS, commandLineValues);		
+		this.alreadySuccesfullyDeletedCaches = new ArrayList<String>(); 
 
 	}
 
@@ -146,36 +152,51 @@ public class SharedClassesCacheChecker {
 		
 		boolean rv = true;
 
-		for (SharedClassCacheInfo info: this.caches) {
-			int persistence = SharedClassUtilities.NONPERSISTENT;
-			if (info.isCachePersistent()) {
-				persistence = SharedClassUtilities.PERSISTENT;
-			}
-			int answer = SharedClassUtilities.destroySharedCache(this.cacheDir,
-					persistence, cacheName, false);
-			logger.info("Attempting to delete cache: " + cacheName
-					+ " and return value from delete call was: " + answer);
-			
-			switch (answer) {
-			case SharedClassUtilities.DESTROYED_ALL_CACHE:
-				logger.info("Return value means destroyed all caches");
-				break;
-			case SharedClassUtilities.DESTROYED_NONE:
-				logger.info("Return value means no caches destroyed");
-				rv = false;
-				break;
-			case SharedClassUtilities.DESTROY_FAILED_CURRENT_GEN_CACHE:
-				logger.info("Return value means DESTROY_FAILED_CURRENT_GEN_CACHE");
-				rv = false;
-				break;
-			case SharedClassUtilities.DESTROY_FAILED_OLDER_GEN_CACHE:
-				logger.info("Return value means DESTROY_FAILED_OLDER_GEN_CACHE");
-				rv = false;
-				break;
-			default:
-				logger.info("Return value is unknown");
-				rv = false;
-				break;
+		for (SharedClassCacheInfo info: this.caches) {		
+			// We are running SharedClassesCacheChecker once per each cache, with the cache's name 
+			// being sent into this utility via CACHE_NAME_PROP command line (this is to ensure we 
+			// only attempt to verify and delete the test-related caches, and leave alone other possible 
+			// caches that might exist on the machine where the test is running). So, we should attempt 
+			// to destroy only the test-related cache we are given. 
+			if (info.getCacheName() == null) {
+				continue; 
+			} else if (!info.getCacheName().equals(cacheName)) {
+				continue; 
+			} else if (this.alreadySuccesfullyDeletedCaches.contains(cacheName)) {
+				continue; 			
+			} else { 
+				int persistence = SharedClassUtilities.NONPERSISTENT;
+				if (info.isCachePersistent()) {
+					persistence = SharedClassUtilities.PERSISTENT;
+				}
+				int answer = SharedClassUtilities.destroySharedCache(this.cacheDir,
+						persistence, cacheName, false);
+				logger.info("Attempting to delete cache: " + cacheName
+						+ " and return value from delete call was: " + answer);
+				
+				switch (answer) {
+				case SharedClassUtilities.DESTROYED_ALL_CACHE:
+					logger.info("Return value means destroyed all caches");
+					break;
+				case SharedClassUtilities.DESTROYED_NONE:
+					logger.info("Return value means no caches destroyed");
+					rv = false;
+					break;
+				case SharedClassUtilities.DESTROY_FAILED_CURRENT_GEN_CACHE:
+					logger.info("Return value means DESTROY_FAILED_CURRENT_GEN_CACHE");
+					rv = false;
+					break;
+				case SharedClassUtilities.DESTROY_FAILED_OLDER_GEN_CACHE:
+					logger.info("Return value means DESTROY_FAILED_OLDER_GEN_CACHE");
+					rv = false;
+					break;
+				default:
+					logger.info("Return value is unknown");
+					rv = false;
+					break;
+				}
+				this.alreadySuccesfullyDeletedCaches.add(cacheName); 
+				break; 
 			}
 			
 		}
@@ -211,6 +232,14 @@ public class SharedClassesCacheChecker {
 		
 		int i = 0;
 		for (SharedClassCacheInfo info: caches) {
+			
+			// We only want to verify the cache we are sent to verify and ignore the rest 
+			if (info.getCacheName() == null) {
+				continue; 
+			} else if (!info.getCacheName().equals(cacheName)) {
+				continue; 
+			}
+			
 			i++;
 			logger.info("\nDetails for Cache " + i + "\n");
 			String name = info.getCacheName();
