@@ -40,7 +40,6 @@ import net.adoptopenjdk.stf.processes.definitions.LoadTestProcessDefinition;
 import net.adoptopenjdk.stf.runner.modes.HelpTextGenerator;
 import net.openj9.stf.sharedClasses.SharedClassesPluginInterface;
 import net.openj9.stf.sharedClasses.StfSharedClassesExtension;
-import net.openj9.test.sc.SCSoftmxTestUtil;
 
 /**
  * This test plugin is aimed at stress testing the IBM Shared Classes API which allows querying the status of shared 
@@ -156,13 +155,13 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 				cacheName = apiTest.name() + "NoIterator";
 				if (apiTest.usesGroupAccess) {
 					if (apiTest.usesUtilities) {
-						sharedClassesOption = "-Xshareclasses:name=" + cacheName + "groupAccess,utilities";
+						sharedClassesOption = "-Xshareclasses:name=" + cacheName + ",groupAccess,utilities";
 					} else {
-						sharedClassesOption = "-Xshareclasses:name=" + cacheName + "groupAccess";
+						sharedClassesOption = "-Xshareclasses:name=" + cacheName + ",groupAccess";
 					}
 				} else {
 					if (apiTest.usesUtilities) {
-						sharedClassesOption = "-Xshareclasses:name=" + cacheName + "utilities";
+						sharedClassesOption = "-Xshareclasses:name=" + cacheName + ",utilities";
 					} else {
 						/* do nothing, sharedClassesOption is -Xshareclasses */
 					}
