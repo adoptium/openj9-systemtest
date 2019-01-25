@@ -91,7 +91,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 	private DirectoryRef configDirLocation;
 	
 	private ArrayList<String> testCachesCreatedInDefaultLocation = new ArrayList<String>(); 
-	
+	private ArrayList<String> wlCacheNameRegistry = new ArrayList<String>(); 
 	
 	public void help(HelpTextGenerator help) {
 		help.outputSection("Shared Classes API test");
@@ -205,7 +205,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 						test.createJavaProcessDefinition()
 							.addJvmOption(sharedClassesOption)
 							.addJvmOption("-DconfigFile=" + configFile.getSpec())
-							.addJvmOption("-DcacheName=" + cacheName)
+							.addJvmOption("-DwlCacheList=" + wlCacheListToString())
 							.addProjectToClasspath("openj9.test.sharedClasses.jvmti")
 							.runClass(SharedClassesCacheChecker.class));
 			} else {
@@ -239,6 +239,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 	private StfProcess startWorkload(StfCoreExtension test, Tests apiTest, String workloadName, String cacheDir, String persistantStatus, StfSharedClassesExtension sharedClasses) throws Exception {
 		String groupAccess	= (apiTest.usesGroupAccess ? ",groupAccess" : "");
 		String cacheName = apiTest.name() + workloadName;	
+		this.wlCacheNameRegistry.add(cacheName); 
 		String inventoryFile = "/openjdk.test.load/config/inventories/mix/mini-mix.xml";
 		int totalTests = InventoryData.getNumberOfTests(test, inventoryFile);
 		if (!cacheDir.isEmpty()) {
@@ -280,6 +281,24 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 		test.doWriteFile(apiTest.name() + ": Create " + cacheFileName, configCacheFile, cacheConfigContent);
 		
 		return configCacheFile;
+	}
+	
+	// Creates a delimited list of workload cache names
+	// to be passed to SharedClassesCacheChecker 
+	private String wlCacheListToString() {
+		String strList = "";
+		Iterator<String> i = this.wlCacheNameRegistry.iterator();
+		while(i.hasNext()) {
+			String aCacheName = i.next(); 
+			if (strList.length() == 0) {
+				strList = aCacheName;
+			} else {
+				strList = strList + "--" + aCacheName;
+			}
+		}
+		// clean up for next iteration 
+		this.wlCacheNameRegistry.clear(); 
+		return strList; 
 	}
 
 	

@@ -24,6 +24,7 @@ package net.openj9.sc.api;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -70,7 +71,7 @@ public class SharedClassesCacheChecker {
 
 	private static final String CONFIG_FILE_PROP = "configFile";
 	
-	private static final String CACHE_NAME_PROP = "cacheName";
+	private static final String WORKLOAD_CACHE_LIST_PROP = "wlCacheList";
 
 	private static final String EXPECTED_CACHE_COUNT_PROP = "expectedCacheCount";
 	
@@ -101,11 +102,11 @@ public class SharedClassesCacheChecker {
 	ArrayList<String> alreadySuccesfullyDeletedCaches;
 	
 	// Name of the Shared Classes Cache 
-	private String cacheName; 
+	private List<String> workloadCacheList; 
 	
-	public SharedClassesCacheChecker(Properties config, String cacheName) {
+	public SharedClassesCacheChecker(Properties config, List<String> wlCacheList) {
 		this.config = config;
-		this.cacheName = cacheName; 
+		this.workloadCacheList = wlCacheList; 
 		cacheDir = config.getProperty(CACHE_DIR_PROP);
 		if (cacheDir == null || cacheDir.equals("default")) {
 			logger.info("Using default cache directory");
@@ -153,14 +154,16 @@ public class SharedClassesCacheChecker {
 		boolean rv = true;
 
 		for (SharedClassCacheInfo info: this.caches) {		
-			// We are running SharedClassesCacheChecker once per each cache, with the cache's name 
-			// being sent into this utility via CACHE_NAME_PROP command line (this is to ensure we 
-			// only attempt to verify and delete the test-related caches, and leave alone other possible 
-			// caches that might exist on the machine where the test is running). So, we should attempt 
-			// to destroy only the test-related cache we are given. 
-			if (info.getCacheName() == null) {
+			// We want to only delete the workload caches here.
+			// Any cache that might be listed in the default location - created 
+			// or owned by other processes should be ignored. 
+			// Cache created and used by the SharedClassesCacheChecker process 
+			// can not be deleted by itself either, so must be ignored here. 
+			// Those are deleted in SharedClassesAPI tearDown() method 
+			String cacheName = info.getCacheName();
+			if (cacheName == null) {
 				continue; 
-			} else if (!info.getCacheName().equals(cacheName)) {
+			} else if (!workloadCacheList.contains(cacheName)) {
 				continue; 
 			} else if (this.alreadySuccesfullyDeletedCaches.contains(cacheName)) {
 				continue; 			
@@ -233,10 +236,12 @@ public class SharedClassesCacheChecker {
 		int i = 0;
 		for (SharedClassCacheInfo info: caches) {
 			
-			// We only want to verify the cache we are sent to verify and ignore the rest 
+			// We only want to verify the workload caches 
+			// Any cache that might be listed in the default location - created 
+			// or owned by other processes should be ignored. 
 			if (info.getCacheName() == null) {
 				continue; 
-			} else if (!info.getCacheName().equals(cacheName)) {
+			} else if (!workloadCacheList.contains(info.getCacheName())) {
 				continue; 
 			}
 			
@@ -383,10 +388,13 @@ public class SharedClassesCacheChecker {
 			System.exit(1);
 		}
 		
-		String cacheName = System.getProperty(CACHE_NAME_PROP);
-		if (cacheName == null) {
-			System.out.println("No cacheName supplied via system property 'cacheName'");
+		List<String> wlCacheList = new ArrayList<String>(); 
+		String listAsString = System.getProperty(WORKLOAD_CACHE_LIST_PROP);
+		if (listAsString == null) {
+			System.out.println("No workload cache list supplied via system property '"+ WORKLOAD_CACHE_LIST_PROP +"'");
 			System.exit(1);
+		} else {
+			wlCacheList = Arrays.asList(listAsString.split("--")); 
 		}
 
 		Properties config = new Properties();
@@ -399,7 +407,7 @@ public class SharedClassesCacheChecker {
 		}
 		
 		
-		SharedClassesCacheChecker checker = new SharedClassesCacheChecker(config, cacheName);
+		SharedClassesCacheChecker checker = new SharedClassesCacheChecker(config, wlCacheList);
 		try {
 			checker.loadExpectedCacheData();
 		} catch (IOException e) {
