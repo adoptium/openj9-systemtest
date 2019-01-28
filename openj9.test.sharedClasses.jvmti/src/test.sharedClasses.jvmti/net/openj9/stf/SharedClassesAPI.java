@@ -58,16 +58,16 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 	private enum Tests {
 		// 							     expected  	        usesDefault  uses 		usesGroup  uses
 		// Test						    CacheCount   api     Location    Utilities  Access	   IteratorCache
-		DefaultLocationGroupAccessJava(		 5,	    "java",    true,     false,    	true,	   false),
-		DefaultLocationUtilitiesJava(		 5,	    "java",    true,	 true,     	false,	   false),		
-		DefinedLocationGroupAccessJava(		 4,	    "java",    false,	 false,    	true,	   false),
-		DefinedLocationUtilitiesJava(		 4,	    "java",    false,	 true,     	false,	   false),
-		DefinedLocationFromCommandLineJava(	 5,	    "java",    false,	 false,    	true,	   true),    
-		DefaultLocationGroupAccessJVMTI(	 5,	    "jvmti",   true,	 false,    	true,	   false),
-		DefaultLocationUtilitiesJVMTI(		 4,	    "jvmti",   true,	 true,     	false,	   false),		
-		DefinedLocationGroupAccessJVMTI(	 4,	    "jvmti",   false,	 false,    	true,	   false),
-		DefinedLocationUtilitiesJVMTI(		 4,	    "jvmti",   false,	 true,     	false,	   false),
-		DefinedLocationFromCommandLineJVMTI( 5,	    "jvmti",   false,	 false,    	true,	   true);
+		DefaultLocGrpAccessJava		(		 5,	    "java",    true,     false,    	true,	   false),
+		DefaultLocUtilitiesJava		(		 5,	    "java",    true,	 true,     	false,	   false),		
+		DefinedLocGrpAccessJava		(		 4,	    "java",    false,	 false,    	true,	   false),
+		DefinedLocUtilitiesJava		(		 4,	    "java",    false,	 true,     	false,	   false),
+		DefinedLocFromCmdLineJava	(	 	 5,	    "java",    false,	 false,    	true,	   true),    
+		DefaultLocGrpAccessJVMTI	(	 	 5,	    "jvmti",   true,	 false,    	true,	   false),
+		DefaultLocUtilitiesJVMTI	(		 4,	    "jvmti",   true,	 true,     	false,	   false),		
+		DefinedLocGroupAccessJVMTI	(	 	 4,	    "jvmti",   false,	 false,    	true,	   false),
+		DefinedLocUtilitiesJVMTI	(		 4,	    "jvmti",   false,	 true,     	false,	   false),
+		DefinedLocFromCmdLineJVMTI	( 		 5,	    "jvmti",   false,	 false,    	true,	   true);
 
 		private int expectedCacheCount;
 		private String api;
@@ -107,7 +107,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 	
 	public void pluginInit(StfCoreExtension test, StfSharedClassesExtension sharedClasses) throws Exception {
 		// Define the location for caches.
-		cacheDirLocation = test.env().getResultsDir().childDirectory("caches");
+		cacheDirLocation = test.env().getResultsDir();
 		
 		// Define the location for the configuration files.
 		configDirLocation = test.env().getResultsDir().childDirectory("config");		
