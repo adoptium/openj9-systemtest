@@ -510,6 +510,16 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 					<contains string="@{arch}" substring="arm"/>
 				</and>
 			</condition>
+			<condition property="@{property}" value="aarch64">
+				<and>
+					<contains string="@{arch}" substring="aarch64"/>
+				</and>
+			</condition>
+			<condition property="@{property}" value="aarch32">
+				<and>
+					<contains string="@{arch}" substring="aarch32"/>
+				</and>
+			</condition>
 			<condition property="@{property}" value="ia">
 				<and>
 					<contains string="@{arch}" substring="IA64"/>
