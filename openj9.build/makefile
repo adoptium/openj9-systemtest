@@ -427,6 +427,12 @@ test.SharedClasses.SCM23.MultiThread \
 test.SharedClasses.SCM23.MultiThreadMultiCL
 SHARED_CLASSES_TESTS:=$(filter-out $(EXCLUDE),$(SHARED_CLASSES_TESTS))
 
+
+IDLE_TESTS:=test.IdleBenchMark_MinIdleWaitTime \
+test.IdleBenchMark_GcOnIdle \
+test.IdleBenchMark_CompactOnIdle
+IDLE_TESTS:=$(filter-out $(EXCLUDE),$(IDLE_TESTS))
+
 JLM_TESTS:=test.TestIBMJlmLocal \
 test.TestIBMJlmRemoteClassAuth \
 test.TestIBMJlmRemoteClassNoAuth \
@@ -434,12 +440,15 @@ test.TestIBMJlmRemoteMemoryAuth \
 test.TestIBMJlmRemoteMemoryNoAuth 
 JLM_TESTS:=$(filter-out $(EXCLUDE),$(JLM_TESTS))
 
+
 TEST_TARGETS:=test.list \
 test.help \
 $(DAA_TESTS) \
 $(GC_TESTS) \
 $(SHARED_CLASSES_TESTS) \
+$(IDLE_TESTS) \
 $(JLM_TESTS)
+
 TEST_TARGETS:=$(filter-out $(EXCLUDE),$(TEST_TARGETS))
 
 .PHONY: build configure clean refresh_source test $(TEST_TARGETS)
@@ -466,6 +475,7 @@ test: $(TEST_TARGETS)
 test.daa: $(DAA_TESTS)
 test.gc: $(GC_TESTS)
 test.SharedClasses: $(SHARED_CLASSES_TESTS)
+test.idle: $(IDLE_TESTS)
 test.jlm: $(JLM_TESTS)
 
 test.list:
@@ -552,6 +562,18 @@ test.SharedClasses.SCM23.MultiThreadMultiCL:
 	echo Running target $@
 	$(STF_COMMAND) -test=SharedClasses -test-args="sharedClassMode=SCM23,sharedClassTest=MultiThreadMultiCL" $(LOG)
 	echo Target $@ completed
+test.IdleBenchMark_MinIdleWaitTime:
+	echo Running target $@
+	$(STF_COMMAND) -test=IdleLoadTest -test-args="variation=MinIdleWaitTime" $(LOG)
+	echo Target $@ completed
+test.IdleBenchMark_GcOnIdle:
+	echo Running target $@
+	$(STF_COMMAND) -test=IdleLoadTest -test-args="variation=GcOnIdle" $(LOG)
+	echo Target $@ completed
+test.IdleBenchMark_CompactOnIdle:
+	echo Running target $@
+	$(STF_COMMAND) -test=IdleLoadTest -test-args="variation=CompactOnIdle" $(LOG)
+	echo Target $@ completed 
 test.TestIBMJlmLocal:
 	echo Running target $@
 	$(STF_COMMAND) -test=TestIBMJlmLocal $(LOG)
@@ -572,6 +594,7 @@ test.TestIBMJlmRemoteMemoryNoAuth:
 	echo Running target $@
 	$(STF_COMMAND) -test=TestIBMJlmRemoteMemoryNoAuth $(LOG)
 	echo Target $@ completed
+
 
 help:
 	@echo make or make build: Builds openj9-systemtest projects
