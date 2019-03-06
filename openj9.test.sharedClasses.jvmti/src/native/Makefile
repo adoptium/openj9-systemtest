@@ -1,5 +1,5 @@
 #################################################################################
-# Copyright (c) 2017, 2018 IBM Corp.
+# Copyright (c) 2017, 2019 IBM Corp.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -61,7 +61,7 @@ P=:
 ###
 # Check platform is set to a single valid value
 ###
-VALID_PLATFORMS?=aix_ppc-32,aix_ppc-64,linux_390-31,linux_390-64,linux_ppc-32,linux_ppc-64,linux_x86-32,linux_x86-64,win_x86-32,win_x86-64,zos_390-31,zos_390-64,linux_ppcle-64,linux_arm-32,osx_x86-64
+VALID_PLATFORMS?=aix_ppc-32,aix_ppc-64,linux_390-31,linux_390-64,linux_ppc-32,linux_ppc-64,linux_x86-32,linux_x86-64,win_x86-32,win_x86-64,zos_390-31,zos_390-64,linux_ppcle-64,linux_arm-32,linux_aarch64-64,osx_x86-64
 ifndef PLATFORM
   $(error "The variable PLATFORM needs to be defined")
 endif
@@ -137,6 +137,18 @@ ifeq ($(PLATFORM),linux_x86-32)
 endif
 
 ifeq ($(PLATFORM),linux_x86-64)
+    CFLAGS=-fPIC -fno-omit-frame-pointer -static-libgcc -O0 -g3 -pedantic -Wall -std=c99 -c -fPIC -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
+    LFLAGS=-shared -o 
+    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
+endif
+
+ifeq ($(PLATFORM),linux_arm-32)
+    CFLAGS=-fPIC -fno-omit-frame-pointer -static-libgcc -O0 -g3 -pedantic -Wall -std=c99 -c -fPIC -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
+    LFLAGS=-shared -o 
+    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
+endif
+
+ifeq ($(PLATFORM),linux_aarch64-64)
     CFLAGS=-fPIC -fno-omit-frame-pointer -static-libgcc -O0 -g3 -pedantic -Wall -std=c99 -c -fPIC -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
     LFLAGS=-shared -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
