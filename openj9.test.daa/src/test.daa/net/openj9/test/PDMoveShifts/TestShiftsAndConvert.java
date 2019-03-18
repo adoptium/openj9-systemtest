@@ -2522,17 +2522,21 @@ public class TestShiftsAndConvert
         byte[] inputArray = new byte[10];
         byte[] outputArray = new byte[10];
         byte[] expectedArray = new byte[10];
+        byte[] expectedArray2 = new byte[10];
 
         // Fill with garbage characters
         Arrays.fill(inputArray, (byte) 0xff);
         Arrays.fill(outputArray, (byte) 0xff);
         Arrays.fill(expectedArray, (byte) 0xff);
+        Arrays.fill(expectedArray2, (byte) 0xff);
 
         // Test precision of 1 digit, shifted left by 1
         inputArray[1] = 0x5D;
         expectedArray[2] = 0x0D;
+        expectedArray2[2] = 0x0C;
         PackedDecimal.shiftLeftPackedDecimal(outputArray, 2, 1, inputArray, 1, 1, 1, false);
-        assertArrayEquals("testLeftOffsetOne - Test precision of 1 << 1 to precision 1", expectedArray, outputArray);
+        boolean isExpectedResult = Arrays.equals(expectedArray, outputArray) || Arrays.equals(expectedArray2, outputArray);
+        assertTrue("testLeftOffsetOne - Test precision of 1 << 1 to precision 1", isExpectedResult);
     }
 
     @Test
@@ -3448,11 +3452,13 @@ public class TestShiftsAndConvert
         byte[] inputArray = new byte[10];
         byte[] outputArray = new byte[10];
         byte[] expectedArray = new byte[10];
+        byte[] expectedArray2 = new byte[10];
 
         // Fill with garbage characters
         Arrays.fill(inputArray, (byte) 0xff);
         Arrays.fill(outputArray, (byte) 0xff);
         Arrays.fill(expectedArray, (byte) 0xff);
+        Arrays.fill(expectedArray2, (byte) 0xff);
 
         // Test precision of 1 digit, no shift
         inputArray[1] = 0x5D;
@@ -3462,12 +3468,15 @@ public class TestShiftsAndConvert
 
         Arrays.fill(outputArray, (byte) 0xff);
         Arrays.fill(expectedArray, (byte) 0xff);
+        Arrays.fill(expectedArray2, (byte) 0xff);
 
         // Test precision of 1 digit, shifted by 1
         inputArray[1] = 0x5D;
         expectedArray[2] = 0x0D;
+        expectedArray2[2] = 0x0C;
         PackedDecimal.shiftLeftPackedDecimal(outputArray, 2, 1, inputArray, 1, 1, 1, false);
-        assertArrayEquals("testShiftLeftUnitCases - Test precision of 1 << 1 to precision 1", expectedArray, outputArray);
+        boolean isExpectedResult = Arrays.equals(expectedArray, outputArray) || Arrays.equals(expectedArray2, outputArray);
+        assertTrue("testShiftLeftUnitCases - Test precision of 1 << 1 to precision 1", isExpectedResult);
 
         Arrays.fill(outputArray, (byte) 0xff);
         Arrays.fill(expectedArray, (byte) 0xff);
@@ -3527,6 +3536,7 @@ public class TestShiftsAndConvert
 
         Arrays.fill(outputArray, (byte) 0xff);
         Arrays.fill(expectedArray, (byte) 0xff);
+        Arrays.fill(expectedArray2, (byte) 0xff);
 
         // Test precision of 2 digit (08 5D), shifted by 2 to precision 2 (00
         // 0D).
@@ -3534,8 +3544,11 @@ public class TestShiftsAndConvert
         inputArray[2] = 0x5D;
         expectedArray[2] = 0x00;
         expectedArray[3] = 0x0D;
+        expectedArray2[2] = 0x00;
+        expectedArray2[3] = 0x0C;
         PackedDecimal.shiftLeftPackedDecimal(outputArray, 2, 2, inputArray, 1, 2, 2, false);
-        assertArrayEquals("testShiftLeftUnitCases - Test precision of 2 << 2 to precision 2", expectedArray, outputArray);
+        isExpectedResult = Arrays.equals(expectedArray, outputArray) || Arrays.equals(expectedArray2, outputArray);
+        assertTrue("testShiftLeftUnitCases - Test precision of 2 << 2 to precision 2", isExpectedResult);
     }
 
     @Test
