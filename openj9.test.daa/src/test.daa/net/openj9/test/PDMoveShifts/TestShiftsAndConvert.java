@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corp.
+* Copyright (c) 2017, 2019 IBM Corp.
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -4511,18 +4511,22 @@ public class TestShiftsAndConvert
         byte[] inputArray = new byte[10];
         byte[] outputArray = new byte[10];
         byte[] expectedArray = new byte[10];
-
+        byte[] expectedArray2 = new byte[10];
+        
         // Fill with garbage characters
         Arrays.fill(inputArray, (byte) 0xff);
         Arrays.fill(outputArray, (byte) 0xff);
         Arrays.fill(expectedArray, (byte) 0xff);
-
+        Arrays.fill(expectedArray2, (byte) 0xff);
+        
         // Test precision of 1 digit, shifted by 1
         inputArray[1] = 0x5D;
         expectedArray[2] = 0x0D;
+        expectedArray2[2] = 0x0C;
         PackedDecimal.shiftLeftPackedDecimal(outputArray, 2, 1, inputArray, 1, 1, 1, false);
-        assertArrayEquals("testZeroShifts2 - Test precision of 1 << 1 to precision 1", expectedArray, outputArray);
-
+        
+        boolean compResult = Arrays.equals(outputArray, expectedArray) ||  Arrays.equals(outputArray, expectedArray2);
+        assertTrue("testZeroShifts2 - Test precision of 1 << 1 to precision 1", compResult);
     }
 
     @Test
