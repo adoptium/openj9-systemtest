@@ -1,5 +1,5 @@
 #################################################################################
-# Copyright (c) 2017, 2018 IBM Corp.
+# Copyright (c) 2017, 2019 IBM Corp.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -284,24 +284,24 @@ ifeq (,$(ANT_JAVA_HOME))
   $(warning ANT_JAVA_HOME not set, will use $(JAVA_HOME) to run ant)
 endif
 
-# See if there is a apache-ant-1.10.1 directory present in one of the $(PREREQS_ROOT) directories.
-ANT_SUBDIR:=apache-ant-1.10.1
-ANT_1.10.1_DIRS:=$(foreach PREREQS_ROOT,$(ABSOLUTE_PREREQS_ROOT_LIST),$(wildcard $(PREREQS_ROOT)$(D)$(ANT_SUBDIR)))
-ANT_1.10.1_DIR:=$(firstword $(ANT_1.10.1_DIRS))
-#$(warning ANT_1.10.1_DIRS is $(ANT_1.10.1_DIRS))
-#$(warning ANT_1.10.1_DIR is $(ANT_1.10.1_DIR))
-ifeq (,$(ANT_1.10.1_DIR))
+# See if there is a apache-ant-1.10.2 directory present in one of the $(PREREQS_ROOT) directories.
+ANT_SUBDIR:=apache-ant-1.10.2
+ANT_1.10.2_DIRS:=$(foreach PREREQS_ROOT,$(ABSOLUTE_PREREQS_ROOT_LIST),$(wildcard $(PREREQS_ROOT)$(D)$(ANT_SUBDIR)))
+ANT_1.10.2_DIR:=$(firstword $(ANT_1.10.2_DIRS))
+#$(warning ANT_1.10.2_DIRS is $(ANT_1.10.2_DIRS))
+#$(warning ANT_1.10.2_DIR is $(ANT_1.10.2_DIR))
+ifeq (,$(ANT_1.10.2_DIR))
   $(warning No ant dir found in $(PREREQS_ROOT))
 endif
 
 ifndef ANT_HOME
   # If we haven't been told which ant to use via ANT_HOME, see if there is an ant present in one of the $(PREREQS_ROOT) directories?
   # If not, try to find ant on the path and use that one.
-  ifndef ANT_1.10.1_DIR
-    $(warning ANT_HOME not set, and apache-ant-1.10.1 was not found in $(PREREQS_ROOT), looking for ant on the PATH)
+  ifndef ANT_1.10.2_DIR
+    $(warning ANT_HOME not set, and apache-ant-1.10.2 was not found in $(PREREQS_ROOT), looking for ant on the PATH)
     ANT_NOT_FOUND:=1
   else
-    ANT_HOME:=$(ANT_1.10.1_DIR)
+    ANT_HOME:=$(ANT_1.10.2_DIR)
     ifneq (,$(wildcard $(ANT_LAUNCHER)))
       $(warning Found $(ANT_LAUNCHER))
     else
@@ -346,37 +346,13 @@ endif
 
 $(warning JAVA_HOME is $(JAVA_HOME))
 JAVA:=$(JAVA_HOME)$(D)bin$(D)java$(EXE)
+JAVAC:=$(JAVA_HOME)$(D)bin$(D)javac$(EXE)
 JAVA_OUTPUT:=$(shell $(CMD_PREFIX) $(JAVA) -fullversion 2>&1)
 $(warning $(CMD_PREFIX) $(JAVA) -fullversion returned)
 $(warning $(JAVA_OUTPUT))
 
-ifneq (,$(JAVA8_HOME))
-  $(warning JAVA8_HOME is $(JAVA8_HOME))
-  JAVA8:=$(JAVA8_HOME)$(D)bin$(D)java$(EXE)
-  JAVAC8:=$(JAVA8_HOME)$(D)bin$(D)javac$(EXE)
-  JAVA8_OUTPUT:=$(shell $(CMD_PREFIX) $(JAVA8) -fullversion 2>&1)
-  $(warning $(CMD_PREFIX) $(JAVA8) -fullversion returned)
-  $(warning $(JAVA8_OUTPUT))
-else
-  #$(warning JAVA8_HOME not set, will use $(JAVA_HOME) as java8 compiler)
-  JAVA8_HOME:=$(JAVA_HOME)
-endif
-
-ifneq (,$(JAVA9_HOME))
-  $(warning JAVA9_HOME is $(JAVA9_HOME))
-  JAVA9:=$(JAVA9_HOME)$(D)bin$(D)java$(EXE)
-  JAVAC9:=$(JAVA9_HOME)$(D)bin$(D)javac$(EXE)
-  JAVA9_OUTPUT:=$(shell $(CMD_PREFIX) $(JAVA9) -fullversion 2>&1)
-  $(warning $(CMD_PREFIX) $(JAVA9) -fullversion returned)
-  $(warning $(JAVA9_OUTPUT))
-else
-  #$(warning JAVA9_HOME not set, will use $(JAVA_HOME) as java9 compiler)
-  JAVA9_HOME:=$(JAVA_HOME)
-endif
-
 BUILD_COMMAND:=$(CMD_PREFIX) $(ANT_JAVA_HOME)$(D)bin$(D)java$(EXE) -classpath $(ANT_LAUNCHER) org.apache.tools.ant.launch.Launcher -buildfile $(OPENJ9_SYSTEMTEST_TARGET_ROOT)$(D)openj9.build$(D)build.xml -Dprereqs_root="$(RESOLVED_PREREQS_ROOT)" -Dstf_root="$(STF_ROOT)" -Dopenjdk_systemtest_root="$(OPENJDK_SYSTEMTEST_ROOT)"
-BUILD_COMMAND:=$(BUILD_COMMAND) -Djava8_home=$(JAVA8_HOME)
-BUILD_COMMAND:=$(BUILD_COMMAND) -Djava9_home=$(JAVA9_HOME)
+BUILD_COMMAND:=$(BUILD_COMMAND) -Djava_home=$(JAVA_HOME)
 
 # Provide a means for users to pass -java-args to the STF tests
 # Java arguments may contain imbedded quotes.  These need to be escaped on the STF command line.

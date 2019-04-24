@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-Copyright (c) 2017 IBM Corp.
+Copyright (c) 2017, 2019 IBM Corp.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -22,30 +22,14 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0
 
 <project name="openj9-systemtest" default="build">
 
+	<echo message="Executing build.xml"/>
+
 	<!-- Set default for source_root.  -->
 	<property name="source_root" location="."/>
 
-	<!-- Set default for STF location.  -->
-	<!-- Assumes source repositories are checked out under a common root and the repository
-		has been built in-situ - i.e.
-		stf repository: /home/userid/git/stf
-		openj9-systemtest repository: /home/userid/git/openj9-systemtest
-		If the stf repository has been cloned or built to a different location, the stf_root property
-		must be set on the command line - e.g. -Dstf_root=/my_stf_build_dir
-	-->
-	<property name="stf_root" location="${source_root}/../stf"/>
-
-	<!-- Import settings used by multiple projects.  -->
-	<import file="${source_root}/openj9.build/include/top.xml"/>
-
-	<!-- target to build all projects in the repository.  -->
-	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
-	<!-- Also make sure stf is built -->
-	<target name="build-dependencies">
+	<!-- Execute the project build.xml file. -->
+	<target name="build">
 		<ant antfile="${source_root}/openj9.build/build.xml" dir="${source_root}/openj9.build" inheritAll="false"/>
-	</target>
-
-	<target name="build" depends="build-dependencies">
 	</target>
 	
 	<target name="clean">
