@@ -2,7 +2,7 @@
 
 <!--
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp. and others
+* Copyright (c) 2017, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -25,6 +25,8 @@
 
 <project name="openj9.test.jlm" default="build">
 
+	<echo message="Executing openj9.test.jlm/build.xml"/>
+
 	<!-- Set default for source_root.  -->
 	<property name="source_root" location="../"/>
 
@@ -37,19 +39,20 @@
 		must be set on the command line - e.g. -Dstf_root=/my_stf_build_dir
 	-->
 	<property name="stf_root" location="${source_root}/../stf"/>
+	<property name="openj9_systemtest_root" location="${source_root}/../openj9-systemtest"/>
 
 	<!-- Import settings used by multiple projects.  -->
-	<import file="${source_root}/openj9.build/include/top.xml"/>
+	<import file="${stf_root}/stf.build/include/top.xml"/>
 
 	<!-- For modularity you need a directory above the package structure to hold the module.java file -->
-	<property name="module" value="test.jlm.ibm" />
-	<property name="src_dir" value="src/${module}" />
-	<property name="bin_dir" value="bin" />
+	<property name="openj9_test_jlm_module" value="test.jlm.ibm" />
+	<property name="openj9_test_jlm_src_dir" value="src/${openj9_test_jlm_module}" />
+	<property name="openj9_test_jlm_bin_dir" value="bin" />
 
-	<property name="jar_file" value="${bin_dir}/${module}.jar" />
+	<property name="openj9_test_jlm_jar_file" value="${openj9_test_jlm_bin_dir}/${openj9_test_jlm_module}.jar" />
 	
 	<path id="openjdk.test.jlm.classpath">
-		<pathelement location="${source_root}/../openjdk-systemtest/openjdk.test.jlm/bin/test.jlm.jar" />
+		<pathelement location="${openj9_systemtest_root}/../openjdk-systemtest/openjdk.test.jlm/bin/test.jlm.jar" />
 	</path>
 
 	<!-- We need junit and stf to compile this project. -->
@@ -59,7 +62,7 @@
 		<path refid="openjdk.test.jlm.classpath" />
 	</path>
 
-	<target name="build" depends="build-no-natives, build-natives">
+	<target name="build" depends="check-prereqs, build-no-natives, build-natives">
 	</target>
 
 	<target name="build-no-natives" depends="check-prereqs, build-archives">
@@ -72,8 +75,8 @@
 	</target>
 
 	<target name="build-jar" depends="build-java, create-bin-dir">
-		<jar destfile="${jar_file}">
-			<fileset dir="${bin_dir}" includes="**/*.class" />
+		<jar destfile="${openj9_test_jlm_jar_file}">
+			<fileset dir="${openj9_test_jlm_bin_dir}" includes="**/*.class" />
 		</jar>
 	</target>
 
@@ -84,13 +87,16 @@
 			The depend target checks the dependencies and deletes any .class files older than the files
 			which depend on them, thereby ensuring recompilation.
 		-->
-		<depend srcdir="${src_dir}" destdir="${bin_dir}" classpathref="project.class.path">
+		<!--
+		Commented out because depend appears to be evaluating class files as always out of date with jdk11 (at 28/03/2019)
+		<depend srcdir="${openj9_test_jlm_src_dir}" destdir="${openj9_test_jlm_bin_dir}" classpathref="project.class.path">
 			<include name="**/*.java"/>
 		</depend>
-		<javac srcdir="${src_dir}"
-			   destdir="${bin_dir}"
+		-->
+		<javac srcdir="${openj9_test_jlm_src_dir}"
+			   destdir="${openj9_test_jlm_bin_dir}"
 			   fork="true"
-			   executable="${java8_compiler}"
+			   executable="${java_compiler}"
 			   debug="true"
 			   classpathref="project.class.path"
 			   encoding="${src-encoding}"
@@ -101,11 +107,11 @@
 	</target>
 
 	<target name="create-bin-dir">
-		<mkdir dir="${bin_dir}"/>
+		<mkdir dir="${openj9_test_jlm_bin_dir}"/>
 	</target>
 
 	<target name="clean">
-		<delete dir="${bin_dir}"/>
+		<delete dir="${openj9_test_jlm_bin_dir}"/>
 	</target>
 
 </project>

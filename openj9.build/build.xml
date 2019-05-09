@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-Copyright (c) 2017, 2018 IBM Corp.
+Copyright (c) 2017, 2019 IBM Corp.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -22,6 +22,8 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 
 <project name="openj9.build" default="build">
 
+	<echo message="Executing openj9.build/build.xml"/>
+
 	<!-- Set default for source_root.  -->
 	<property name="source_root" location=".."/>
 
@@ -37,30 +39,27 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 	-->
     <property name="stf_root" location="${source_root}/../stf"/>
     <property name="openjdk_systemtest_root" location="${source_root}/../openjdk-systemtest"/>
+    <property name="openj9_systemtest_root" location="${source_root}/../openj9-systemtest"/>
 
-	<!-- Import settings used by multiple projects.  -->
-	<import file="${source_root}/openj9.build/include/top.xml"/>
+	<!-- Import stf settings. -->
+	<import file="${stf_root}/stf.build/include/top.xml"/>
 
 	<!-- target to build all projects in the repository.  -->
 	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
 	<!-- Also make sure stf is built -->
-	<target name="build-dependencies" if="isOpenJ9">
-		<ant antfile="${stf_root}/stf.build/build.xml" dir="${stf_root}/stf.build" inheritAll="false"/>
-        <ant antfile="${openjdk_systemtest_root}/openjdk.build/build.xml" dir="${openjdk_systemtest_root}/openjdk.build" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.stf.extensions/build.xml" dir="${source_root}/openj9.stf.extensions" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.daa/build.xml" dir="${source_root}/openj9.test.daa" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.load/build.xml" dir="${source_root}/openj9.test.load" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.jlm/build.xml" dir="${source_root}/openj9.test.jlm" inheritAll="false"/>
+	<target name="build-dependencies" depends="check-prereqs" if="isOpenJ9">
+		<ant antfile="${stf_root}/stf.build/build.xml" dir="${stf_root}/stf.build" inheritAll="true"/>
+        <ant antfile="${openjdk_systemtest_root}/openjdk.build/build.xml" dir="${openjdk_systemtest_root}/openjdk.build" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.stf.extensions/build.xml" dir="${openj9_systemtest_root}/openj9.stf.extensions" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.daa/build.xml" dir="${openj9_systemtest_root}/openj9.test.daa" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.load/build.xml" dir="${openj9_systemtest_root}/openj9.test.load" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.sharedClasses/build.xml" dir="${openj9_systemtest_root}/openj9.test.sharedClasses" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.sharedClasses.jvmti/build.xml" dir="${openj9_systemtest_root}/openj9.test.sharedClasses.jvmti" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.jlm/build.xml" dir="${openj9_systemtest_root}/openj9.test.jlm" inheritAll="true"/>
 	</target>
 
 	<condition property="isOpenJ9" value="true">
-		<istrue value="${java8_isopenj9}"/>
-	</condition>
-
-	<condition property="isOpenJ9" value="true">
-		<istrue value="${java9_isopenj9}"/>
+		<istrue value="${java_isopenj9}"/>
 	</condition>
 	
 	<!-- We only want to build openj9 specific tests while we are testing an OpenJ9 SDK-->
@@ -71,11 +70,11 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 
 	<!-- We only want to clean openj9 specific tests while we are testing an OpenJ9 SDK-->
 	<target name="clean" if="isOpenJ9">
-		<ant antfile="${source_root}/openj9.stf.extensions/build.xml" target="clean" dir="${source_root}/openj9.stf.extensions" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.daa/build.xml" target="clean" dir="${source_root}/openj9.test.daa" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.load/build.xml" target="clean" dir="${source_root}/openj9.test.load" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.sharedClasses.jvmti/build.xml" target="clean" dir="${source_root}/openj9.test.sharedClasses.jvmti" inheritAll="false"/>
-		<ant antfile="${source_root}/openj9.test.jlm/build.xml" target="clean" dir="${source_root}/openj9.test.jlm" inheritAll="false"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.stf.extensions/build.xml" target="clean" dir="${openj9_systemtest_root}/openj9.stf.extensions" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.daa/build.xml" target="clean" dir="${openj9_systemtest_root}/openj9.test.daa" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.load/build.xml" target="clean" dir="${openj9_systemtest_root}/openj9.test.load" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.sharedClasses/build.xml" target="clean" dir="${openj9_systemtest_root}/openj9.test.sharedClasses" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.sharedClasses.jvmti/build.xml" target="clean" dir="${openj9_systemtest_root}/openj9.test.sharedClasses.jvmti" inheritAll="true"/>
+		<ant antfile="${openj9_systemtest_root}/openj9.test.jlm/build.xml" target="clean" dir="${openj9_systemtest_root}/openj9.test.jlm" inheritAll="true"/>
 	</target>
 </project>

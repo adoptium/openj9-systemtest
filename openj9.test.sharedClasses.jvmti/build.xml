@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-Copyright (c) 2017 IBM Corp.
+Copyright (c) 2017, 2019 IBM Corp.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -22,6 +22,8 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 
 <project name="openj9.test.sharedClasses.jvmti" default="build">
 
+	<echo message="Executing openj9.test.sharedClasses.jvmti/build.xml"/>
+
 	<!-- Set default for source_root.  -->
 	<property name="source_root" location="../"/>
 
@@ -36,75 +38,75 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		-Dstf_root=/my_stf_build_dir -Dopenjdk_systemtest_root=/my_openjdk_systemtest_build_dir
 	-->
 	<property name="stf_root" location="${source_root}/../stf"/>
+	<property name="openj9_systemtest_root" location="${source_root}/../openj9-systemtest"/>
 
 	<!-- Import settings used by multiple projects.  -->
-	<import file="${source_root}/openj9.build/include/top.xml"/>
+	<import file="${stf_root}/stf.build/include/top.xml"/>
 
 	<!-- For modularity you need a directory above the package structure to hold the module.java file -->
-	<property name="module" value="test.sharedClasses.jvmti" />
-	<property name="src_dir" value="src/${module}" />
-	<property name="bin_dir" value="bin" />
-	<property name="native_src_dir" value="${basedir}/src/native" />
-	<property name="native_bin_dir" value="${basedir}/bin/native" />
+	<property name="openj9_test_sharedClasses_jvmti_module" value="test.sharedClasses.jvmti" />
+	<property name="openj9_test_sharedClasses_jvmti_src_dir" value="src/${openj9_test_sharedClasses_jvmti_module}" />
+	<property name="openj9_test_sharedClasses_jvmti_bin_dir" value="bin" />
+	<property name="openj9_test_sharedClasses_jvmti_native_src_dir" value="${basedir}/src/native" />
+	<property name="openj9_test_sharedClasses_jvmti_native_bin_dir" value="${basedir}/bin/native" />
 
-	<property name="jar_file" value="${bin_dir}/${module}.jar" />
+	<property name="openj9_test_sharedClasses_jvmti_jar_file" value="${openj9_test_sharedClasses_jvmti_bin_dir}/${openj9_test_sharedClasses_jvmti_module}.jar" />
 
 	<!-- We need junit, stf, the sharedclasses stf extensions and the test.shardClasses tests to compile this project. -->
 	<path id="project.class.path">
 		<path refid="junit.class.path" />
 		<path refid="stf.class.path" />
-		<pathelement location="${source_root}/openj9.stf.extensions/bin/stf.extensions.jar" />
-		<pathelement location="${source_root}/openj9.test.sharedClasses/bin/test.sharedClasses.jar" />
+		<pathelement location="${openj9_systemtest_root}/openj9.stf.extensions/bin/stf.extensions.jar" />
+		<pathelement location="${openj9_systemtest_root}/openj9.test.sharedClasses/bin/test.sharedClasses.jar" />
 	</path>
 
 	<!-- Projects which need to be built before this one. -->
 	<!-- dir must be set on the ant task otherwise the basedir property is not set to a new value in the subant task. -->
-	<target name="build-dependencies">
-		<ant antfile="${source_root}/openj9.test.sharedClasses/build.xml" dir="${source_root}/openj9.test.sharedClasses" inheritAll="false"/>
+	<target name="build-dependencies" depends="check-prereqs" >
 	</target>
 	
-	<target name="build">
-		<antcall target="build-no-natives"/>
-		<antcall target="build-natives"/>
+	<target name="build" depends="check-prereqs, build-no-natives, build-natives">
 	</target>
 	
 	<target name="build-no-natives" depends="check-prereqs, build-dependencies, check-prereqs, build-archives">
 	</target>
 
 	<!--Temporarily excluding the native tests from building on Windows 
-			 due to : https://github.com/eclipse/openj9-systemtest/issues/38 
+			 due to : https://github.com/eclipse/openj9-systemtest/issues/38 --> 
 	<target name="build-natives" depends="check-prereqs, setup-native-build-command, build-natives-windows, build-natives-unix">
-	</target>-->
-	
-	<target name="build-natives" depends="check-prereqs, setup-native-build-command, build-natives-unix">
 	</target>
+	
+	<!-- <target name="build-natives" depends="check-prereqs, setup-native-build-command, build-natives-unix">
+	</target> -->
 
 	<target name="setup-native-build-command">
-		<echo message="building natives for java-platform ${java8_platform}"/>
-		<property name="native_build_command" value='${setup_windows_build_env}make -C ${native_src_dir} SRCDIR=${native_src_dir} PLATFORM=${java8_platform} JAVA_HOME=${java8_home} OUTDIR=${native_bin_dir}'/>
-		<tempfile property="native_build_command_file" destDir="${java.io.tmpdir}" prefix="openj9.build.command."/>
+		<echo message="building natives for java-platform ${java_platform}"/>
+		<property name="openj9_test_sharedClasses_jvmti_native_build_command" value='${setup_windows_build_env}make -C ${openj9_test_sharedClasses_jvmti_native_src_dir} SRCDIR=${openj9_test_sharedClasses_jvmti_native_src_dir} PLATFORM=${java_platform} JAVA_HOME=${java_home} OUTDIR=${openj9_test_sharedClasses_jvmti_native_bin_dir}'/>
+		<tempfile property="openj9_test_sharedClasses_jvmti_native_build_command_file" destDir="${java.io.tmpdir}" prefix="openj9.build.command."/>
 	</target>
 
-	<target name="build-natives-windows" if="is_windows">
-		<echo message="${native_build_command}" file="${native_build_command_file}.bat"/>
-		<exec executable="${native_build_command_file}.bat" failonerror="true"/>
-		<delete file="${native_build_command_file}.bat" verbose="true"/>
+	<target name="build-natives-windows" if="${windows_native_compiler_present}">
+		<echo message="${openj9_test_sharedClasses_jvmti_native_build_command}"/>
+		<echo message="${openj9_test_sharedClasses_jvmti_native_build_command}" file="${openj9_test_sharedClasses_jvmti_native_build_command_file}.bat"/>
+		<exec executable="${openj9_test_sharedClasses_jvmti_native_build_command_file}.bat" failonerror="true"/>
+		<delete file="${openj9_test_sharedClasses_jvmti_native_build_command_file}.bat" verbose="true"/>
 	</target>
 
-	<target name="build-natives-unix" unless="is_windows">
-		<echo message="${native_build_command}" file="${native_build_command_file}.sh"/>
+	<target name="build-natives-unix" unless="${is_windows}">
+		<echo message="${openj9_test_sharedClasses_jvmti_native_build_command}"/>
+		<echo message="${openj9_test_sharedClasses_jvmti_native_build_command}" file="${openj9_test_sharedClasses_jvmti_native_build_command_file}.sh"/>
 		<exec executable="/bin/sh" failonerror="true">
-			<arg value="${native_build_command_file}.sh"/>
+			<arg value="${openj9_test_sharedClasses_jvmti_native_build_command_file}.sh"/>
 		</exec>
-		<delete file="${native_build_command_file}.sh" verbose="true"/>
+		<delete file="${openj9_test_sharedClasses_jvmti_native_build_command_file}.sh" verbose="true"/>
 	</target>
 
 	<target name="build-archives" depends="build-jar">
 	</target>
 
 	<target name="build-jar" depends="build-java, create-bin-dir">
-		<jar destfile="${jar_file}">
-			<fileset dir="${bin_dir}" includes="**/*.class" />
+		<jar destfile="${openj9_test_sharedClasses_jvmti_jar_file}">
+			<fileset dir="${openj9_test_sharedClasses_jvmti_bin_dir}" includes="**/*.class" />
 		</jar>
 	</target>
 
@@ -115,13 +117,16 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			The depend target checks the dependencies and deletes any .class files older than the files
 			which depend on them, thereby ensuring recompilation.
 		-->
-		<depend srcdir="${src_dir}" destdir="${bin_dir}" classpathref="project.class.path">
+		<!--
+		Commented out because depend appears to be evaluating class files as always out of date with jdk11 (at 28/03/2019)
+		<depend srcdir="${openj9_test_sharedClasses_jvmti_src_dir}" destdir="${openj9_test_sharedClasses_jvmti_bin_dir}" classpathref="project.class.path">
 			<include name="**/*.java"/>
 		</depend>
-		<javac srcdir="${src_dir}"
-			   destdir="${bin_dir}"
+		-->
+		<javac srcdir="${openj9_test_sharedClasses_jvmti_src_dir}"
+			   destdir="${openj9_test_sharedClasses_jvmti_bin_dir}"
 			   fork="true"
-			   executable="${java8_compiler}"
+			   executable="${java_compiler}"
 			   debug="true"
 			   classpathref="project.class.path"
 			   encoding="${src-encoding}"
@@ -133,11 +138,11 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 	</target>
 
 	<target name="create-bin-dir">
-		<mkdir dir="${bin_dir}"/>
-		<mkdir dir="${native_bin_dir}"/>
+		<mkdir dir="${openj9_test_sharedClasses_jvmti_bin_dir}"/>
+		<mkdir dir="${openj9_test_sharedClasses_jvmti_native_bin_dir}"/>
 	</target>
 
 	<target name="clean">
-		<delete dir="${bin_dir}"/>
+		<delete dir="${openj9_test_sharedClasses_jvmti_bin_dir}"/>
 	</target>
 </project>

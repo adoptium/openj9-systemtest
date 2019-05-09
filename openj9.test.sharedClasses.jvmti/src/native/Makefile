@@ -32,10 +32,15 @@
 #        srcdir   - Where the source files are located
 #
 
-# Assign OUTDIR to a temporary variable so we can change forward slashes to backslashes on Windows.
-# We can't change OUTDIR directly because it is supplied on the command line and changes in makefiles are therefore ignored.
+# Assign OUTDIR, JAVA_HOME and SRCDIR to temporary variables so we can change to forward slashes or backslashes
+# as required on Windows.
+# We can't change the variables directly because they may be supplied on the command line and changes in makefiles
+# would therefore be ignored.
 
-_OUTDIR = $(OUTDIR)
+_OUTDIR:=$(OUTDIR)
+_JAVA_HOME:=$(JAVA_HOME)
+_SRCDIR:=$(SRCDIR)
+
 .SUFFIXES: .c
 WIN=0
 
@@ -76,25 +81,25 @@ endif
 
 ifeq ($(PLATFORM),linux_ppc-64)
     CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m64 -DOS64 -mcpu=powerpc64
-    LFLAGS:=-m64 -shared $(LFLAGS) -o
+    LFLAGS:=-m64 -shared $(LFLAGS) -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
 endif
 
 ifeq ($(PLATFORM),linux_ppcle-64)
     CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m64 -DOS64 -mcpu=powerpc64
-    LFLAGS:=-m64 -shared $(LFLAGS) -o
+    LFLAGS:=-m64 -shared $(LFLAGS) -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
 endif
 
 ifeq ($(PLATFORM),linux_390-31)
     CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m31
-    LFLAGS:=-m31 -shared $(LFLAGS) -o
+    LFLAGS:=-m31 -shared $(LFLAGS) -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
 endif
 
 ifeq ($(PLATFORM),linux_390-64)
     CFLAGS=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -DOS64 -m64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-m64 -shared -o
+    LFLAGS=-m64 -shared -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
 endif
 
@@ -110,7 +115,7 @@ ifeq ($(PLATFORM),zos_390-64)
     CC=c89
     LD=c89
     CFLAGS=-Wc,lp64,warn64 -W c,exportall -W c,exportall -D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -W "c,langlvl(extended)" -W "c,float(ieee)" -W "c,c,convlit(ISO8859-1)" -DZOS -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-Wl,lp64,amode=64 -W l,XPLINK,dll -o
+    LFLAGS=-Wl,lp64,amode=64 -W l,XPLINK,dll -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/zos -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/zos -I/usr/include
 endif
 
@@ -118,7 +123,7 @@ ifeq ($(PLATFORM),aix_ppc-64)
     CC=xlC
     LD=xlC
     CFLAGS=-D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -qnooptimize -g -qlanglvl=stdc99 -q64 -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-G -q64 -o
+    LFLAGS=-G -q64 -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/aix -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/aix -I/usr/include
 endif
 
@@ -126,13 +131,13 @@ ifeq ($(PLATFORM),aix_ppc-32)
     CC=xlC
     LD=xlC
     CFLAGS=-D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -qnooptimize -g -qlanglvl=stdc99 -q32 -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-G -q32 -o
+    LFLAGS=-G -q32 -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/aix -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/aix -I/usr/include
 endif
 
 ifeq ($(PLATFORM),linux_x86-32)
     CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m32
-    LFLAGS:=-m32 $(LFLAGS)
+    LFLAGS:=-m32 -shared -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
 endif
 
@@ -156,7 +161,7 @@ endif
 
 ifeq ($(PLATFORM),osx_x86-64)
     CFLAGS=-fPIC -fno-omit-frame-pointer -O0 -g3 -pedantic -Wall -std=c99 -c -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-shared -o
+    LFLAGS=-shared -o 
     IFLAGS=-I. -I$(JAVA_HOME)/include -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/include/darwin -I$(JAVA_HOME)/../include/darwin -I/usr/include
 endif
 
@@ -170,20 +175,46 @@ endif
  
 ifeq ($(WIN),1)
 
-    # It is important that make runs cmd.exe on Windows rather than /usr/bin/sh
-    # which would be selected by make instead if we are running under cygwin
-    SHELL=cmd.exe
+    # Environment variable OSTYPE is set to cygwin if running under cygwin.
+    # Set our own macro to indicate we're running under cygwin.
+    # Also Windows commands will need to be prefixed with cmd /c to run them in a Windows shell
+    ifndef CYGWIN
+      OSTYPE?=$(shell echo $$OSTYPE)
+      ifeq ($(OSTYPE),cygwin)
+        CYGWIN:=1
+      else
+        CYGWIN:=0
+      endif
+    endif
 
-    DESTDIR=$(OUTDIR)\$(PLATFORM)
-
-    # mkdir in Windows won't work if the path contains forward slashes
-    _OUTDIR := $(subst /,\,$(_OUTDIR))
-    DESTDIR := $(subst /,\,$(DESTDIR))
-    OBJDIR := $(subst /,\,$(OBJDIR))
-    # and let's escape backslashes in case one is stripped by the shell
-    _OUTDIR := $(subst \,\\,$(_OUTDIR))
-    DESTDIR := $(subst \,\\,$(DESTDIR))
-    OBJDIR := $(subst \,\\,$(OBJDIR))
+    ifeq (0,$(CYGWIN))
+      # mkdir in Windows won't work if the path contains forward slashes
+      _OUTDIR := $(subst /,\,$(_OUTDIR))
+      _SRCDIR := $(subst /,\,$(_SRCDIR))
+      DESTDIR := $(subst /,\,$(DESTDIR))
+      OBJDIR := $(subst /,\,$(OBJDIR))
+      # and let's escape backslashes in case one is stripped by the shell
+      _OUTDIR := $(subst /,\,$(_OUTDIR))
+      _SRCDIR := $(subst /,\,$(_SRCDIR))
+      DESTDIR := $(subst \,\\,$(DESTDIR))
+      OBJDIR := $(subst \,\\,$(OBJDIR))
+      MV:=move
+      # mkdir exits non-zero on Windows if the directory already exists
+      MKDIR:=-mkdir
+      RMDIR:=rmdir
+      RM:=del /Q
+      D:=\\
+      P:=;
+    else
+      # cygwin works with forward slashes
+      _OUTDIR := $(subst \,/,$(_OUTDIR))
+      _SRCDIR := $(subst \,/,$(_SRCDIR))
+      _JAVA_HOME := $(subst \,/,$(_JAVA_HOME))
+      DESTDIR := $(subst \,/,$(DESTDIR))
+      OBJDIR := $(subst \,/,$(OBJDIR))
+      # Prefix Windows commands with cmd /c to run them in a Windows shell
+      CMD_PREFIX:=cmd /c
+    endif
 
     CC=cl
     LD=link
@@ -193,20 +224,10 @@ ifeq ($(WIN),1)
     OSUFFIX=.obj
     ESUFFIX=.exe
 
-    MV=move
-    # mkdir exits non-zero on Windows if the directory already exists
-    MKDIR=-mkdir
-    RMDIR=rmdir
-    RM=del /Q
-    
-    D=\\
-    P=;
-
-    # This creates a file win_x86-32.pdb or win_x86-64.pdb in the same directory as the .obj files
     CFLAGS=/DWIN32 /D_WINDOWS -Gy /LD /Zi /Odi /c /RTC1 /Fo"$(OBJDIR)/sharedClasses$(OSUFFIX)" /Fd"$(OBJDIR)"
     LFLAGS=/NOLOGO /DLL /INCREMENTAL:NO /NODEFAULTLIB:LIBCMTD /OUT:
 	# Cater for JAVA_HOME being set either to the jre dir or the parent directory
-    IFLAGS=/I. /I"../../../lib/native/jvmti" /I"$(JAVA_HOME)/../include" /I"$(JAVA_HOME)/../include/win32" /I"$(JAVA_HOME)/include" /I"$(JAVA_HOME)/include/win32"
+    IFLAGS=/I. /I"../../../lib/native/jvmti" /I"$(_JAVA_HOME)/../include" /I"$(_JAVA_HOME)/../include/win32" /I"$(_JAVA_HOME)/include" /I"$(_JAVA_HOME)/include/win32"
 
 endif
 
@@ -219,7 +240,7 @@ build: $(_OUTDIR) $(DESTDIR) $(DESTDIR)/$(PREFIX)sharedClasses$(SUFFIX)
 ######################
 
 $(DESTDIR)/$(PREFIX)sharedClasses$(SUFFIX) : $(OBJDIR)/sharedClasses$(OSUFFIX)
-	$(LD) $(LFLAGS) $@ $<
+	$(CMD_PREFIX) $(LD) $(LFLAGS)$@ $<
 ifneq ($(WIN),1)
 	$(CHMOD) 755 $@
 endif
@@ -228,8 +249,8 @@ endif
 # Build an object file
 ######################
 
-$(OBJDIR)/sharedClasses$(OSUFFIX): $(SRCDIR)/sharedClasses.c
-	$(CC) $(CFLAGS) $(IFLAGS) $<
+$(OBJDIR)/sharedClasses$(OSUFFIX): $(_SRCDIR)/sharedClasses.c
+	$(CMD_PREFIX) $(CC) $(CFLAGS) $(IFLAGS) $<
 ifneq ($(WIN),1)
 	$(CHMOD) 755 $@
 endif
