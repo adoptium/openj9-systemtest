@@ -242,7 +242,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 
 		// Launch 5 Java processes concurrently to populate the Shared Classes cache.
 		String comment = "Start java processes using " + scTest.testClass.getSimpleName();
-		test.doRunForegroundProcesses(comment, scTest.mnemonic, 5, ECHO_ON, ExpectedOutcome.cleanRun().within("1h"), 
+		test.doRunForegroundProcesses(comment, scTest.mnemonic, 5, ECHO_ON, ExpectedOutcome.cleanRun().within("2h"), 
 				test.createJavaProcessDefinition()
 					.addJvmOption(defaultScOptions)
 					.addProjectToClasspath("openj9.test.sharedClasses")
@@ -251,7 +251,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 					.addArg(scTest.classArgs));
 
 		// Launch 5 Java processes concurrently to load from the Shared Classes cache.
-		test.doRunForegroundProcesses(comment, scTest.mnemonic, 5, ECHO_ON, ExpectedOutcome.cleanRun().within("1h"), 
+		test.doRunForegroundProcesses(comment, scTest.mnemonic, 5, ECHO_ON, ExpectedOutcome.cleanRun().within("2h"), 
 				test.createJavaProcessDefinition()
 					.addJvmOption(defaultScOptions)
 					.addProjectToClasspath("openj9.test.sharedClasses")
