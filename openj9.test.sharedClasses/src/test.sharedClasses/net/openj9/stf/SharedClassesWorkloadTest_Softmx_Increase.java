@@ -59,7 +59,8 @@ public class SharedClassesWorkloadTest_Softmx_Increase implements SharedClassesP
 	private final int CACHESIZE_HARD_LIMIT = 20;
 	private final int CACHESIZE_SOFTLIMIT_1MB = 1; 
 	private final int CACHESIZE_SOFTLIMIT_2MB = 2; 
-	private final String[] CACHE_FULL_MESSAGE = {"Cache is 100% soft full"}; 
+	private String[] CACHE_FULL_MESSAGE_99_OR_100_PERCENT = {"Cache is (100%|99%) soft full"}; // Accepting 99-100% soft full as "cache full" criteria,
+	                                                                                           // assuming last entry to be stored to the shared cache will be > 1% of the cache size 
 	
 	private DirectoryRef cacheDirLocation;
 	private String cacheSpecificGeneralOptions;
@@ -126,7 +127,7 @@ public class SharedClassesWorkloadTest_Softmx_Increase implements SharedClassesP
 				"Jvm1", ECHO_OFF, ExpectedOutcome.exitValue(0,1).within("15m"), loadTestSpecificationVM1);
 		
 		// Check that the expected cache was created, caches exist, and the cache is 100% soft fullt.
-		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1, CACHE_FULL_MESSAGE);
+		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1, CACHE_FULL_MESSAGE_99_OR_100_PERCENT);
 		
 		// Increase cache size via softmx and load more classes to fill it up again. 
 		StfProcess p = test.doRunForegroundProcess("Increasing cache size to " + CACHESIZE_SOFTLIMIT_2MB + 
@@ -145,7 +146,7 @@ public class SharedClassesWorkloadTest_Softmx_Increase implements SharedClassesP
 
 		// Confirm that only the expected cache exists and no other caches were created 
 		// Also, confirm that increasing the cache size via softmx allowed new code to be written. 
-		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1, CACHE_FULL_MESSAGE);
+		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1, CACHE_FULL_MESSAGE_99_OR_100_PERCENT);
 		
 		// Destroy the existing cache.
 		sharedClasses.doDestroySpecificCache("Destroy cache", cacheSpecificGeneralOptions + "${cacheOperation}", SCSoftmxTestUtil.CACHE_NAME, cacheDir);
