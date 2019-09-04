@@ -81,7 +81,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 
 	<target name="setup-native-build-command">
 		<echo message="building natives for java-platform ${java_platform}"/>
-		<property name="openj9_test_sharedClasses_jvmti_native_build_command" value='${setup_windows_build_env}make -C ${openj9_test_sharedClasses_jvmti_native_src_dir} SRCDIR=${openj9_test_sharedClasses_jvmti_native_src_dir} PLATFORM=${java_platform} JAVA_HOME=${java_home} OUTDIR=${openj9_test_sharedClasses_jvmti_native_bin_dir}'/>
+		<property name="openj9_test_sharedClasses_jvmti_native_build_command" value='${setup_windows_build_env}${MAKE} -C ${openj9_test_sharedClasses_jvmti_native_src_dir} SRCDIR=${openj9_test_sharedClasses_jvmti_native_src_dir} PLATFORM=${java_platform} JAVA_HOME=${java_home} OUTDIR=${openj9_test_sharedClasses_jvmti_native_bin_dir}'/>
 		<tempfile property="openj9_test_sharedClasses_jvmti_native_build_command_file" destDir="${java.io.tmpdir}" prefix="openj9.build.command."/>
 	</target>
 
