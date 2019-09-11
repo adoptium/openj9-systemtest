@@ -65,13 +65,13 @@ public class DaaLoadTest implements StfPluginInterface {
 		}
 	}
 	
-	// This workload is calibrated for special JIT modes such as -Xjit:count=0 for which the test runs slower
+	// This workload is calibrated for slow running load tests executed under special JIT modes such as -Xjit:count=0
 	private enum WorkloadsSpecial {
 		//Workload   Multiplier  Timeout  InventoryFile
-		daa1_special(  10, 	      "1h", 	"daa1.xml"),
-		daa2_special(  15, 	      "1h", 	"daa2.xml"),
-		daa3_special(  30, 	      "1h", 	"daa3.xml"),
-		daaAll_special(15, 	      "1h", 	"daaAll.xml");
+		daa1 (  20,        "1h", 	"daa1.xml"),
+		daa2 (  50,        "1h", 	"daa2.xml"),
+		daa3 (  100,       "1h", 	"daa3.xml"),
+		daaAll( 15,        "1h", 	"daaAll.xml");
 		
 		int multiplier;
 		String timeout;
@@ -105,7 +105,7 @@ public class DaaLoadTest implements StfPluginInterface {
 	public void pluginInit(StfCoreExtension test) throws StfException {
 		// Find out which workload we need to run
 		StfTestArguments testArgs = test.env().getTestProperties("workload=[daaAll]");
-		specialTest = test.isJavaArgsPresent(Stage.EXECUTE, "-Xjit:count=0"); 
+		specialTest = test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:count=0"); 
 		
 		if(specialTest) {
 			workloadSpecial = testArgs.decodeEnum("workload", WorkloadsSpecial.class);
@@ -120,20 +120,22 @@ public class DaaLoadTest implements StfPluginInterface {
 	public void execute(StfCoreExtension test) throws StfException {
 		// Abort if we are not running on IBM Java
 		test.env().verifyUsingIBMJava();
-		
-		String inventory = "/openj9.test.load/config/inventories/daa/" + workload.inventoryFile;
-		int numDaaTests = InventoryData.getNumberOfTests(test, inventory);
+		String inventory = null;
 		int cpuCount = Runtime.getRuntime().availableProcessors();
-		int multiplier = 1 ; 
+		int multiplier = 1; 
 		String timeout = null; 
 		
 		if(specialTest) {
 			multiplier = workloadSpecial.multiplier;
 			timeout = workloadSpecial.timeout; 
+			inventory = "/openj9.test.load/config/inventories/daa/" + workloadSpecial.inventoryFile;
 		} else {
 			multiplier = workload.multiplier;
-			timeout = workload.timeout;
+			timeout = workload.timeout; 
+			inventory = "/openj9.test.load/config/inventories/daa/" + workload.inventoryFile;
 		}
+		
+		int numDaaTests = InventoryData.getNumberOfTests(test, inventory);
 		
 		LoadTestProcessDefinition loadTestInvocation = test.createLoadTestSpecification()
 				.addPrereqJarToClasspath(JavaProcessDefinition.JarId.JUNIT)
