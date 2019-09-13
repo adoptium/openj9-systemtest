@@ -21,6 +21,7 @@
 package net.openj9.stf;
 
 import net.adoptopenjdk.stf.StfException;
+import net.adoptopenjdk.stf.codeGeneration.Stage;
 import net.adoptopenjdk.stf.environment.StfTestArguments;
 import net.adoptopenjdk.stf.extensions.core.StfCoreExtension;
 import net.adoptopenjdk.stf.extensions.core.StfCoreExtension.Echo;
@@ -51,8 +52,8 @@ public class DaaLoadTest implements StfPluginInterface {
 		daa1( 		   100, 	  "5h", 	"daa1.xml"),
 		daa2( 		   150, 	  "3h", 	"daa2.xml"),
 		daa3( 		   300, 	  "2h", 	"daa3.xml"),
-		daaAll( 	   150, 	  "15h", 	"daaAll.xml");
-		
+		daaAll( 	   150, 	  "15h", 	"daaAll.xml");	
+	
 		int multiplier;
 		String timeout;
 		String inventoryFile;
@@ -64,7 +65,28 @@ public class DaaLoadTest implements StfPluginInterface {
 		}
 	}
 	
+	// This workload is calibrated for slow running load tests executed under special JIT modes such as -Xjit:count=0
+	private enum WorkloadsSpecial {
+		//Workload   Multiplier  Timeout  InventoryFile
+		daa1 (  20,        "1h", 	"daa1.xml"),
+		daa2 (  50,        "1h", 	"daa2.xml"),
+		daa3 (  100,       "1h", 	"daa3.xml"),
+		daaAll( 15,        "1h", 	"daaAll.xml");
+		
+		int multiplier;
+		String timeout;
+		String inventoryFile;
+		
+		private WorkloadsSpecial(int multiplier, String timeout, String inventoryFile) {
+			this.multiplier 	= multiplier;
+			this.timeout		= timeout;
+			this.inventoryFile 	= inventoryFile;
+		}
+	}
+	
 	Workloads workload;
+	WorkloadsSpecial workloadSpecial; 
+	boolean specialTest = false; 
 	
 	public void help(HelpTextGenerator help) throws StfException {
 		help.outputSection("DaaLoadTest test");
@@ -83,7 +105,13 @@ public class DaaLoadTest implements StfPluginInterface {
 	public void pluginInit(StfCoreExtension test) throws StfException {
 		// Find out which workload we need to run
 		StfTestArguments testArgs = test.env().getTestProperties("workload=[daaAll]");
-		workload = testArgs.decodeEnum("workload", Workloads.class);
+		specialTest = test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:count=0"); 
+		
+		if(specialTest) {
+			workloadSpecial = testArgs.decodeEnum("workload", WorkloadsSpecial.class);
+		} else {
+			workload = testArgs.decodeEnum("workload", Workloads.class);
+		}
 	}
 
 	public void setUp(StfCoreExtension test) throws StfException {
@@ -92,10 +120,22 @@ public class DaaLoadTest implements StfPluginInterface {
 	public void execute(StfCoreExtension test) throws StfException {
 		// Abort if we are not running on IBM Java
 		test.env().verifyUsingIBMJava();
-		
-		String inventory = "/openj9.test.load/config/inventories/daa/" + workload.inventoryFile;
-		int numDaaTests = InventoryData.getNumberOfTests(test, inventory);
+		String inventory = null;
 		int cpuCount = Runtime.getRuntime().availableProcessors();
+		int multiplier = 1; 
+		String timeout = null; 
+		
+		if(specialTest) {
+			multiplier = workloadSpecial.multiplier;
+			timeout = workloadSpecial.timeout; 
+			inventory = "/openj9.test.load/config/inventories/daa/" + workloadSpecial.inventoryFile;
+		} else {
+			multiplier = workload.multiplier;
+			timeout = workload.timeout; 
+			inventory = "/openj9.test.load/config/inventories/daa/" + workload.inventoryFile;
+		}
+		
+		int numDaaTests = InventoryData.getNumberOfTests(test, inventory);
 		
 		LoadTestProcessDefinition loadTestInvocation = test.createLoadTestSpecification()
 				.addPrereqJarToClasspath(JavaProcessDefinition.JarId.JUNIT)
@@ -104,12 +144,12 @@ public class DaaLoadTest implements StfPluginInterface {
 				.generateCoreDumpAtFirstLoadTestFailure(false)
 				.addSuite("daa")
 				.setSuiteThreadCount(cpuCount - 2, 2)  
-				.setSuiteNumTests(numDaaTests * workload.multiplier)
+				.setSuiteNumTests(numDaaTests * multiplier)
 				.setSuiteInventory(inventory)
 				.setSuiteRandomSelection();
 		
 		test.doRunForegroundProcess("Run daa load test", "DLT", Echo.ECHO_ON,
-				ExpectedOutcome.cleanRun().within(workload.timeout), 
+				ExpectedOutcome.cleanRun().within(timeout), 
 				loadTestInvocation);
 	}
 
