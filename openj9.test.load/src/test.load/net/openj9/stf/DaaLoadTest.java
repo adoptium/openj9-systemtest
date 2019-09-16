@@ -105,7 +105,11 @@ public class DaaLoadTest implements StfPluginInterface {
 	public void pluginInit(StfCoreExtension test) throws StfException {
 		// Find out which workload we need to run
 		StfTestArguments testArgs = test.env().getTestProperties("workload=[daaAll]");
-		specialTest = test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:count=0"); 
+		
+		if ( test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:count=0")
+			|| test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:enableOSR,enableOSROnGuardFailure,count=1,disableAsyncCompilation")) {
+			specialTest = true;
+		}
 		
 		if(specialTest) {
 			workloadSpecial = testArgs.decodeEnum("workload", WorkloadsSpecial.class);
