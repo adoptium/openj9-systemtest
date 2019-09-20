@@ -76,7 +76,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		MultiCL(            "MCL",    LoaderSlaveMultiCL.class,             "",        false),
 		MultiJar(           "MJ",     LoaderSlaveMultiJar.class,            "1000",    true),
 		MultiThread(        "MT",     LoaderSlaveMultiThread.class,         "300",     false),
-		MultiThreadMultiCL( "MTM",    LoaderSlaveMultiThreadMultiCL.class,  "200",     false);
+		MultiThreadMultiCL( "MTM",    LoaderSlaveMultiThreadMultiCL.class,  "120",     false);
 		
 		private String mnemonic;
 		private Class<?> testClass;
