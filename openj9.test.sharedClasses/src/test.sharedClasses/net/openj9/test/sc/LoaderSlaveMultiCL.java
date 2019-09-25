@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -69,10 +69,18 @@ public class LoaderSlaveMultiCL
 		File jarFile = new File(file.getName());
 		URL myURL = new URL("file", null, 0, jarFile.getCanonicalPath().replace('\\', '/'));
 		URL[] myURLS = {myURL};
+		long startTime = System.currentTimeMillis(); 
+		boolean loadDone = false;
+		
 		for(Enumeration<JarEntry> entries = file.entries(); entries.hasMoreElements();)
 		{
+			if (loadDone) {
+				break;
+			}
+			
 			JarEntry entry = entries.nextElement();
 			String className = entry.getName();
+			
 			if(className.endsWith(".class"))
 			{
 				URLClassLoader myCL = new URLClassLoader(myURLS);
@@ -91,8 +99,18 @@ public class LoaderSlaveMultiCL
 				{
 					cntr++;
 					Dummy myDummy = (Dummy)myC.newInstance();
-					if(cntr % 1000 == 0)
+					if(cntr % 1000 == 0) {
 						logMessage("Loaded " + cntr + " classes...");
+						
+						// This flag has been added to terminate the load test within 10 minutes 
+						// keeping in mind that the test launches 5 processes to simultaneously run this load and 
+						// the overall time it takes is especially slow on certain platforms (e.g. Windows). 		
+						long durationInMinutes = (System.currentTimeMillis() - startTime) / (1000 * 60);  
+						if (durationInMinutes > 10) {
+							loadDone = true;
+							logMessage("Test duration expired - Ran a 10m load");
+						}
+					}
 					id = myDummy.getID();
 					name = myDummy.getName();
 				}

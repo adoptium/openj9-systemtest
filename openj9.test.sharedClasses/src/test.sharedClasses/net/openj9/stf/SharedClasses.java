@@ -118,7 +118,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
         SCM20("-Xshareclasses:name=${cacheName},cacheDir=${cacheDir}${cacheOperation} -Xitn5000 -Xitsn0"), // default value for itn was 2000 at Nov 2010
         SCM21("-Xshareclasses:name=${cacheName},cacheDir=${cacheDir}${cacheOperation},nojitdata"), 
         SCM22("-Xshareclasses:name=${cacheName},cacheDir=${cacheDir}${cacheOperation} -Xscdmx18m"),
-        SCM23("-Xshareclasses:name=${cacheName},cacheDir=${cacheDir}${cacheOperation} -Xaot:forceAoT,count=1"), 
+        SCM23("-Xshareclasses:name=${cacheName},cacheDir=${cacheDir}${cacheOperation} -Xaot:forceAoT,count=1"),
         SCM24("-Xshareclasses:name=${cacheName},cacheDir=${cacheDir}${cacheOperation},mprotect=onfind"), // Was used to test that the last partially filled pages in the shared cache are kept write protected
         noSC(""); 
 		
