@@ -107,6 +107,7 @@ public class DaaLoadTest implements StfPluginInterface {
 		StfTestArguments testArgs = test.env().getTestProperties("workload=[daaAll]");
 		
 		if ( test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:count=0")
+			|| test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:count=0,optlevel=warm,gcOnResolve,rtResolve")
 			|| test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:enableOSR,enableOSROnGuardFailure,count=1,disableAsyncCompilation")) {
 			specialTest = true;
 		}
