@@ -129,7 +129,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			   executable="${java_compiler}"
 			   debug="true"
 			   classpathref="project.class.path"
-			   encoding="${src-encoding}"
+			   encoding="ISO-8859-1"
 			   includeantruntime="false"
 			   failonerror="true">
 			<compilerarg value="-Xlint:deprecation,unchecked" />
