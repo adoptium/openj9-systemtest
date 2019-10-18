@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -72,6 +72,8 @@ public class LoaderSlaveMultiJar
 		int id = 0;
 		@SuppressWarnings("unused")
 		String name = "";
+		long startTime = System.currentTimeMillis(); 
+		boolean loadDone = false;
 
 		File folder = new File(jarFolderName);
 		if (folder.exists())
@@ -105,6 +107,10 @@ public class LoaderSlaveMultiJar
 
 			for(Enumeration<JarEntry> entries = file.entries(); entries.hasMoreElements();)
 			{
+				if (loadDone) {
+					break;
+				}
+				
 				JarEntry entry = (JarEntry)entries.nextElement();
 				String className = entry.getName();
 				if(className.endsWith(".class"))
@@ -121,6 +127,15 @@ public class LoaderSlaveMultiJar
 							logMessage("Loaded " + cntr + " classes...");
 						id = myDummy.getID();
 						name = myDummy.getName();
+						
+						// This flag has been added to terminate the load test within 10 minutes 
+						// keeping in mind that the test launches 5 processes to simultaneously run this load and 
+						// the overall time it takes is especially slow on certain platforms (e.g. Windows)
+						long durationInMinutes = (System.currentTimeMillis() - startTime) / (1000 * 60);  
+						if (durationInMinutes > 10) {
+							loadDone = true;
+							logMessage("Test duration expired - Ran a 10m load");
+						}
 					}
 				}
 			}

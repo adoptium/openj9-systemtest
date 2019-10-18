@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corp.
+* Copyright (c) 2016, 2019 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -40,6 +40,8 @@ import java.text.NumberFormat;
 
 public class LoaderSlaveMultiThreadMultiCL
 {
+	public final long OVERALL_TIME_LIMIT_IN_MILISECONDS = 10 * 60 * 1000; 
+	public final long startTime = System.currentTimeMillis(); 
 
 	public LoaderSlaveMultiThreadMultiCL()
 	{
@@ -74,6 +76,14 @@ public class LoaderSlaveMultiThreadMultiCL
 		
 		for(Enumeration<JarEntry> entries = file.entries(); entries.hasMoreElements();)
 		{
+			// This check has been added to terminate the load test within 10 minutes 
+			// keeping in mind that the test launches 5 processes to simultaneously run this load and 
+			// the overall time it takes is especially slow on certain platforms (e.g. Windows)
+			if ( (System.currentTimeMillis() - startTime) > OVERALL_TIME_LIMIT_IN_MILISECONDS ) {
+				logMessage("Test duration expired - Ran a 10m load. Not Starting any more threads");
+				break;
+			}
+			
 			JarEntry entry = entries.nextElement();
 			String className = entry.getName();
 			if(className.endsWith(".class"))
