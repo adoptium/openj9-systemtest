@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2017 IBM Corp.
+Copyright (c) 2017, 2020 IBM Corp.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -27,7 +27,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode103</variation>
 			<variation>Mode107</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.DaaLoadTest_daa1 JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.DaaLoadTest_daa1 JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -46,7 +46,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode112</variation>
 			<variation>Mode121</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.DaaLoadTest_daa2 JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.DaaLoadTest_daa2 JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -65,7 +65,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode304</variation>
 			<variation>Mode557</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.DaaLoadTest_daa3 JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.DaaLoadTest_daa3 JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -84,7 +84,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode688</variation>
 			<variation>Mode707</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.DaaLoadTest_daaAll JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.DaaLoadTest_daaAll JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -103,7 +103,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode304</variation>
 			<variation>Mode607</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.HeapHogLoadTest JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.HeapHogLoadTest JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -122,7 +122,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode304</variation>
 			<variation>Mode557</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.ObjectTreeLoadTest JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.ObjectTreeLoadTest JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -141,7 +141,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode103</variation>
 			<variation>Mode107</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.SharedClassesWorkload JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.SharedClassesWorkload JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -157,7 +157,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 		<variations>
 			<variation></variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.SharedClassesAPI JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.SharedClassesAPI JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -176,7 +176,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode103</variation>
 			<variation>Mode107</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.SharedClassesWorkloadTest_Softmx_Increase JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.SharedClassesWorkloadTest_Softmx_Increase JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -195,7 +195,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode557</variation>
 			<variation>Mode304</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.SharedClassesWorkloadTest_Softmx_IncreaseDecrease JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.SharedClassesWorkloadTest_Softmx_IncreaseDecrease JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -214,7 +214,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode557</variation>
 			<variation>Mode304</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.SharedClassesWorkloadTest_Softmx_Increase_JitAot JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.SharedClassesWorkloadTest_Softmx_Increase_JitAot JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -233,7 +233,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode557</variation>
 			<variation>Mode304</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.SharedClasses.SCM23.SingleCL JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.SharedClasses.SCM23.SingleCL JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -252,7 +252,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode557</variation>
 			<variation>Mode304</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.SharedClasses.SCM23.MultiCL JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.SharedClasses.SCM23.MultiCL JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -271,7 +271,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode557</variation>
 			<variation>Mode304</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.SharedClasses.SCM23.MultiThread JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.SharedClasses.SCM23.MultiThread JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
@@ -290,7 +290,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 			<variation>Mode112</variation>
 			<variation>Mode304</variation>
 		</variations>
-		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build && make test.SharedClasses.SCM23.MultiThreadMultiCL JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
+		<command>cd $(OPENJ9_SYSTEMTEST_ROOT)/openj9.build &amp;&amp; make test.SharedClasses.SCM23.MultiThreadMultiCL JAVA_ARGS=$(Q)$(JVM_OPTIONS)$(Q); \
 		$(TEST_STATUS)</command>
 		<tags>
 			<tag>extended</tag>
