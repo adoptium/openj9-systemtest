@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2019 IBM Corp. and others
+* Copyright (c) 2016, 2020 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -144,23 +144,5 @@ public class SCSoftmxTestUtil {
 			.setSuiteThreadCount(cpuCount - 1, 2)
 			.setSuiteNumTests(numberOfTests)
 		   	.setSuiteSequentialSelection();
-	}
-	
-	public static LoadTestProcessDefinition getClassLoadingLoadTestOptions(StfCoreExtension test, LoadTestProcessDefinition initialSpec, int numberOfTests) throws StfException {
-		String inventoryFile = "/openjdk.test.load/config/inventories/classloading/classloading.xml";
-		int cpuCount = Runtime.getRuntime().availableProcessors();
-		int javaVersion = test.env().primaryJvm().getJavaVersion();
-		
-		return initialSpec.addModules(javaVersion >= 9 ? "java.rmi,java.transaction,java.corba" : "")
-			.addPrereqJarToClasspath(JavaProcessDefinition.JarId.JUNIT)
-			.addPrereqJarToClasspath(JavaProcessDefinition.JarId.HAMCREST)
-			.addProjectToClasspath("openjdk.test.classloading")
-			.setAbortIfOutOfMemory(false)
-			.generateCoreDumpAtFirstLoadTestFailure(false)
-			.addSuite("classloading")
-			.setSuiteThreadCount(cpuCount - 1, 2) 
-			.setSuiteInventory(inventoryFile)
-			.setSuiteNumTests(numberOfTests)
-			.setSuiteRandomSelection();
 	}
 }

@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2019 IBM Corp. and others
+* Copyright (c) 2016, 2020 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -177,18 +177,17 @@ public class SharedClassesWorkloadTest_Softmx_IncreaseDecrease implements Shared
 		// Make sure that the cache is 100% soft full. 
 		String[] expectedMessages2 = {"Cache is 100% soft full"};
 		verifyAndPrintCache(sharedClasses, SCSoftmxTestUtil.CACHE_NAME, cacheDir, SCSoftmxTestUtil.CACHE_NAME, 1, expectedMessages2);
-				
+		
 		// Run the third workload (jvm3) in background mode that drives a new workload. 
 		// This should trigger a cache write failure.
-		LoadTestProcessDefinition loadTestSpecificationWithDecreasedSoftmx = test.createLoadTestSpecification()
-				.addJvmOption(cacheSpecificGeneralOptions);
-		loadTestSpecificationWithDecreasedSoftmx = SCSoftmxTestUtil.getClassLoadingLoadTestOptions(
-				test, loadTestSpecificationWithDecreasedSoftmx, 500); 
+		LoadTestProcessDefinition loadTestSpecificationVM3 = test.createLoadTestSpecification()
+				.addJvmOption(cacheSpecificGeneralOptions); 
+		loadTestSpecificationVM3 = SCSoftmxTestUtil.getMiniMixLoadTestOptions(loadTestSpecificationVM3, 800); 
 		
 		StfProcess jvm3 = test.doRunBackgroundProcess("Run a third workload after the cache size has been decreased", 
 				"jvm3", ECHO_OFF, ExpectedOutcome.exitValue(0,1).within("30m"), 
-				loadTestSpecificationWithDecreasedSoftmx);	
-
+				loadTestSpecificationVM3);	
+		
 		// Wait for jvm3 to complete 
 		test.doMonitorProcesses("Wait for processes to complete", jvm3);
 
