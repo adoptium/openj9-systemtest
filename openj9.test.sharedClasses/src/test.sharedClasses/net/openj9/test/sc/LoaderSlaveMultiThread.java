@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2019 IBM Corp. and others
+* Copyright (c) 2016, 2020 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -21,20 +21,22 @@
 
 package net.openj9.test.sc;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.net.URL;
 import java.net.URLClassLoader;
+import java.text.NumberFormat;
+import java.util.Calendar;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 
 import net.openj9.test.sc.classes.Dummy;
-
-import java.io.File;
-import java.net.URL;
-import java.lang.Runnable;
-import java.util.LinkedList;
-import java.util.Iterator;
-import java.util.Calendar;
-import java.text.NumberFormat;
 
 public class LoaderSlaveMultiThread
 {
@@ -55,9 +57,38 @@ public class LoaderSlaveMultiThread
 		try
 		{
 			(new LoaderSlaveMultiThread()).run(args[0],Integer.parseInt(args[1]));
+			
+			// Print debug information: on Linux or AIX, run "ps v <pid>" on the JVM running the test
+			String os = System.getProperty("os.name").toLowerCase(); 
+			if ( os.contains("linux") || os.contains("aix")) { 
+				String pid = ManagementFactory.getRuntimeMXBean().getName().split("@")[0];
+				runSystemCmd("ps v " + pid); 
+			}
 		}
 		catch(Exception e)
 		{
+			e.printStackTrace();
+		}
+	}
+
+	private static void runSystemCmd(String cmd) {
+		String s = null;
+
+		try {
+			Process p = Runtime.getRuntime().exec(cmd);
+			BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
+			BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+			
+			System.out.println("stdout of command: " + cmd);
+			while ((s = stdInput.readLine()) != null) {
+			    System.out.println(s);
+			}
+			
+			System.out.println("stderr of command: " + cmd);
+			while ((s = stdError.readLine()) != null) {
+			    System.out.println(s);
+			}
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}

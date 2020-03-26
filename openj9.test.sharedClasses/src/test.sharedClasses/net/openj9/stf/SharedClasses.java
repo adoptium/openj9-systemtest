@@ -27,7 +27,6 @@ import java.util.ArrayList;
 
 import net.adoptopenjdk.stf.environment.DirectoryRef;
 import net.adoptopenjdk.stf.environment.FileRef;
-import net.adoptopenjdk.stf.environment.JavaVersion;
 import net.adoptopenjdk.stf.environment.StfTestArguments;
 import net.adoptopenjdk.stf.extensions.core.StfCoreExtension;
 import net.adoptopenjdk.stf.processes.ExpectedOutcome;
@@ -212,7 +211,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 						.addProjectToClasspath("openj9.test.sharedClasses")
 						.runClass(JavaGen.class)
 						.addArg(sharedClassesDataDir.getSpec())
-						.addArg("2000"));
+						.addArg("10000"));
 		}
 		
 		// Copy the shared classes jar/s from the systemtest_prereqs directory to /tmp.
@@ -241,22 +240,11 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		// Reset/create test-specific cache.
 		sharedClasses.doResetSharedClassesCache("Reset Shared Classes Cache", scOptions, SCSoftmxTestUtil.CACHE_NAME, cacheDir);
 
-		/*String extraOptons = "";
-		JavaVersion jvm = test.env().primaryJvm();
-		if (jvm.isIBMJvm() 
-				&& jvm.getJavaVersion() > 8
-				&& test.env().getOsgiOperatingSystemName().equals("aix")
-				&& (mode == Modes.SCM01 || mode == Modes.SCM23) 
-				&& (scTest == Tests.MultiThread)) {
-			extraOptons = "-Xmx512m"; 
-		}*/
-				
 		// Launch 5 Java processes concurrently to populate the Shared Classes cache.
 		String comment = "Start java processes using " + scTest.testClass.getSimpleName();
 		test.doRunForegroundProcesses(comment, scTest.mnemonic, 5, ECHO_ON, ExpectedOutcome.cleanRun().within("2h"), 
 				test.createJavaProcessDefinition()
 					.addJvmOption(defaultScOptions)
-					//.addJvmOption(extraOptons)
 					.addProjectToClasspath("openj9.test.sharedClasses")
 					.runClass(scTest.testClass)
 					.addArg(localSharedClassesResources)
@@ -266,7 +254,6 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		test.doRunForegroundProcesses(comment, scTest.mnemonic, 5, ECHO_ON, ExpectedOutcome.cleanRun().within("2h"), 
 				test.createJavaProcessDefinition()
 					.addJvmOption(defaultScOptions)
-					//.addJvmOption(extraOptons)
 					.addProjectToClasspath("openj9.test.sharedClasses")
 					.runClass(scTest.testClass)
 					.addArg(localSharedClassesResources)
