@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2019 IBM Corp. and others
+* Copyright (c) 2016, 2020 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -250,6 +250,12 @@ public class SharedClasses implements SharedClassesPluginInterface {
 					.addArg(localSharedClassesResources)
 					.addArg(scTest.classArgs));
 
+		String args = scTest.classArgs;
+		
+		// If we are running SharedClasses.SCM01.MultiThread
+		if (mode == Modes.SCM01 && scTest.mnemonic.equals("MT")) {
+			args = "-Xdump:system+java:events=throw,filter=java/lang/NullPointerException#java/lang/invoke/BruteArgumentMoverHandle.permuteArguments* " + args;	
+		}
 		// Launch 5 Java processes concurrently to load from the Shared Classes cache.
 		test.doRunForegroundProcesses(comment, scTest.mnemonic, 5, ECHO_ON, ExpectedOutcome.cleanRun().within("2h"), 
 				test.createJavaProcessDefinition()
@@ -257,7 +263,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 					.addProjectToClasspath("openj9.test.sharedClasses")
 					.runClass(scTest.testClass)
 					.addArg(localSharedClassesResources)
-					.addArg(scTest.classArgs));
+					.addArg(args));
 		
 		// Ensure no cache is found if the noSC (no shared classes) mode is used 
 		// else print the cache and check the output to ensure the cache has been created/populated.
