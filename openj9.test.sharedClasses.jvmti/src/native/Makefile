@@ -24,9 +24,9 @@
 #        target -   The make target valid values for this makefile are build and clean
 #                   If no target is supplied the build target is used.
 #        platform - The platform to build for.  The valid values for this argument are
-#                   aix_ppc-32, aix_ppc-64, linux_390-31, linux_390-64, linux_ppc-32
+#                   aix_ppc-32, aix_ppc-64, linux_390-32, linux_390-64, linux_ppc-32
 #                   linux_ppc-64, linux_x86-32, linux_x86-64, win_x86-32, win_x86-64
-#                   zos_390-31, zos_390-64,osx_x86-64
+#                   zos_390-32, zos_390-64,osx_x86-64
 #        outdir  - The directory where a platform directory will be created and the lib will be place
 #        javadir  - The java.home property directory (ie c:\sdk\jre)
 #        srcdir   - Where the source files are located
@@ -66,7 +66,7 @@ P=:
 ###
 # Check platform is set to a single valid value
 ###
-VALID_PLATFORMS?=aix_ppc-32,aix_ppc-64,linux_390-31,linux_390-64,linux_ppc-32,linux_ppc-64,linux_x86-32,linux_x86-64,win_x86-32,win_x86-64,zos_390-31,zos_390-64,linux_ppcle-64,linux_arm-32,linux_arm-64,osx_x86-64
+VALID_PLATFORMS?=aix_ppc-32,aix_ppc-64,linux_390-32,linux_390-64,linux_ppc-32,linux_ppc-64,linux_x86-32,linux_x86-64,win_x86-32,win_x86-64,zos_390-32,zos_390-64,linux_ppcle-64,linux_arm-32,linux_arm-64,osx_x86-64
 ifndef PLATFORM
   $(error "The variable PLATFORM needs to be defined")
 endif
@@ -97,7 +97,7 @@ ifeq ($(PLATFORM),linux_ppc-32)
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
 endif
 
-ifeq ($(PLATFORM),linux_390-31)
+ifeq ($(PLATFORM),linux_390-32)
     CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m31
     LFLAGS:=-m31 -shared $(LFLAGS) -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
@@ -109,7 +109,7 @@ ifeq ($(PLATFORM),linux_390-64)
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
 endif
 
-ifeq ($(PLATFORM),zos_390-31)
+ifeq ($(PLATFORM),zos_390-32)
     CC=c89
     LD=c89
     CFLAGS=-W c,exportall -D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -W "c,langlvl(extended)" -W "c,float(ieee)" -W "c,convlit(ISO8859-1)" -W "c,xplink,dll" -W "l,xplink,dll" -DZOS -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
