@@ -1,5 +1,5 @@
 #################################################################################
-# Copyright (c) 2017, 2019 IBM Corp.
+# Copyright (c) 2017, 2020 IBM Corp.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -88,6 +88,12 @@ endif
 ifeq ($(PLATFORM),linux_ppcle-64)
     CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m64 -DOS64 -mcpu=powerpc64
     LFLAGS:=-m64 -shared $(LFLAGS) -o 
+    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
+endif
+
+ifeq ($(PLATFORM),linux_ppc-32)
+    CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m32
+    LFLAGS:=-m32 -shared $(LFLAGS) -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
 endif
 
