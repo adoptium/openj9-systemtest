@@ -1,3 +1,25 @@
+<!--
+Copyright (c) 2017, 2020 IBM Corp. and others
+
+This program and the accompanying materials are made available under
+the terms of the Eclipse Public License 2.0 which accompanies this
+distribution and is available at https://www.eclipse.org/legal/epl-2.0/
+or the Apache License, Version 2.0 which accompanies this distribution and
+is available at https://www.apache.org/licenses/LICENSE-2.0.
+
+This Source Code may also be made available under the following
+Secondary Licenses when the conditions for such availability set
+forth in the Eclipse Public License, v. 2.0 are satisfied: GNU
+General Public License, version 2 with the GNU Classpath
+Exception [1] and GNU General Public License, version 2 with the
+OpenJDK Assembly Exception [2].
+
+[1] https://www.gnu.org/software/classpath/license.html
+[2] http://openjdk.java.net/legal/assembly-exception.html
+
+SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR LicenseRef-GPL-2.0 WITH Assembly-exception
+-->
+
 # openj9-systemtest Build
 
 Basic process is:
@@ -33,7 +55,7 @@ These prereqs must be installed before attempting to build STF
 | ---------------------- | -------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
 | apache-ant-1.10.1      | https://ant.apache.org/license.html                            | stf.build  | Download from https://archive.apache.org/dist/ant/binaries/apache-ant-1.10.1-bin.zip                                                                                                                                                                       | Unzip to PREREQS_ROOT/apache-ant-1.10.1                                                                                                                                                                                                                               | Yes                                 |
 | log4j-1.2.8            | https://logging.apache.org/log4j/1.2/license.html              | test.jvmti | Download from https://archive.apache.org/dist/logging/log4j/1.2.8/jakarta-log4j-1.2.8.zip                                                                                                                                                                  | Copy to PREREQS_ROOT/log4j-1.2.8/log4j.jar                                                                                                                                                                                                                            | Yes                                 |
-| log4j-2.3              | https://logging.apache.org/log4j/2.0/license.html              | stf.*      | Download from https://archive.apache.org/dist/logging/log4j/2.3/apache-log4j-2.3-bin.zip                                                                                                                                                                   | Copy to PREREQS_ROOT/log4j-2.3/log4j-api-2.3.jar and PREREQS_ROOT/log4j-2.3/log4j-core-2.3.jar                                                                                                                                                                        | Yes                                 |
+| log4j-2.13.3              | https://logging.apache.org/log4j/2.0/license.html              | stf.*      | Download from https://archive.apache.org/dist/logging/log4j/2.3/apache-log4j-2.13.3-bin.zip                                                                                                                                                                   | Copy to PREREQS_ROOT/log4j-2.13.3/log4j-api-2.13.3.jar and PREREQS_ROOT/log4j-2.13.3/log4j-core-2.13.3.jar                                                                                                                                                                        | Yes                                 |
 | GNU make 3.79 or later | https://www.gnu.org/licenses/gpl.html                          | stf.build  | Windows - Download from http://gnuwin32.sourceforge.net/packages/make.htm<br>Unix: may already be installed on the test machine, a prebuilt version may already be available, otherwise build from source - see https://www.gnu.org/software/software.html | Add GNU make to PATH (ahead of any native platform make) before executing make or make test, or copy make to PREREQS_ROOT/gmake/<platform> where platform is linux_x86-32, linux_x86-64, linux_ppc-32, linux_390-31, linux_arm-32, win_x86-32, aix_ppc-64, zos_390-64 | No                                  |
 | perl 5.6.1 or later    | http://perldoc.perl.org/index-licence.html                     | stf.core   | Windows - tests can be executed using Strawberry perl.  Other perl implementations may be OK too.                                                                                                                                                          | Add to PATH                                                                                                                                                                                                                                                           | No                                  |
 | Windows Sysinternals   | https://technet.microsoft.com/en-us/sysinternals/bb469936.aspx | stf.core   | Download from https://download.sysinternals.com/files/SysinternalsSuite.zip                                                                                                                                                                                | Unzip to PREREQS_ROOT/windows_sysinternals                                                                                                                                                                                                                            | Yes                                 |
