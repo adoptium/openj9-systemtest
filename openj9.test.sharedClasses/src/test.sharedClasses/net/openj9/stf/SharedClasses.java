@@ -252,7 +252,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 
 		String args = scTest.classArgs;
 		
-		// If we are running any variant of SharedClasses.SCM01.x test
+		// If we are running any variant of SharedClasses.SCM01 test
 		if (mode == Modes.SCM01) {
 			args = "-Xdump:system+java:events=throw,filter=java/lang/NullPointerException#java/lang/invoke/BruteArgumentMoverHandle.permuteArguments* " + args;	
 		}
