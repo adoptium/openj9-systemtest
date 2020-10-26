@@ -252,8 +252,8 @@ public class SharedClasses implements SharedClassesPluginInterface {
 
 		String args = scTest.classArgs;
 		
-		// If we are running SharedClasses.SCM01.MultiThread
-		if (mode == Modes.SCM01 && scTest.mnemonic.equals("MT")) {
+		// If we are running any variant of SharedClasses.SCM01
+		if (mode == Modes.SCM01) {
 			args = "-Xdump:system+java:events=throw,filter=java/lang/NullPointerException#java/lang/invoke/BruteArgumentMoverHandle.permuteArguments* " + args;	
 		}
 		// Launch 5 Java processes concurrently to load from the Shared Classes cache.
