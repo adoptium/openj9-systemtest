@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2019 IBM Corp. and others
+* Copyright (c) 2016, 2021 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -49,10 +49,10 @@ public class DaaLoadTest implements StfPluginInterface {
 	// The timeout values are high because some java options (e.g. -Xint) can have a big performance impact.
 	private enum Workloads {
 		//Workload   Multiplier  Timeout  InventoryFile
-		daa1( 		   100, 	  "5h", 	"daa1.xml"),
-		daa2( 		   150, 	  "3h", 	"daa2.xml"),
-		daa3( 		   300, 	  "2h", 	"daa3.xml"),
-		daaAll( 	   150, 	  "15h", 	"daaAll.xml");	
+		daa1( 		   20, 	      "30m", 	"daa1.xml"),
+		daa2( 		   50,        "30m", 	"daa2.xml"),
+		daa3( 		   150, 	  "30m", 	"daa3.xml"),
+		daaAll( 	   15,   	  "30m", 	"daaAll.xml");	
 	
 		int multiplier;
 		String timeout;
