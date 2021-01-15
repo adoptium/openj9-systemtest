@@ -21,7 +21,6 @@
 package net.openj9.stf;
 
 import net.adoptopenjdk.stf.StfException;
-import net.adoptopenjdk.stf.codeGeneration.Stage;
 import net.adoptopenjdk.stf.environment.StfTestArguments;
 import net.adoptopenjdk.stf.extensions.core.StfCoreExtension;
 import net.adoptopenjdk.stf.extensions.core.StfCoreExtension.Echo;
@@ -68,10 +67,10 @@ public class DaaLoadTest implements StfPluginInterface {
 	// This workload is calibrated for slow running load tests executed under special JIT modes such as -Xjit:count=0
 	private enum WorkloadsSpecial {
 		//Workload   Multiplier  Timeout  InventoryFile
-		daa1 (  20,        "1h", 	"daa1.xml"),
-		daa2 (  50,        "1h", 	"daa2.xml"),
-		daa3 (  100,       "1h", 	"daa3.xml"),
-		daaAll( 15,        "1h", 	"daaAll.xml");
+		daa1 (  10,        "1h", 	"daa1.xml"),
+		daa2 (  25,        "1h", 	"daa2.xml"),
+		daa3 (  50,        "1h", 	"daa3.xml"),
+		daaAll( 10,        "1h", 	"daaAll.xml");
 		
 		int multiplier;
 		String timeout;
@@ -103,12 +102,20 @@ public class DaaLoadTest implements StfPluginInterface {
 	}
 
 	public void pluginInit(StfCoreExtension test) throws StfException {
+	}
+
+	public void setUp(StfCoreExtension test) throws StfException {
+	}
+
+	public void execute(StfCoreExtension test) throws StfException {
 		// Find out which workload we need to run
 		StfTestArguments testArgs = test.env().getTestProperties("workload=[daaAll]");
 		
-		if ( test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:count=0")
-			|| test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:count=0,optlevel=warm,gcOnResolve,rtResolve")
-			|| test.isJavaArgPresent(Stage.EXECUTE, "-Xjit:enableOSR,enableOSROnGuardFailure,count=1,disableAsyncCompilation")) {
+		String jvmOptionsInUse = test.getJavaArgs(test.env().primaryJvm()); 
+		
+		// If we are using JVM options that contains slow running JIT options, use reduced workload 
+		if (jvmOptionsInUse.contains("-Xjit:count") ||
+			jvmOptionsInUse.contains("Xjit:enableOSR")) {
 			specialTest = true;
 		}
 		
@@ -117,12 +124,7 @@ public class DaaLoadTest implements StfPluginInterface {
 		} else {
 			workload = testArgs.decodeEnum("workload", Workloads.class);
 		}
-	}
-
-	public void setUp(StfCoreExtension test) throws StfException {
-	}
-
-	public void execute(StfCoreExtension test) throws StfException {
+		
 		// Abort if we are not running on IBM Java
 		test.env().verifyUsingIBMJava();
 		String inventory = null;
