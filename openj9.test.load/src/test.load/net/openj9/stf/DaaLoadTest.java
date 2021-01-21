@@ -20,17 +20,16 @@
 *******************************************************************************/
 package net.openj9.stf;
 
+import net.adoptopenjdk.loadTest.InventoryData;
+import net.adoptopenjdk.loadTest.TimeBasedLoadTest;
 import net.adoptopenjdk.stf.StfException;
-import net.adoptopenjdk.stf.environment.StfTestArguments;
 import net.adoptopenjdk.stf.extensions.core.StfCoreExtension;
 import net.adoptopenjdk.stf.extensions.core.StfCoreExtension.Echo;
-import net.adoptopenjdk.stf.plugin.interfaces.StfPluginInterface;
 import net.adoptopenjdk.stf.processes.ExpectedOutcome;
 import net.adoptopenjdk.stf.processes.definitions.JavaProcessDefinition;
 import net.adoptopenjdk.stf.processes.definitions.LoadTestProcessDefinition;
 import net.adoptopenjdk.stf.runner.modes.HelpTextGenerator;
-import net.adoptopenjdk.loadTest.InventoryData;
-
+import net.adoptopenjdk.stf.util.TimeParser;
 
 /**
  * This is a test plugin for DAA (Data Access Accelerator) related tests.
@@ -42,7 +41,7 @@ import net.adoptopenjdk.loadTest.InventoryData;
  * Decimal) that wouldn't otherwise be exploited by the JIT.
  * 
  */
-public class DaaLoadTest implements StfPluginInterface {
+public class DaaLoadTest extends TimeBasedLoadTest {
 	// Define some parameters for the different workloads
 	// The tests should take under 5 mins with no java options.
 	// The timeout values are high because some java options (e.g. -Xint) can have a big performance impact.
@@ -101,15 +100,7 @@ public class DaaLoadTest implements StfPluginInterface {
 				+ "This argument is optional, if not provided it will run all workloads.");
 	}
 
-	public void pluginInit(StfCoreExtension test) throws StfException {
-	}
-
-	public void setUp(StfCoreExtension test) throws StfException {
-	}
-
 	public void execute(StfCoreExtension test) throws StfException {
-		// Find out which workload we need to run
-		StfTestArguments testArgs = test.env().getTestProperties("workload=[daaAll]");
 		
 		String jvmOptionsInUse = test.getJavaArgs(test.env().primaryJvm()); 
 		
@@ -147,19 +138,33 @@ public class DaaLoadTest implements StfPluginInterface {
 		LoadTestProcessDefinition loadTestInvocation = test.createLoadTestSpecification()
 				.addPrereqJarToClasspath(JavaProcessDefinition.JarId.JUNIT)
 				.addPrereqJarToClasspath(JavaProcessDefinition.JarId.HAMCREST)
-				.addProjectToClasspath("openj9.test.daa")
-				.generateCoreDumpAtFirstLoadTestFailure(false)
+				.addProjectToClasspath("openj9.test.daa"); 
+		
+		if (isTimeBasedLoadTest) { 
+			loadTestInvocation = loadTestInvocation.setTimeLimit(timeLimit);	// If it's a time based test, stop execution after given time duration
+		}
+			
+		loadTestInvocation = loadTestInvocation.generateCoreDumpAtFirstLoadTestFailure(false)
 				.addSuite("daa")
-				.setSuiteThreadCount(cpuCount - 2, 2)  
-				.setSuiteNumTests(numDaaTests * multiplier)
-				.setSuiteInventory(inventory)
+				.setSuiteThreadCount(cpuCount - 2, 2);
+		
+		if (!isTimeBasedLoadTest) { 
+			loadTestInvocation = loadTestInvocation.setSuiteNumTests(numDaaTests * multiplier);
+		}
+		
+		finalTimeout = timeout; 
+		
+		if (isTimeBasedLoadTest) { 
+			long finalTimeoutInSeconds = TimeParser.parseTimeSpecification(timeout).getSeconds() + 
+				TimeParser.parseTimeSpecification(timeLimit).getSeconds();
+			finalTimeout = finalTimeoutInSeconds + "s";
+		}
+		
+		loadTestInvocation = loadTestInvocation.setSuiteInventory(inventory)
 				.setSuiteRandomSelection();
 		
 		test.doRunForegroundProcess("Run daa load test", "DLT", Echo.ECHO_ON,
-				ExpectedOutcome.cleanRun().within(timeout), 
+				ExpectedOutcome.cleanRun().within(finalTimeout), 
 				loadTestInvocation);
-	}
-
-	public void tearDown(StfCoreExtension stf) throws StfException {
 	}
 }
