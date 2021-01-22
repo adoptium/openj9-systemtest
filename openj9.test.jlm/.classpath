@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
-Copyright (c) 2017, 2020 IBM Corp.
+Copyright (c) 2017, 2021 IBM Corp.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -24,8 +24,8 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/stf.core"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/openjdk.test.jlm"/>
-	<classpathentry kind="lib" path="/systemtest_prereqs/log4j-2.13.3/log4j-api-2.13.3.jar"/>
-	<classpathentry kind="lib" path="/systemtest_prereqs/log4j-2.13.3/log4j-core-2.13.3.jar"/>
-	<classpathentry kind="lib" path="/systemtest_prereqs/junit-4.12/junit-4.12.jar"/>
+	<classpathentry kind="lib" path="/systemtest_prereqs/log4j/log4j-api.jar"/>
+	<classpathentry kind="lib" path="/systemtest_prereqs/log4j/log4j-core.jar"/>
+	<classpathentry kind="lib" path="/systemtest_prereqs/junit/junit.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
