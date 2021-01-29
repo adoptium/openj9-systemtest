@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2019 IBM Corp. and others
+* Copyright (c) 2016, 2021 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -21,11 +21,11 @@
 package net.openj9.stf;
 
 import net.adoptopenjdk.loadTest.InventoryData;
+import net.adoptopenjdk.loadTest.TimeBasedLoadTest;
 import net.adoptopenjdk.stf.StfException;
 import net.adoptopenjdk.stf.codeGeneration.Stage;
 import net.adoptopenjdk.stf.extensions.core.StfCoreExtension;
 import net.adoptopenjdk.stf.extensions.core.StfCoreExtension.Echo;
-import net.adoptopenjdk.stf.plugin.interfaces.StfPluginInterface;
 import net.adoptopenjdk.stf.processes.ExpectedOutcome;
 import net.adoptopenjdk.stf.processes.definitions.JavaProcessDefinition;
 import net.adoptopenjdk.stf.processes.definitions.LoadTestProcessDefinition;
@@ -36,7 +36,7 @@ import net.adoptopenjdk.stf.runner.modes.HelpTextGenerator;
  * 
  * The ObjectTree test class creates a large object tree and fills up the memory over time.
  */
-public class ObjectTreeLoadTest implements StfPluginInterface {	
+public class ObjectTreeLoadTest extends TimeBasedLoadTest {	
 	public void help(HelpTextGenerator help) throws StfException {
 		String testName = ObjectTreeLoadTest.class.getSimpleName();
 		
@@ -44,11 +44,8 @@ public class ObjectTreeLoadTest implements StfPluginInterface {
 		help.outputText(testName + " runs the ObjectTree test class along side a workload.");
 		help.outputText("This test is primarily aimed at stressing the Garbage Collector.");
 	}
-
-	public void pluginInit(StfCoreExtension test) throws StfException {
-	}
-
-	public void setUp(StfCoreExtension test) throws Exception {
+	
+	public void setUp(StfCoreExtension test) throws StfException {
 		// Ensure we are running on IBM Java because this test is 
 		// expected to be invoked with IBM specific JVM options
 		test.env().verifyUsingIBMJava();
@@ -68,19 +65,26 @@ public class ObjectTreeLoadTest implements StfPluginInterface {
 				.addProjectToClasspath("openjdk.test.gc")
 				.addProjectToClasspath("openjdk.test.lang")    // For mini-mix inventory
 				.addProjectToClasspath("openjdk.test.util")    // For mini-mix inventory
-				.addProjectToClasspath("openjdk.test.math")    // For mini-mix inventory
-				.generateCoreDumpAtFirstLoadTestFailure(false)
+				.addProjectToClasspath("openjdk.test.math");    // For mini-mix inventory
+		
+		if (isTimeBasedLoadTest) { 
+			loadTestInvocation = loadTestInvocation.setTimeLimit(timeLimit);	// If it's a time based test, stop execution after given time duration
+		}
+		
+		loadTestInvocation = loadTestInvocation.generateCoreDumpAtFirstLoadTestFailure(false)
 				.addSuite("ObjectTree")
-				.setSuiteThreadCount(cpuCount - 2, 2)   // Leave 1 CPU for the JIT, one for GC, but never less then two threads on machines with one or two CPUs 
-				.setSuiteNumTests(numTests * 150)   // About 5 minutes run time with no -X options
-				.setSuiteInventory(inventory)
+				.setSuiteThreadCount(cpuCount - 2, 2);   // Leave 1 CPU for the JIT, one for GC, but never less then two threads on machines with one or two CPUs 
+		
+		if (!isTimeBasedLoadTest) { 
+			loadTestInvocation = loadTestInvocation.setSuiteNumTests(numTests * 150);   // About 5 minutes run time with no -X options
+		}
+				
+		loadTestInvocation = loadTestInvocation.setSuiteInventory(inventory)
 				.setSuiteRandomSelection();
 		
 		test.doRunForegroundProcess("Run Object Tree load test", "OLT", Echo.ECHO_ON,
-				ExpectedOutcome.cleanRun().within("2h"), 
+				ExpectedOutcome.cleanRun().within(finalTimeout), 
 				loadTestInvocation);
 	}
-
-	public void tearDown(StfCoreExtension test) throws StfException {
-	}
 }
+
