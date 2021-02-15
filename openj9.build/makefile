@@ -1,5 +1,5 @@
 #################################################################################
-# Copyright (c) 2017, 2019 IBM Corp.
+# Copyright (c) 2017, 2021 IBM Corp.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -284,24 +284,24 @@ ifeq (,$(ANT_JAVA_HOME))
   $(warning ANT_JAVA_HOME not set, will use $(JAVA_HOME) to run ant)
 endif
 
-# See if there is a apache-ant-1.10.2 directory present in one of the $(PREREQS_ROOT) directories.
-ANT_SUBDIR:=apache-ant-1.10.2
-ANT_1.10.2_DIRS:=$(foreach PREREQS_ROOT,$(ABSOLUTE_PREREQS_ROOT_LIST),$(wildcard $(PREREQS_ROOT)$(D)$(ANT_SUBDIR)))
-ANT_1.10.2_DIR:=$(firstword $(ANT_1.10.2_DIRS))
-#$(warning ANT_1.10.2_DIRS is $(ANT_1.10.2_DIRS))
-#$(warning ANT_1.10.2_DIR is $(ANT_1.10.2_DIR))
-ifeq (,$(ANT_1.10.2_DIR))
+# See if there is a apache-ant directory present in one of the $(PREREQS_ROOT) directories.
+ANT_SUBDIR:=apache-ant
+ANT_DIRS:=$(foreach PREREQS_ROOT,$(ABSOLUTE_PREREQS_ROOT_LIST),$(wildcard $(PREREQS_ROOT)$(D)$(ANT_SUBDIR)))
+ANT_DIR:=$(firstword $(ANT_DIRS))
+#$(warning ANT_DIRS is $(ANT_DIRS))
+#$(warning ANT_DIR is $(ANT_DIR))
+ifeq (,$(ANT_DIR))
   $(warning No ant dir found in $(PREREQS_ROOT))
 endif
 
 ifndef ANT_HOME
   # If we haven't been told which ant to use via ANT_HOME, see if there is an ant present in one of the $(PREREQS_ROOT) directories?
   # If not, try to find ant on the path and use that one.
-  ifndef ANT_1.10.2_DIR
-    $(warning ANT_HOME not set, and apache-ant-1.10.2 was not found in $(PREREQS_ROOT), looking for ant on the PATH)
+  ifndef ANT_DIR
+    $(warning ANT_HOME not set, and apache-ant was not found in $(PREREQS_ROOT), looking for ant on the PATH)
     ANT_NOT_FOUND:=1
   else
-    ANT_HOME:=$(ANT_1.10.2_DIR)
+    ANT_HOME:=$(ANT_DIR)
     ifneq (,$(wildcard $(ANT_LAUNCHER)))
       $(warning Found $(ANT_LAUNCHER))
     else
@@ -410,12 +410,22 @@ test.TestIBMJlmRemoteMemoryAuth \
 test.TestIBMJlmRemoteMemoryNoAuth 
 JLM_TESTS:=$(filter-out $(EXCLUDE),$(JLM_TESTS))
 
+# Time-based load test targets
+LOAD_TESTS_5m:= test.HeapHogLoadTest_5m \
+test.ObjectTreeLoadTest_5m \
+test.DaaLoadTest_daa1_5m \
+test.DaaLoadTest_daa2_5m \
+test.DaaLoadTest_daa3_5m \
+test.DaaLoadTest_daaAll_5m
+
 TEST_TARGETS:=test.list \
 test.help \
 $(DAA_TESTS) \
 $(GC_TESTS) \
 $(SHARED_CLASSES_TESTS) \
-$(JLM_TESTS)
+$(JLM_TESTS) \
+$(LOAD_TESTS_5m)
+
 TEST_TARGETS:=$(filter-out $(EXCLUDE),$(TEST_TARGETS))
 
 .PHONY: build configure clean refresh_source test $(TEST_TARGETS)
@@ -548,7 +558,31 @@ test.TestIBMJlmRemoteMemoryNoAuth:
 	echo Running target $@
 	$(STF_COMMAND) -test=TestIBMJlmRemoteMemoryNoAuth $(LOG)
 	echo Target $@ completed
-
+test.DaaLoadTest_daa1_5m:
+	echo Running target $@
+	$(STF_COMMAND) -test=DaaLoadTest -test-args="workload=daa1,timeLimit=5m" $(LOG)
+	echo Target $@ completed
+test.DaaLoadTest_daa2_5m:
+	echo Running target $@
+	$(STF_COMMAND) -test=DaaLoadTest -test-args="workload=daa2,timeLimit=5m" $(LOG)
+	echo Target $@ completed
+test.DaaLoadTest_daa3_5m:
+	echo Running target $@
+	$(STF_COMMAND) -test=DaaLoadTest -test-args="workload=daa3,timeLimit=5m" $(LOG)
+	echo Target $@ completed
+test.DaaLoadTest_daaAll_5m:
+	echo Running target $@
+	$(STF_COMMAND) -test=DaaLoadTest -test-args="workload=daaAll,timeLimit=5m" $(LOG)
+	echo Target $@ completed
+test.HeapHogLoadTest_5m:
+	echo Running target $@
+	$(STF_COMMAND) -test=HeapHogLoadTest -java-args="-Xdisableexcessivegc" -test-args="timeLimit=5m" $(LOG)
+	echo Target $@ completed
+test.ObjectTreeLoadTest_5m:
+	echo Running target $@
+	$(STF_COMMAND) -test=ObjectTreeLoadTest -java-args="-Xnoclassgc" -test-args="timeLimit=5m" $(LOG)
+	echo Target $@ completed
+	
 help:
 	@echo make or make build: Builds openj9-systemtest projects
 	@echo make test: Runs all openj9-systemtest tests
