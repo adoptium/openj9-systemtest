@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2019 IBM Corp. and others
+* Copyright (c) 2017, 2021 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -126,21 +126,23 @@ public class ClassProfiler extends ServerConnector {
 			// Record the environment data in the log
 			this.envData.writeData(runtimeBean, osBean, logBean, false);
 		} catch (UndeclaredThrowableException ue) {
+			// If the exception was caused by a Connect or Unmarshal Exception
+			// assume the monitored JVM has finished.
 			Throwable cause = ue.getCause();
 			Class<ConnectException> connectExcept = ConnectException.class;
 			Class<UnmarshalException> unmarshalExcept = UnmarshalException.class;
-
-			if (connectExcept.isInstance(cause) || unmarshalExcept.isInstance(cause)) {
-				// If the exception was caused by a Connect or Unmarshal
-				// Exception, assume the monitored JVM has finished. 
-				this.closeCSVFile();
-				Message.logOut("Exiting as JVM we are connected to has finished");
-				Assert.fail("Exiting as JVM we are connected to has finished");
-			} else {
-				Message.logOut(ue.getMessage());
-				ue.printStackTrace();
-				Assert.fail(ue.getMessage());
+			String msg = "";
+			if (connectExcept.isInstance(cause)) {
+				msg = "Exiting as ConnectException thrown receiving data from the connected JVM.  This may mean the JVM we are connected to has finished. ";
 			}
+			else if (unmarshalExcept.isInstance(cause)) {
+				msg = "Exiting as UnmarshalException thrown receiving data from the connected JVM.  This may mean the JVM we are connected to has finished. ";
+			}
+			msg += ue.getMessage();
+			this.closeCSVFile();
+			Message.logOut(msg);
+			ue.printStackTrace();
+			Assert.fail(msg);
 		} finally {
 			this.closeCSVFile();
 		}
@@ -167,16 +169,22 @@ public class ClassProfiler extends ServerConnector {
 		// From the second time onwards, it needs to be true*/
 		try {
 			this.envData.writeData(this.mbs, srvRuntimeName, srvOSName, srvLogName, false);
-			// If the exception is a Connect or Unmarshal Exception, assume the
-			// monitored JVM has finished 
+		// If the exception is a Connect or Unmarshal Exception, assume the
+		// monitored JVM has finished 
 		} catch (ConnectException ce) {
 			this.closeCSVFile();
-			Message.logOut("Exiting as JVM we are connected to has finished");
-			Assert.fail("Exiting as JVM we are connected to has finished");
+			String msg = "Exiting as ConnectException thrown receiving data from the connected JVM.  This may mean the JVM we are connected to has finished. ";
+			msg += ce.getMessage();
+			Message.logOut(msg);
+			ce.printStackTrace();
+			Assert.fail(msg);
 		} catch (UnmarshalException ue) {
 			this.closeCSVFile();
-			Message.logOut("Exiting as JVM we are connected to has finished");
-			Assert.fail("Exiting as JVM we are connected to has finished");
+			String msg = "Exiting as UnmarshalException thrown receiving data from the connected JVM.  This may mean the JVM we are connected to has finished. ";
+			msg += ue.getMessage();
+			Message.logOut(msg);
+			ue.printStackTrace();
+			Assert.fail(msg);
 		} finally {
 			this.closeCSVFile();
 		}
