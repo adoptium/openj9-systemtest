@@ -1,5 +1,5 @@
 #################################################################################
-# Copyright (c) 2017, 2020 IBM Corp.
+# Copyright (c) 2017, 2021 IBM Corp.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -20,7 +20,7 @@
 #################################################################################
 
 #
-# Usage: gmake [target] [PLATFORM=platform] [OUTDIR=destdir] [JAVA_HOME=javadir] [SRCDIR=srcdir]
+# Usage: gmake [target] [OUTDIR=destdir] [JAVA_HOME=javadir] [SRCDIR=srcdir]
 #        target -   The make target valid values for this makefile are build and clean
 #                   If no target is supplied the build target is used.
 #        platform - The platform to build for.  The valid values for this argument are
@@ -37,12 +37,17 @@
 # We can't change the variables directly because they may be supplied on the command line and changes in makefiles
 # would therefore be ignored.
 
+
+###
+# Figure out current platform
+###
+OS:=$(shell uname -s | tr "[:upper:]" "[:lower:]")
+
 _OUTDIR:=$(OUTDIR)
 _JAVA_HOME:=$(JAVA_HOME)
 _SRCDIR:=$(SRCDIR)
 
 .SUFFIXES: .c
-WIN=0
 
 CC=gcc
 LD=gcc
@@ -56,60 +61,40 @@ MKDIR=mkdir -p
 RMDIR=rm -rf
 RM=rm -rf
 CHMOD=-chmod
-
-DESTDIR=$(OUTDIR)/$(PLATFORM)
-OBJDIR=$(OUTDIR)/$(PLATFORM)
-
 D=/
 P=:
 
-###
-# Check platform is set to a single valid value
-###
-VALID_PLATFORMS?=aix_ppc-32,aix_ppc-64,linux_390-32,linux_390-64,linux_ppc-32,linux_ppc-64,linux_x86-32,linux_x86-64,win_x86-32,win_x86-64,zos_390-32,zos_390-64,linux_ppcle-64,linux_arm-32,linux_arm-64,osx_x86-64
-ifndef PLATFORM
-  $(error "The variable PLATFORM needs to be defined")
-endif
-space:=$(space) $(space)
-comma:=,
-ifneq "1" "$(words $(subst $(comma), ,$(PLATFORM)))"
-  $(error "The variable PLATFORM should only contain one of $(VALID_PLATFORMS)")
-endif
-ifneq "" "$(filter-out $(subst $(comma), ,$(VALID_PLATFORMS)),$(PLATFORM))"
-  $(error "The variable PLATFORM=$(PLATFORM) is not one of $(VALID_PLATFORMS)")
+ifneq (,$(findstring cygwin,$(OS)))
+	OS:=win
 endif
 
-ifeq ($(PLATFORM),linux_ppc-64)
-    CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m64 -DOS64 -mcpu=powerpc64
-    LFLAGS:=-m64 -shared $(LFLAGS) -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
+ifneq (,$(findstring darwin,$(OS)))
+	OS:=osx
 endif
 
-ifeq ($(PLATFORM),linux_ppcle-64)
-    CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m64 -DOS64 -mcpu=powerpc64
-    LFLAGS:=-m64 -shared $(LFLAGS) -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
+ifeq ($(OS),os/390)
+	OS:=zos
+endif 
+
+ifneq (,$(findstring win,$(OS)))
+	OS:=win
 endif
 
-ifeq ($(PLATFORM),linux_ppc-32)
-    CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m32
-    LFLAGS:=-m32 -shared $(LFLAGS) -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
-endif
+$(info OS is $(OS))
 
-ifeq ($(PLATFORM),linux_390-32)
-    CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m31
-    LFLAGS:=-m31 -shared $(LFLAGS) -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
-endif
+DESTDIR=$(OUTDIR)/$(OS)
+OBJDIR=$(OUTDIR)/$(OS)
 
-ifeq ($(PLATFORM),linux_390-64)
-    CFLAGS=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -DOS64 -m64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-m64 -shared -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
-endif
+# AIX requires bitmode value to be passed into compilar flags
+ifeq ($(OS),aix)
+	BitMode:=$(shell getconf KERNEL_BITMODE)
+endif 
 
-ifeq ($(PLATFORM),zos_390-32)
+CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX)
+LFLAGS:=-shared $(LFLAGS) -o
+IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
+
+ifeq ($(OS),zos)
     CC=c89
     LD=c89
     CFLAGS=-W c,exportall -D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -W "c,langlvl(extended)" -W "c,float(ieee)" -W "c,convlit(ISO8859-1)" -W "c,xplink,dll" -W "l,xplink,dll" -DZOS -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
@@ -117,70 +102,21 @@ ifeq ($(PLATFORM),zos_390-32)
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/zos -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/zos -I/usr/include
 endif
 
-ifeq ($(PLATFORM),zos_390-64)
-    CC=c89
-    LD=c89
-    CFLAGS=-Wc,lp64,warn64 -W c,exportall -W c,exportall -D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -W "c,langlvl(extended)" -W "c,float(ieee)" -W "c,c,convlit(ISO8859-1)" -DZOS -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-Wl,lp64,amode=64 -W l,XPLINK,dll -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/zos -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/zos -I/usr/include
-endif
-
-ifeq ($(PLATFORM),aix_ppc-64)
+ifeq ($(OS),aix)
     CC=xlC
     LD=xlC
-    CFLAGS=-D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -qnooptimize -g -qlanglvl=stdc99 -q64 -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-G -q64 -o 
+    CFLAGS=-D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -qnooptimize -g -qlanglvl=stdc99 -q$(BitMode) -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
+    LFLAGS=-G -q$(BitMode) -o 
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/aix -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/aix -I/usr/include
 endif
 
-ifeq ($(PLATFORM),aix_ppc-32)
-    CC=xlC
-    LD=xlC
-    CFLAGS=-D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -qnooptimize -g -qlanglvl=stdc99 -q32 -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-G -q32 -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/aix -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/aix -I/usr/include
-endif
-
-ifeq ($(PLATFORM),linux_x86-32)
-    CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX) -m32
-    LFLAGS:=-m32 -shared -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
-endif
-
-ifeq ($(PLATFORM),linux_x86-64)
-    CFLAGS=-fPIC -fno-omit-frame-pointer -static-libgcc -O0 -g3 -pedantic -Wall -std=c99 -c -fPIC -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-shared -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
-endif
-
-ifeq ($(PLATFORM),linux_arm-32)
-    CFLAGS=-fPIC -fno-omit-frame-pointer -static-libgcc -O0 -g3 -pedantic -Wall -std=c99 -c -fPIC -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-shared -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
-endif
-
-ifeq ($(PLATFORM),linux_arm-64)
-    CFLAGS=-fPIC -fno-omit-frame-pointer -static-libgcc -O0 -g3 -pedantic -Wall -std=c99 -c -fPIC -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-shared -o 
-    IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux -I/usr/include
-endif
-
-ifeq ($(PLATFORM),osx_x86-64)
+ifeq ($(OS),osx)
     CFLAGS=-fPIC -fno-omit-frame-pointer -O0 -g3 -pedantic -Wall -std=c99 -c -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
     LFLAGS=-shared -o 
     IFLAGS=-I. -I$(JAVA_HOME)/include -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/include/darwin -I$(JAVA_HOME)/../include/darwin -I/usr/include
 endif
-
-ifeq ($(PLATFORM),win_x86-32)
-    WIN=1
-endif
-
-ifeq ($(PLATFORM),win_x86-64)
-    WIN=1
-endif
  
-ifeq ($(WIN),1)
-
+ifeq ($(OS),win)
     # Environment variable OSTYPE is set to cygwin if running under cygwin.
     # Set our own macro to indicate we're running under cygwin.
     # Also Windows commands will need to be prefixed with cmd /c to run them in a Windows shell
@@ -247,7 +183,7 @@ build: $(_OUTDIR) $(DESTDIR) $(DESTDIR)/$(PREFIX)sharedClasses$(SUFFIX)
 
 $(DESTDIR)/$(PREFIX)sharedClasses$(SUFFIX) : $(OBJDIR)/sharedClasses$(OSUFFIX)
 	$(CMD_PREFIX) $(LD) $(LFLAGS)$@ $<
-ifneq ($(WIN),1)
+ifneq ($(OS), Win)
 	$(CHMOD) 755 $@
 endif
 
@@ -257,18 +193,18 @@ endif
 
 $(OBJDIR)/sharedClasses$(OSUFFIX): $(_SRCDIR)/sharedClasses.c
 	$(CMD_PREFIX) $(CC) $(CFLAGS) $(IFLAGS) $<
-ifneq ($(WIN),1)
+ifneq ($(OS),win)
 	$(CHMOD) 755 $@
 endif
 
 $(DESTDIR):
 	$(MKDIR) $(DESTDIR)
-ifneq ($(WIN),1)
+ifneq ($(OS),win)
 	$(CHMOD) 755 $(DESTDIR)
 endif
 
 $(_OUTDIR):
 	$(MKDIR) $(_OUTDIR)
-ifneq ($(WIN),1)
+ifneq ($(OS),win)
 	$(CHMOD) 755 $(_OUTDIR)
 endif
