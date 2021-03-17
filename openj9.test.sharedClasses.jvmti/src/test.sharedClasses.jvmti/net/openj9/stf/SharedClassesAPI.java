@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2019 IBM Corp. and others
+* Copyright (c) 2016, 2021 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -216,7 +216,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 					String nativeExt    =  PlatformFinder.isWindows() ? ".dll" : ".so";
 					String nativePrefix =  PlatformFinder.isWindows() ? "" : "lib";
 					FileRef agent = test.env().findTestDirectory("openj9.test.sharedClasses.jvmti/bin/native")
-							.childDirectory(test.env().getPlatform())
+							.childDirectory(test.env().getPlatformSimple())
 							.childFile(nativePrefix + "sharedClasses" + nativeExt);
 					
 					if (!cacheDir.isEmpty()) {
