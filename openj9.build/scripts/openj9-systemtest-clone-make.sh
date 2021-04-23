@@ -1,6 +1,6 @@
 #!/bin/sh
 # -------------------------------------------------------------------------------
-# Copyright (c) 2017 IBM Corp.
+# Copyright (c) 2017, 2021 IBM Corp.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -20,15 +20,15 @@
 # SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-exception-2.0 OR LicenseRef-GPL-2.0 WITH Assembly-exception
 # -------------------------------------------------------------------------------
 # Clone stf
-mkdir -p $HOME/git && cd $HOME/git && rm -rf stf && mkdir stf && git clone https://github.com/AdoptOpenJDK/stf.git stf
+mkdir -p $HOME/git && cd $HOME/git && rm -rf stf && mkdir stf && git clone https://github.com/adoptium/stf.git stf
 if [ "$?" != "0" ]; then
         echo "Error cloning stf" 1>&2
         exit 1
 fi
-# Clone openjdk-systemtest
-mkdir -p $HOME/git && cd $HOME/git && rm -rf openjdk-systemtest && mkdir openjdk-systemtest && git clone https://github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
+# Clone aqa-systemtest
+mkdir -p $HOME/git && cd $HOME/git && rm -rf aqa-systemtest && mkdir aqa-systemtest && git clone https://github.com/adoptium/aqa-systemtest.git aqa-systemtest
 if [ "$?" != "0" ]; then
-        echo "Error cloning openjdk-systemtest" 1>&2
+        echo "Error cloning aqa-systemtest" 1>&2
         exit 1
 fi
 # Clone openj9-systemtest

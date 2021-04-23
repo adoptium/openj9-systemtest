@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2017, 2020 IBM Corp. and others
+Copyright (c) 2017, 2021 IBM Corp. and others
 
 This program and the accompanying materials are made available under
 the terms of the Eclipse Public License 2.0 which accompanies this
@@ -24,11 +24,11 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 
 Basic process is:
 1. Install prereqs
-1. Clone the AdoptOpenJDK System Test Framework (stf) git repository
-1. Clone the AdoptOpenJDK System Test (openjdk-systemtest) git repository
+1. Clone the adoptium System Test Framework (stf) git repository
+1. Clone the adoptium System Test (aqa-systemtest) git repository
 1. Clone this (openj9-systemtest) git repository
 1. make configure (installs some prereqs)
-1. make (or make build - builds the stf, openjdk-systemtest and openj9-systemtest repositories)
+1. make (or make build - builds the stf, aqa-systemtest and openj9-systemtest repositories)
 1. make test (runs a basic set of tests (all the tests in default (no -Xoptions) mode))
 
 ## Prereqs which cannot be installed by the STF build scripts
@@ -49,7 +49,7 @@ These prereqs must be installed before attempting to build STF
 ### Installing prereqs manually
 1. Create a systemtest_prereqs directory alongside the git repository directory - e.g. /home/user/systemtest_prereqs (alongside /home/user/git)
 1. Download and install the prereqs as described in the table below.
-1. The prereqs are shared with the stf and openjdk-systemtest projects.  If you have already installed a prereq you don't need to do it again.
+1. The prereqs are shared with the stf and aqa-systemtest projects.  If you have already installed a prereq you don't need to do it again.
 
 | Dependency             | License                                                        | Used by    | Steps to obtain                                                                                                                                                                                                                                            | Install instructions                                                                                                                                                                                                                                                  | Installed via make / ant configure? |
 | ---------------------- | -------------------------------------------------------------- | ---------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
@@ -62,8 +62,8 @@ These prereqs must be installed before attempting to build STF
 | wget                   | https://www.gnu.org/copyleft/gpl.html                          | stf.build  | Windows - download from https://sourceforge.net/projects/gnuwin32/files/wget/1.11.4-1/wget-1.11.4-1-bin.zip                                                                                                                                                | Add to PATH                                                                                                                                                                                                                                                           | No                                  |
 
 ## Building from a command line
-1. git clone https://github.com/AdoptOpenJDK/stf.git stf
-1. git clone https://github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
+1. git clone https://github.com/adoptium/stf.git stf
+1. git clone https://github.com/adoptium/aqa-systemtest.git aqa-systemtest
 1. git clone https://github.com/eclipse/openj9-systemtest
 1. cd &lt;git-root&gt;openj9.build
 1. make
@@ -81,11 +81,11 @@ line arguments when the tests execute.
 - Select the directory containing the prereqs. Select import into the new systemtest_prereqs folder.  Do not tick
 the 'Create top level folder' check box (otherwise you get an extra 'systemtest_prereqs' folder which you do not
 want).
-1. git clone https://github.com/AdoptOpenJDK/stf.git stf
+1. git clone https://github.com/adoptium/stf.git stf
 1. Import the STF projects into Eclipse (Find and import Eclipse projects)
 1. Eclipse should now build the stf projects without error (check the 'Problems' view).
-1. git clone https://github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
-1. Import the openjdk-systemtest projects into Eclipse (Find and import Eclipse projects)
+1. git clone https://github.com/adoptium/aqa-systemtest.git aqa-systemtest
+1. Import the aqa-systemtest projects into Eclipse (Find and import Eclipse projects)
 1. git clone https://github.com/eclipse/openj9/openj9-systemtest.git openj9-systemtest
 1. Import the openj9-systemtest projects into Eclipse (Find and import Eclipse projects)
 1. Eclipse should now build all the projects without error (check the 'Problems' view).
@@ -124,19 +124,19 @@ repository to generate makefiles to run the tests.
 ### Running stf.pl directly
 For debugging test failures and developing new tests you are likely to want to STF directly on the command line yourself.
 ```
-perl $HOME/git/stf/stf.pl -test-root="$HOME/git/openjdk-systemtest;$HOME/git/openj9-systemtest" -list
+perl $HOME/git/stf/stf.pl -test-root="$HOME/git/aqa-systemtest;$HOME/git/openj9-systemtest" -list
 ```
-will list all the tests in the stf, openjdk-systemtest and openj9-systemtest repositories (the stf repository contains sample tests).
+will list all the tests in the stf, aqa-systemtest and openj9-systemtest repositories (the stf repository contains sample tests).
 ```
-perl $HOME/git/stf/stf.pl -test-root="$HOME/git/openjdk-systemtest;$HOME/git/openj9-systemtest" -test-xxxx
+perl $HOME/git/stf/stf.pl -test-root="$HOME/git/aqa-systemtest;$HOME/git/openj9-systemtest" -test-xxxx
 ```
 will execute the test xxxx.
 Some tests require test specific arguments:
 ```
-perl $HOME/git/stf/stf.pl -test-root="$HOME/git/openjdk-systemtest;$HOME/git/openj9-systemtest" -test-args="arg1=value1,arg2=value2"
+perl $HOME/git/stf/stf.pl -test-root="$HOME/git/aqa-systemtest;$HOME/git/openj9-systemtest" -test-args="arg1=value1,arg2=value2"
 ```
 JVM arguments can be passed to the Java command run during the test via:
 ```
-perl $HOME/git/stf/stf.pl -test-root="$HOME/git/openjdk-systemtest;$HOME/git/openj9-systemtest" -java-args="-Xint" -test-xxxx
+perl $HOME/git/stf/stf.pl -test-root="$HOME/git/aqa-systemtest;$HOME/git/openj9-systemtest" -java-args="-Xint" -test-xxxx
 ```
-For a full list of ways to direct stf behaviour refer to the stf documentation in the stf repository https://github.com/AdoptOpenJDK/stf.
+For a full list of ways to direct stf behaviour refer to the stf documentation in the stf repository https://github.com/adoptium/stf.
