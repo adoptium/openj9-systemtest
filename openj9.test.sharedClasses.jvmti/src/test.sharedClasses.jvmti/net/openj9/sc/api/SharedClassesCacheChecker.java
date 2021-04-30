@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2019 IBM Corp. and others
+* Copyright (c) 2016, 2021 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -224,7 +224,7 @@ public class SharedClassesCacheChecker {
 		
 		if (expectedCacheCountInt != -1){
 			if (caches.size() != expectedCacheCountInt) {
-				/* comment out the following lines for now, needs to be re-enable when fixed. See https://github.com/eclipse/openj9-systemtest/issues/47 */
+				/* comment out the following lines for now, needs to be re-enable when fixed. See https://github.com/eclipse-openj9/openj9-systemtest/issues/47 */
 				/* String error = "ERROR: found " + caches.size() + " caches. Expected " + expectedCacheCount + " caches";
 				logger.severe(error);
 				rv = rv + error + "\n"; */

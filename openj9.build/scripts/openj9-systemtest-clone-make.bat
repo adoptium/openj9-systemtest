@@ -1,5 +1,5 @@
 REM *******************************************************************************
-REM Copyright (c) 2017 IBM Corp.
+REM Copyright (c) 2017, 2021 IBM Corp. and others
 REM 
 REM This program and the accompanying materials are made available under the
 REM terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -26,7 +26,7 @@ REM Clone stf
 REM Clone openjdk-systemtest
 (IF NOT EXIST %USERPROFILE%\git mkdir %USERPROFILE%\git) && cd %USERPROFILE%\git && (IF EXIST openjdk-systemtest rmdir /s /q openjdk-systemtest) && git clone https://github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
 REM Clone openj9-systemtest
-(IF NOT EXIST %USERPROFILE%\git mkdir %USERPROFILE%\git) && cd %USERPROFILE%\git && (IF EXIST openj9-systemtest rmdir /s /q openj9-systemtest) && git clone https://github.com/eclipse/openj9/openj9-systemtest.git openj9-systemtest
+(IF NOT EXIST %USERPROFILE%\git mkdir %USERPROFILE%\git) && cd %USERPROFILE%\git && (IF EXIST openj9-systemtest rmdir /s /q openj9-systemtest) && git clone https://github.com/eclipse-openj9/openj9/openj9-systemtest.git openj9-systemtest
 REM Configure (get prereqs)
 cd %USERPROFILE%\git\openj9-systemtest\openj9.build
 make configure

@@ -1,6 +1,6 @@
 #!/bin/sh
 # -------------------------------------------------------------------------------
-# Copyright (c) 2017 IBM Corp.
+# Copyright (c) 2017, 2021 IBM Corp. and others
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -32,7 +32,7 @@ if [ "$?" != "0" ]; then
         exit 1
 fi
 # Clone openj9-systemtest
-mkdir -p $HOME/git && cd $HOME/git && rm -rf openj9-systemtest && mkdir openj9-systemtest && git clone https://github.com/eclipse/openj9/openj9-systemtest.git openj9-systemtest
+mkdir -p $HOME/git && cd $HOME/git && rm -rf openj9-systemtest && mkdir openj9-systemtest && git clone https://github.com/eclipse-openj9/openj9/openj9-systemtest.git openj9-systemtest
 if [ "$?" != "0" ]; then
         echo "Error cloning openj9-systemtest" 1>&2
         exit 1

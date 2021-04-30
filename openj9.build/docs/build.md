@@ -1,5 +1,5 @@
 <!--
-Copyright (c) 2017, 2020 IBM Corp. and others
+Copyright (c) 2017, 2021 IBM Corp. and others
 
 This program and the accompanying materials are made available under
 the terms of the Eclipse Public License 2.0 which accompanies this
@@ -42,7 +42,7 @@ These prereqs must be installed before attempting to build STF
 ### Installing the prereqs using the build scripts
 1. An internet connection is required
 1. Review the list of prereqs listed under ' Installing prereqs manually' and confirm that you accept their license terms.
-1. git clone https://github.com/eclipse/openj9/openj9-systemtest.git openj9-systemtest
+1. git clone https://github.com/eclipse-openj9/openj9/openj9-systemtest.git openj9-systemtest
 1. cd &lt;git-root&gt;openj9.build
 1. make configure
 
@@ -64,7 +64,7 @@ These prereqs must be installed before attempting to build STF
 ## Building from a command line
 1. git clone https://github.com/AdoptOpenJDK/stf.git stf
 1. git clone https://github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
-1. git clone https://github.com/eclipse/openj9-systemtest
+1. git clone https://github.com/eclipse-openj9/openj9-systemtest
 1. cd &lt;git-root&gt;openj9.build
 1. make
 
@@ -86,7 +86,7 @@ want).
 1. Eclipse should now build the stf projects without error (check the 'Problems' view).
 1. git clone https://github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
 1. Import the openjdk-systemtest projects into Eclipse (Find and import Eclipse projects)
-1. git clone https://github.com/eclipse/openj9/openj9-systemtest.git openj9-systemtest
+1. git clone https://github.com/eclipse-openj9/openj9/openj9-systemtest.git openj9-systemtest
 1. Import the openj9-systemtest projects into Eclipse (Find and import Eclipse projects)
 1. Eclipse should now build all the projects without error (check the 'Problems' view).
 
