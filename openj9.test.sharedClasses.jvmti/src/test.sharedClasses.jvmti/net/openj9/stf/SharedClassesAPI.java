@@ -210,7 +210,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 							.runClass(SharedClassesCacheChecker.class));
 			} else {
 				// Temporarily excluding the native tests from running on Windows 
-				//    due to: https://github.com/eclipse/openj9-systemtest/issues/38 
+				//    due to: https://github.com/eclipse-openj9/openj9-systemtest/issues/38 
 				if ( !PlatformFinder.isWindows() ) {
 					// Verify caches using a JVMTI native agent
 					String nativeExt    =  PlatformFinder.isWindows() ? ".dll" : ".so";
