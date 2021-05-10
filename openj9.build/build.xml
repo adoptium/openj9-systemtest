@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <!--
-Copyright (c) 2017, 2019 IBM Corp.
+Copyright (c) 2017, 2021 IBM Corp.
 
 This program and the accompanying materials are made available under the
 terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -27,18 +27,18 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
 	<!-- Set default for source_root.  -->
 	<property name="source_root" location=".."/>
 
-	<!-- Set default for STF and openjdk-systemtest repository locations.  -->
+	<!-- Set default for STF and aqa-systemtest repository locations.  -->
 	<!-- Assumes source repositories are checked out under a common root - e.g. and the repository
 		has been built in-situ - i.e.
 		stf repository: /home/userid/git/stf
-        openjdk-systemtest repository: /home/userid/git/openjdk-systemtest
+        aqa-systemtest repository: /home/userid/git/aqa-systemtest
         openj9-systemtest repository: /home/userid/git/openj9-systemtest
 		If the stf repository has been cloned or built to a different location, the stf_root and
         openjdk_systemtest_root properties	must be set on the command line -
         e.g. -Dstf_root=/my_stf_build_dir -Dopenjdk_systemtest_root=/my_openjdk_systemtest_build_dir
 	-->
     <property name="stf_root" location="${source_root}/../stf"/>
-    <property name="openjdk_systemtest_root" location="${source_root}/../openjdk-systemtest"/>
+    <property name="openjdk_systemtest_root" location="${source_root}/../aqa-systemtest"/>
     <property name="openj9_systemtest_root" location="${source_root}/../openj9-systemtest"/>
 
 	<!-- Import stf settings. -->
