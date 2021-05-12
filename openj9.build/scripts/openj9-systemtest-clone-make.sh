@@ -25,10 +25,10 @@ if [ "$?" != "0" ]; then
         echo "Error cloning stf" 1>&2
         exit 1
 fi
-# Clone openjdk-systemtest
-mkdir -p $HOME/git && cd $HOME/git && rm -rf openjdk-systemtest && mkdir openjdk-systemtest && git clone https://github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
+# Clone aqa-systemtest
+mkdir -p $HOME/git && cd $HOME/git && rm -rf aqa-systemtest && mkdir aqa-systemtest && git clone https://github.com/adoptium/aqa-systemtest.git aqa-systemtest
 if [ "$?" != "0" ]; then
-        echo "Error cloning openjdk-systemtest" 1>&2
+        echo "Error cloning aqa-systemtest" 1>&2
         exit 1
 fi
 # Clone openj9-systemtest

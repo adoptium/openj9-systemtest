@@ -22,9 +22,9 @@ REM ****************************************************************************
 REM Save current directory
 set currdir=%cd%
 REM Clone stf
-(IF NOT EXIST %USERPROFILE%\git mkdir %USERPROFILE%\git) && cd %USERPROFILE%\git && (IF EXIST stf rmdir /s /q stf) && git clone https://github.com/AdoptOpenJDK/stf.git stf
-REM Clone openjdk-systemtest
-(IF NOT EXIST %USERPROFILE%\git mkdir %USERPROFILE%\git) && cd %USERPROFILE%\git && (IF EXIST openjdk-systemtest rmdir /s /q openjdk-systemtest) && git clone https://github.com/AdoptOpenJDK/openjdk-systemtest.git openjdk-systemtest
+(IF NOT EXIST %USERPROFILE%\git mkdir %USERPROFILE%\git) && cd %USERPROFILE%\git && (IF EXIST stf rmdir /s /q stf) && git clone https://github.com/adoptium/stf.git stf
+REM Clone aqa-systemtest
+(IF NOT EXIST %USERPROFILE%\git mkdir %USERPROFILE%\git) && cd %USERPROFILE%\git && (IF EXIST aqa-systemtest rmdir /s /q aqa-systemtest) && git clone https://github.com/adoptium/aqa-systemtest.git aqa-systemtest
 REM Clone openj9-systemtest
 (IF NOT EXIST %USERPROFILE%\git mkdir %USERPROFILE%\git) && cd %USERPROFILE%\git && (IF EXIST openj9-systemtest rmdir /s /q openj9-systemtest) && git clone https://github.com/eclipse-openj9/openj9/openj9-systemtest.git openj9-systemtest
 REM Configure (get prereqs)
