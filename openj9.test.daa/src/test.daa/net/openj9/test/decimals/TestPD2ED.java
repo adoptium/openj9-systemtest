@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017 IBM Corp.
+* Copyright (c) 2017, 2021 IBM Corp.
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -370,6 +370,58 @@ public class TestPD2ED extends TestED2PD
 
         result1234ED = new byte[5];
     }
+
+    @Test
+    public void testConvertEmbeddedTrailingMaxPercision()
+    {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4C };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4F };
+        final byte[] negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4D };
+
+        byte[] result = new byte[31];
+
+        // Positive
+        byte[] expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1, (byte) 0xF9, (byte) 0xC4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with max percision: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with max percision: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Negative
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1, (byte) 0xF9, (byte) 0xD4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with max percision: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+    }
+
+    @Test
+    public void testConvertEmbeddedTrailingMaxPercisionAlternateSign()
+    {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4E };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4A };
+        final byte[] negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4B };
+
+        byte[] result = new byte[31];
+
+        // Positive
+        byte[] expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1, (byte) 0xF9, (byte) 0xC4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with max percision: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with max percision: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Negative
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1, (byte) 0xF9, (byte) 0xD4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with max percision: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+    }
     
     @Test
     public void testConvert1230EmbeddedTrailingAlternateSign()
@@ -409,6 +461,27 @@ public class TestPD2ED extends TestED2PD
         result1230ED = new byte[5];
     }
     
+    // Non zero packed decimal offset
+    public static void testConvertEmbeddedTrailingNonZeroPackedDecimalOffset() {
+        final byte[] input = { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x4D };
+
+        // Non zero offset ending on the sign byte.
+        byte[] result = new byte[15];
+        byte[] expected = new byte[] { (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xD4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(input, 2, result, 0, 15, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert packed decimal with non zero offset ending on sign byte: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Non zero offset ending on non-sign byte.
+        // Illegal instruction exception would be thrown if hardware sign validation is turned on. This is because the sign representation
+        // is neither prefered nor alternative.
+        expected = new byte[] { (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xC1 };
+
+        result = new byte[13];
+        DecimalData.convertPackedDecimalToExternalDecimal(input, 2, result, 0, 13, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert packed decimal with non zero offset ending on non-sign byte: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+    }
+
     @Test
     public void testConvert1234SeparateLeading()
     {
