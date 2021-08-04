@@ -97,8 +97,8 @@ IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/linux -I$(JAVA_HO
 ifeq ($(OS),zos)
     CC=c89
     LD=c89
-    CFLAGS=-W c,exportall -D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -W "c,langlvl(extended)" -W "c,float(ieee)" -W "c,convlit(ISO8859-1)" -W "c,xplink,dll" -W "l,xplink,dll" -DZOS -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-W l,XPLINK,dll -o 
+    CFLAGS=-W c,exportall -D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -W "c,langlvl(extended)" -W "c,float(ieee)" -W "c,convlit(ISO8859-1)" -W "c,xplink,dll" -W "l,xplink,dll" -DZOS -Wc,"xplink,rostring,FLOAT(IEEE,FOLD,AFP),enum(4)" -Wc,lp64 -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
+    LFLAGS=-Wl,xplink,dll -Wl,lp64 -o
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/zos -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/zos -I/usr/include
 endif
 
