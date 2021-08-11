@@ -296,7 +296,7 @@ public class TestPD2ED extends TestED2PD
 
         assertArrayEquals("Failed to convert int -1234: EBCDIC_SIGN_EMBEDDED_LEADING", result1234ED, expected1234ED);
     }
-    
+
     @Test
     public void testConvert1230EmbeddedLeadingAlternateSign()
     {
@@ -332,7 +332,690 @@ public class TestPD2ED extends TestED2PD
 
         assertArrayEquals("Failed to convert int -1230: EBCDIC_SIGN_EMBEDDED_LEADING", result1230ED, expected1234ED);
     }
-    
+
+    @Test
+    public void testConvertEmbeddedLeadingPercisions1_15()
+    {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4C };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4F };
+
+        byte[] negative, result, expected;
+
+        // Percision 1
+        result = new byte[1];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 1: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 1: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x9D };
+        expected = new byte[] { (byte) 0xD9 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 1: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 2
+        result = new byte[2];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 2: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 2: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x2D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 2: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 3
+        result = new byte[3];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 3: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 3: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x2D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 3: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 4
+        result = new byte[4];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 4: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 4: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 4: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 5
+        result = new byte[5];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 5: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 5: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 5: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 6
+        result = new byte[6];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 6: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 6: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x6D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 6: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 7
+        result = new byte[7];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 7: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 7: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x6D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 7: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 8
+        result = new byte[8];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 8: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 8: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x8D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 8: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 9
+        result = new byte[9];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 9: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 9: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x8D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 9: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 10
+        result = new byte[10];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 10: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 10: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 10: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 11
+        result = new byte[11];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 11: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 11: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 11: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 12
+        result = new byte[12];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 12: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 12: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 12: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 13
+        result = new byte[13];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 13: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 13: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 13: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 14
+        result = new byte[14];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 14: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 14: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 14: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 15
+        result = new byte[15];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 15: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 15: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 15: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+    }
+
+    @Test
+    public void testConvertEmbeddedLeadingPercisions16_31()
+        {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4C };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4F };
+
+        byte[] negative, result, expected;
+
+        // Percision 16
+        result = new byte[16];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 16: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 16: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 16: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 17
+        result = new byte[17];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 17: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 17: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 17: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 18
+        result = new byte[18];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 18: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 18: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 18: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 19
+        result = new byte[19];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 19: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 19: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 19: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 20
+        result = new byte[20];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 20: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 20: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 20: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 21
+        result = new byte[21];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 21: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 21: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 21: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 22
+        result = new byte[22];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 22: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 22: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 22: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 23
+        result = new byte[23];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 23: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 23: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 23: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 24
+        result = new byte[24];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 24: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 24: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 24: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 25
+        result = new byte[25];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 25: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 25: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 25: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 26
+        result = new byte[26];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 26: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 26: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 26: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 27
+        result = new byte[27];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 27: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 27: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 27: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 28
+        result = new byte[28];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 28: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 28: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 28: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 29
+        result = new byte[29];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 29: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 29: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 29: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 30
+        result = new byte[30];
+        //    Positive
+        expected = new byte[] { (byte) 0xC1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1,
+                                (byte) 0xF9, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 30: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 30: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x19, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xD1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1,
+                                (byte) 0xF9, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 30: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        // Percision 31
+        result = new byte[31];
+        //     Positive
+        expected = new byte[] { (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0xF9, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 31: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 31: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+
+        //     Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x19, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xD9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0xF9, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 31: EBCDIC_SIGN_EMBEDDED_LEADING", expected, result);
+    }
+
     @Test
     public void testConvert1234EmbeddedTrailing()
     {
@@ -369,6 +1052,691 @@ public class TestPD2ED extends TestED2PD
         assertArrayEquals("Failed to convert int -1234: EBCDIC_SIGN_EMBEDDED_TRAILING", result1234ED, expected1234ED);
 
         result1234ED = new byte[5];
+    }
+
+    @Test
+    public void testConvertEmbeddedTrailingPercisions1_15()
+    {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4C };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4F };
+
+        byte[] negative, result, expected;
+
+        // Percision 1
+        result = new byte[1];
+        //    Positive
+        expected = new byte[] { (byte) 0xC9 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 1: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 1: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x9D };
+        expected = new byte[] { (byte) 0xD9 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 1: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 2
+        result = new byte[2];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xC2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 2: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 2: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x2D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xD2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 2: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 3
+        result = new byte[3];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xC2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 3: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 3: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x2D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xD2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 3: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 4
+        result = new byte[4];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xC4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 4: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 4: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xD4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 4: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 5
+        result = new byte[5];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xC4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 5: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 5: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xD4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 5: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 6
+        result = new byte[6];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xC6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 6: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 6: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x6D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xD6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 6: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 7
+        result = new byte[7];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xC6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 7: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 7: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x6D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xD6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 7: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 8
+        result = new byte[8];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xC8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 8: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 8: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x8D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xD8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 8: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 9
+        result = new byte[9];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xC8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 9: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 9: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x8D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xD8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 9: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 10
+        result = new byte[10];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 10: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 10: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 10: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 11
+        result = new byte[11];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 11: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 11: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 11: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 12
+        result = new byte[12];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 12: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 12: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 12: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 13
+        result = new byte[13];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 13: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 13: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 13: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 14
+        result = new byte[14];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 14: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 14: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 14: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 15
+        result = new byte[15];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 15: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 15: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 15: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+    }
+
+    @Test
+    public void testConvertEmbeddedTrailingPercisions16_31()
+        {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4C };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4F };
+
+        byte[] negative, result, expected;
+
+        // Percision 16
+        result = new byte[16];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 16: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 16: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 16: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 17
+        result = new byte[17];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 17: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 17: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 17: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 18
+        result = new byte[18];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 18: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 18: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 18: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 19
+        result = new byte[19];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 19: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 19: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 19: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 20
+        result = new byte[20];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 20: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 20: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 20: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 21
+        result = new byte[21];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 21: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 21: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 21: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 22
+        result = new byte[22];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 22: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 22: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 22: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 23
+        result = new byte[23];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 23: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 23: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 23: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 24
+        result = new byte[24];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 24: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 24: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 24: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 25
+        result = new byte[25];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 25: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 25: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 25: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 26
+        result = new byte[26];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 26: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 26: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 26: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 27
+        result = new byte[27];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 27: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 27: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 27: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 28
+        result = new byte[28];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 28: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 28: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 28: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 29
+        result = new byte[29];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xC1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 29: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 29: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xD1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 29: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 30
+        result = new byte[30];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1,
+                                (byte) 0xF9, (byte) 0xC4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 30: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 30: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x19, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1,
+                                (byte) 0xF9, (byte) 0xD4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 30: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        // Percision 31
+        result = new byte[31];
+        //     Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0xF9, (byte) 0xC4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 31: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 31: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
+
+        //     Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x19, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0xF9, (byte) 0xD4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 31: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
     }
 
     @Test
@@ -422,7 +1790,7 @@ public class TestPD2ED extends TestED2PD
         DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING);
         assertArrayEquals("Failed to convert negative packed decimal with max percision: EBCDIC_SIGN_EMBEDDED_TRAILING", expected, result);
     }
-    
+
     @Test
     public void testConvert1230EmbeddedTrailingAlternateSign()
     {
@@ -460,7 +1828,7 @@ public class TestPD2ED extends TestED2PD
 
         result1230ED = new byte[5];
     }
-    
+
     @Test
     public void testConvertEmbeddedTrailingNonZeroPackedDecimalOffset() {
         final byte[] input = { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x4D };
@@ -517,7 +1885,7 @@ public class TestPD2ED extends TestED2PD
 
         assertArrayEquals("Failed to convert int -1234: EBCDIC_SIGN_SEPARATE_LEADING", result1234ED, expected1234ED);
     }
-    
+
     @Test
     public void testConvert1230SeparateLeadingAlternateSign()
     {
@@ -552,6 +1920,697 @@ public class TestPD2ED extends TestED2PD
         DecimalData.convertIntegerToExternalDecimal(-1230, result1230ED, 0, 4, false, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
 
         assertArrayEquals("Failed to convert int -1230: EBCDIC_SIGN_SEPARATE_LEADING", result1230ED, expected1230ED);
+    }
+
+    @Test
+    public void testConvertSeparateLeadingPercisions1_15()
+    {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4C };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4F };
+
+        byte[] negative, result, expected;
+
+        // Percision 1
+        result = new byte[2];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 1: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 1: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x9D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 1: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 2
+        result = new byte[3];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 2: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 2: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x2D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 2: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 3
+        result = new byte[4];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 3: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 3: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x2D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 3: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 4
+        result = new byte[5];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 4: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 4: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x4D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 4: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 5
+        result = new byte[6];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 5: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 5: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x4D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 5: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 6
+        result = new byte[7];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 6: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 6: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x6D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 6: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 7
+        result = new byte[8];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 7: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 7: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x6D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 7: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 8
+        result = new byte[9];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 8: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 8: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x8D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 8: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 9
+        result = new byte[10];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 9: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 9: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x8D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 9: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 10
+        result = new byte[11];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 10: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 10: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 10: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 11
+        result = new byte[12];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 11: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 11: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 11: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 12
+        result = new byte[13];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 12: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 12: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 12: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 13
+        result = new byte[14];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 13: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 13: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 13: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 14
+        result = new byte[15];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 14: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 14: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 14: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 15
+        result = new byte[16];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 15: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 15: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 15: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+    }
+
+    @Test
+    public void testConvertSeparateLeadingPercisions16_31()
+        {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4C };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4F };
+
+        byte[] negative, result, expected;
+
+        // Percision 16
+        result = new byte[17];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 16: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 16: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 16: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 17
+        result = new byte[18];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 17: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 17: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 17: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 18
+        result = new byte[19];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 18: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 18: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 18: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 19
+        result = new byte[20];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 19: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 19: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 19: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 20
+        result = new byte[21];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 20: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 20: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 20: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 21
+        result = new byte[22];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 21: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 21: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 21: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 22
+        result = new byte[23];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 22: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 22: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 22: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 23
+        result = new byte[24];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 23: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 23: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 23: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 24
+        result = new byte[25];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 24: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 24: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 24: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 25
+        result = new byte[26];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 25: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 25: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 25: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 26
+        result = new byte[27];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 26: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 26: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 26: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 27
+        result = new byte[28];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 27: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 27: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 27: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 28
+        result = new byte[29];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 28: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 28: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 28: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 29
+        result = new byte[30];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1,
+                                (byte) 0xF8, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 29: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 29: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1,
+                                (byte) 0xF8, (byte) 0xF1 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 29: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 30
+        result = new byte[31];
+        //    Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0xF9, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 30: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 30: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x19, (byte) 0x4D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0xF9, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 30: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        // Percision 31
+        result = new byte[32];
+        //     Positive
+        expected = new byte[] { (byte) 0x4E, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1,
+                                (byte) 0xF8, (byte) 0xF1, (byte) 0xF9, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 31: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 31: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
+
+        //     Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x19, (byte) 0x4D };
+        expected = new byte[] { (byte) 0x60, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5,
+                                (byte) 0xF6, (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4,
+                                (byte) 0xF1, (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1,
+                                (byte) 0xF8, (byte) 0xF1, (byte) 0xF9, (byte) 0xF4 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_SEPARATE_LEADING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 31: EBCDIC_SIGN_SEPARATE_LEADING", expected, result);
     }
     
     @Test
@@ -589,7 +2648,7 @@ public class TestPD2ED extends TestED2PD
 
         assertArrayEquals("Failed to convert int -1234: EBCDIC_SIGN_SEPARATE_TRAILING", result1234ED, expected1234ED);
     }
-    
+
     @Test
     public void testConvert1230SeparateTrailingAlternateSign()
     {
@@ -624,5 +2683,698 @@ public class TestPD2ED extends TestED2PD
         DecimalData.convertIntegerToExternalDecimal(-1230, result1230ED, 0, 4, false, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
 
         assertArrayEquals("Failed to convert int -1230: EBCDIC_SIGN_SEPARATE_TRAILING", result1230ED, expected1230ED);
+    }
+
+    @Test
+    public void testConvertSeparateTrailingPercisions1_15()
+    {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4C };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4F };
+
+        byte[] negative, result, expected;
+
+        // Percision 1
+        result = new byte[2];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 1: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 1: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x9D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 1, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 1: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 2
+        result = new byte[3];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 2: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 2: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x2D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 2, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 2: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 3
+        result = new byte[4];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 3: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 3: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x2D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 3, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 3: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 4
+        result = new byte[5];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 4: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 4: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 4, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 4: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 5
+        result = new byte[6];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 5: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 5: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 5, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 5: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 6
+        result = new byte[7];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 6: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 6: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x6D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 6, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 6: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 7
+        result = new byte[8];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 7: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 7: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x6D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 7, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 7: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 8
+        result = new byte[9];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 8: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 8: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x8D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 8, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 8: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 9
+        result = new byte[10];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 9: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 9: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x8D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 9, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 9: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 10
+        result = new byte[11];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 10: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 10: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 10, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 10: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 11
+        result = new byte[12];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 11: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 11: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 11, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 11: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 12
+        result = new byte[13];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 12: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 12: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 12, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 12: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 13
+        result = new byte[14];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 13: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 13: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 13, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 13: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 14
+        result = new byte[15];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 14: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 14: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 14, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 14: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 15
+        result = new byte[16];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 15: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 15: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 15, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 15: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+    }
+
+    @Test
+    public void testConvertSeparateTrailingPercisions16_31()
+        {
+        // 16 bytes in low and 15 in high vector registers
+        final byte[] positive = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4C };
+        final byte[] unsigned = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10,
+                                             (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16,
+                                             (byte) 0x17, (byte) 0x18, (byte) 0x19, (byte) 0x4F };
+
+        byte[] negative, result, expected;
+
+        // Percision 16
+        result = new byte[17];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 16: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 16: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 16, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 16: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 17
+        result = new byte[18];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 17: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 17: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 17, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 17: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 18
+        result = new byte[19];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 18: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 18: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 18, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 18: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 19
+        result = new byte[20];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 19: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 19: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 19, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 19: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 20
+        result = new byte[21];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 20: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 20: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 20, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 20: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 21
+        result = new byte[22];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 21: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 21: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 21, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 21: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 22
+        result = new byte[23];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 22: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 22: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 22, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 22: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 23
+        result = new byte[24];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 23: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 23: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 23, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 23: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 24
+        result = new byte[25];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 24: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 24: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 24, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 24: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 25
+        result = new byte[26];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                              (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                              (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                              (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 25: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 25: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 25, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 25: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 26
+        result = new byte[27];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 26: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 26: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+            (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 26, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 26: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 27
+        result = new byte[28];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 27: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 27: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 27, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 27: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 28
+        result = new byte[29];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1,
+                                (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 28: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 28: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1,
+                                (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 28, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 28: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 29
+        result = new byte[30];
+        //    Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 29: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 29: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x1D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 29, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 29: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 30
+        result = new byte[31];
+        //    Positive
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1,
+                                (byte) 0xF9, (byte) 0xF4, (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 30: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 30: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //    Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x19, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6, (byte) 0xF7,
+                                (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1, (byte) 0xF5,
+                                (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8, (byte) 0xF1,
+                                (byte) 0xF9, (byte) 0xF4, (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 30, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 30: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        // Percision 31
+        result = new byte[32];
+        //     Positive
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0xF9, (byte) 0xF4 , (byte) 0x4E };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(positive, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert positive packed decimal with percision 31: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+        DecimalData.convertPackedDecimalToExternalDecimal(unsigned, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert unsigned packed decimal with percision 31: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
+
+        //     Negative
+        negative = new byte[] { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11,
+                                (byte) 0x12, (byte) 0x13, (byte) 0x14, (byte) 0x15, (byte) 0x16, (byte) 0x17, (byte) 0x18,
+                                (byte) 0x19, (byte) 0x4D };
+        expected = new byte[] { (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3, (byte) 0xF4, (byte) 0xF5, (byte) 0xF6,
+                                (byte) 0xF7, (byte) 0xF8, (byte) 0xF9, (byte) 0xF1, (byte) 0xF0, (byte) 0xF1, (byte) 0xF1,
+                                (byte) 0xF1, (byte) 0xF2, (byte) 0xF1, (byte) 0xF3, (byte) 0xF1, (byte) 0xF4, (byte) 0xF1,
+                                (byte) 0xF5, (byte) 0xF1, (byte) 0xF6, (byte) 0xF1, (byte) 0xF7, (byte) 0xF1, (byte) 0xF8,
+                                (byte) 0xF1, (byte) 0xF9, (byte) 0xF4 , (byte) 0x60 };
+
+        DecimalData.convertPackedDecimalToExternalDecimal(negative, 0, result, 0, 31, DecimalData.EBCDIC_SIGN_SEPARATE_TRAILING);
+        assertArrayEquals("Failed to convert negative packed decimal with percision 31: EBCDIC_SIGN_SEPARATE_TRAILING", expected, result);
     }
 }
