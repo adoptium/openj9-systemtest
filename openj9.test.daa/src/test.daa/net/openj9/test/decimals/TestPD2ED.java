@@ -462,7 +462,7 @@ public class TestPD2ED extends TestED2PD
     }
     
     // Non zero packed decimal offset
-    public static void testConvertEmbeddedTrailingNonZeroPackedDecimalOffset() {
+    public void testConvertEmbeddedTrailingNonZeroPackedDecimalOffset() {
         final byte[] input = { (byte) 0x91, (byte) 0x23, (byte) 0x45, (byte) 0x67, (byte) 0x89, (byte) 0x10, (byte) 0x11, (byte) 0x12, (byte) 0x13, (byte) 0x4D };
 
         // Non zero offset ending on the sign byte.
