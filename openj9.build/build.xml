@@ -37,7 +37,7 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0 WITH Classpath-excepti
         openjdk_systemtest_root properties	must be set on the command line -
         e.g. -Dstf_root=/my_stf_build_dir -Dopenjdk_systemtest_root=/my_openjdk_systemtest_build_dir
 	-->
-    <property name="stf_root" location="${source_root}/../stf"/>
+    <property name="stf_root" location="${source_root}/../STF"/>
     <property name="openjdk_systemtest_root" location="${source_root}/../aqa-systemtest"/>
     <property name="openj9_systemtest_root" location="${source_root}/../openj9-systemtest"/>
 
