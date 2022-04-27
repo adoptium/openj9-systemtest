@@ -211,9 +211,7 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 			} else {
 				// Temporarily excluding the native tests from running on Windows 
 				//    due to: https://github.com/eclipse-openj9/openj9-systemtest/issues/38 
-				// Temporarily excluding the native tests from running on AArch64 macOS
-				//    due to: https://github.com/eclipse-openj9/openj9/issues/14390
-				if ( !PlatformFinder.isWindows() && !PlatformFinder.getPlatformAsString().equals("osx_arm-64") ) {
+				if ( !PlatformFinder.isWindows() ) {
 					// Verify caches using a JVMTI native agent
 					String nativeExt    =  PlatformFinder.isWindows() ? ".dll" : ".so";
 					String nativePrefix =  PlatformFinder.isWindows() ? "" : "lib";
