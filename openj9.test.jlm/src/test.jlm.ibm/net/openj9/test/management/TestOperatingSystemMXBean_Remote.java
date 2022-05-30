@@ -1,18 +1,18 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2018 IBM Corp. and others
+* Copyright (c) 2017, 2022 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
-* and is available at http://eclipse.org/legal/epl-2.0 or the Apache License, 
-* Version 2.0 which accompanies this distribution and is available at 
+* and is available at http://eclipse.org/legal/epl-2.0 or the Apache License,
+* Version 2.0 which accompanies this distribution and is available at
 * https://www.apache.org/licenses/LICENSE-2.0.
-* 
+*
 * This Source Code may also be made available under the following Secondary
-* Licenses when the conditions for such availability set forth in the 
+* Licenses when the conditions for such availability set forth in the
 * Eclipse Public License, v. 2.0 are satisfied: GNU General Public License,
 * version 2 with the GNU Classpath Exception [1] and GNU General Public License,
 * version 2 with the OpenJDK Assembly Exception [2].
-* 
+*
 * [1] https://www.gnu.org/software/classpath/license.html
 * [2] http://openjdk.java.net/legal/assembly-exception.html
 *
@@ -36,7 +36,7 @@ import com.ibm.lang.management.ProcessorUsageRetrievalException;
 /**
  * Class for testing the APIs that are provided as part of OperatingSystemMXBean
  * Interface
- * 
+ *
  */
 public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 	static ObjectName objName = null;
@@ -44,7 +44,7 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 	static JMXConnector connector = null;
 	static MBeanServerConnection mbeanConnection = null;
 	static com.ibm.lang.management.OperatingSystemMXBean osmxbean = null;
-	static String OSNAME = null; 
+	static String OSNAME = null;
 	static String OSARCH = null;
 
 	static {
@@ -54,16 +54,16 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 			OSARCH = (System.getProperty("os.arch")).toLowerCase();
 			urlForRemoteMachine = new JMXServiceURL("service:jmx:rmi:///jndi/rmi://localhost:9999/jmxrmi");
 
-			// Connect to remote host and create a proxy to be used 
+			// Connect to remote host and create a proxy to be used
 			// to get an OperatingSystemMBean instance.
 			connector = JMXConnectorFactory.connect(urlForRemoteMachine, null);
 			mbeanConnection = connector.getMBeanServerConnection();
 
-			// Obtain an mxbean object using the connection and the object name for the class 
+			// Obtain an mxbean object using the connection and the object name for the class
 			// OperatingSystemMXBean.
 			objName = new ObjectName("java.lang:type=OperatingSystem");
-			osmxbean = (com.ibm.lang.management.OperatingSystemMXBean) 
-					JMX.newMXBeanProxy(mbeanConnection, objName, 
+			osmxbean = (com.ibm.lang.management.OperatingSystemMXBean)
+					JMX.newMXBeanProxy(mbeanConnection, objName,
 							com.ibm.lang.management.OperatingSystemMXBean.class);
 			osmxbean.getProcessCpuLoad();
 		}catch (Exception e){
@@ -81,19 +81,19 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 		long totalSwap = 0;
 		long freeSwap = 0;
 		totalSwap = osmxbean.getTotalSwapSpaceSize();
-		freeSwap = osmxbean.getFreeSwapSpaceSize(); 
+		freeSwap = osmxbean.getFreeSwapSpaceSize();
 
 		if ((-1 != totalSwap) && (-1 != freeSwap)) {
 			if (freeSwap <= totalSwap) {
 				//ok
 			} else {
 				fail("Invalid Swap Memory Info retrieved , Free Swap size cannot be" +
-						"greater than total Swap Size." + 
-						" getTotalSwapSpaceSize() & getFreeSwapSpaceSize() API's failed "+"osmxbean.getFreeSwapSpaceSize()="+freeSwap+" osmxbean.getTotalSwapSpaceSize is "+ totalSwap);					
+						"greater than total Swap Size." +
+						" getTotalSwapSpaceSize() & getFreeSwapSpaceSize() API's failed "+"osmxbean.getFreeSwapSpaceSize()="+freeSwap+" osmxbean.getTotalSwapSpaceSize is "+ totalSwap);
 			}
 		} else {
 			if (-1 == totalSwap) {
-				/* 
+				/*
 				 * An error has occurred since getTotalSwapSpaceSize() has returned -1.
 				 * -1 can also mean it is not supported, but we exclude these tests on
 				 * non-supported platforms(i.e System-Z).
@@ -105,7 +105,7 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 			}
 
 			if (-1 == freeSwap) {
-				/* 
+				/*
 				 * An error has occurred since getFreeSwapSpaceSize() has returned -1.
 				 * -1 can also mean it is not supported, but we exclude these tests on
 				 * non-supported platforms(i.e System-Z).
@@ -118,12 +118,12 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 	}
 
 	/**
-	 * Test the getTotalPhysicalMemory() & getFreePhysicalMemorySize() APIs of OperatingSystemMXBean
+	 * Test the getTotalPhysicalMemorySize() & getFreePhysicalMemorySize() APIs of OperatingSystemMXBean
 	 */
 	public void test_PhysicalMemoryAPIs() {
 
-		long totalMemory = osmxbean.getTotalPhysicalMemory();
-		long freeMemory = osmxbean.getFreePhysicalMemorySize(); 
+		long totalMemory = osmxbean.getTotalPhysicalMemorySize();
+		long freeMemory = osmxbean.getFreePhysicalMemorySize();
 
 		if ((-1 != totalMemory) && (-1 != freeMemory)) {
 			// Check for the validity of the values from the API
@@ -132,17 +132,17 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 			} else {
 				fail("Invalid Physical Memory Info retrieved , Total Physical " +
 						"Memory cannot be 0 bytes and Free Physical Memory size cannot be" +
-						" greater than total Physical Memory Size." + 
-						"\nError: getTotalPhysicalMemory() & getFreePhysicalMemorySize() API failed!!"+"totalMemory is:"+ totalMemory+ "freeMemory is:"+freeMemory);					
+						" greater than total Physical Memory Size." +
+						"\nError: getTotalPhysicalMemorySize() & getFreePhysicalMemorySize() API failed!!"+"totalMemory is:"+ totalMemory+ "freeMemory is:"+freeMemory);
 			}
 		} else {
 			if (-1 == totalMemory) {
-				/* An error has occurred since getTotalPhysicalMemory() has returned -1.
+				/* An error has occurred since getTotalPhysicalMemorySize() has returned -1.
 				 * -1 can also mean it is not supported, but we exclude these tests on
 				 * non-supported platforms(i.e System-Z). */
-				fail("getTotalPhysicalMemory() API returned -1, test failed"+"totalMemory is:"+totalMemory);				
+				fail("getTotalPhysicalMemorySize() API returned -1, test failed"+"totalMemory is:"+totalMemory);
 			} else if (totalMemory < -1){
-				fail("getTotalPhysicalMemory() API returned "+ totalMemory + ", test failed");
+				fail("getTotalPhysicalMemorySize() API returned "+ totalMemory + ", test failed");
 			} else {
 				//ok
 			}
@@ -161,16 +161,16 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 
 			} else {
 				//ok
-			}			
+			}
 		}
 	}
 
 	/**
-	 * Test the getProcessVirtualMemorySize() APIs OperatingSystemMXBean
+	 * Test the getCommittedVirtualMemorySize() APIs OperatingSystemMXBean
 	 */
-	public void  test_getProcessVirtualMemorySize() {
-		long processVirtualMem = osmxbean.getProcessVirtualMemorySize();
-		String osname = osmxbean.getName();	
+	public void  test_getCommittedVirtualMemorySize() {
+		long processVirtualMem = osmxbean.getCommittedVirtualMemorySize();
+		String osname = osmxbean.getName();
 
 		if (-1 != processVirtualMem) {
 			if(processVirtualMem > 0) {
@@ -178,49 +178,49 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 			} else {
 				fail("Invalid Process Virtual Memory Size retrieved," +
 						"ProcessVirtualMemory cannot be less than 0" +
-						"\nError: getProcessVirtualMemorySize() API failed!!"+"processVirtualMem is: "+processVirtualMem);
+						"\nError: getCommittedVirtualMemorySize() API failed!!"+"processVirtualMem is: "+processVirtualMem);
 
 			}
 		} else if ((-1 == processVirtualMem) && ((true == osname.equals("AIX")) || (true == osname.equalsIgnoreCase("z/OS")))  ) {//CMVC#199325
 
 		} else {
-			/* 
-			 * An error has occurred since getProcessVirtualMemorySize() has returned -1.
+			/*
+			 * An error has occurred since getCommittedVirtualMemorySize() has returned -1.
 			 * -1 can also mean it is not supported, but we exclude these tests on
 			 * non-supported platforms(i.e System-Z).
 			 */
-			fail("Error: getProcessVirtualMemorySize() returned -1, API failed!!"+ "processVirtualMem is:"+ processVirtualMem);
+			fail("Error: getCommittedVirtualMemorySize() returned -1, API failed!!"+ "processVirtualMem is:"+ processVirtualMem);
 		}
 	}
 
 	/**
-	 * Test the getProcessCpuTimeByNS() API of OperatingSystemMXBean
+	 * Test the getProcessCpuTime() API of OperatingSystemMXBean
 	 */
-	public void test_getProcessCpuTimeByNS() {
+	public void test_getProcessCpuTime() {
 		long processCpuTime_old = 0;
 		long processCpuTime_new = 0;
-		processCpuTime_old = osmxbean.getProcessCpuTimeByNS();
+		processCpuTime_old = osmxbean.getProcessCpuTime();
 
 		if (-1 != processCpuTime_old) {
 			if (processCpuTime_new == processCpuTime_old) {
 				if(OSNAME.equalsIgnoreCase("z/OS")){
-					//ok  
+					//ok
 				}else{
-					fail("Processor load did not increase. Reiterating ..."+"processCpuTime_new is:"+processCpuTime_new +" processCpuTime_old is"+ processCpuTime_old);				 
+					fail("Processor load did not increase. Reiterating ..."+"processCpuTime_new is:"+processCpuTime_new +" processCpuTime_old is"+ processCpuTime_old);
 				}
 			} else if (processCpuTime_new > processCpuTime_old) {
 				//ok
 			}
 		} else {
-			/* An error has occurred since getProcessCpuTimeByNS() has returned -1.
+			/* An error has occurred since getProcessCpuTime() has returned -1.
 			 * -1 can also mean it is not supported, but we exclude these tests on
 			 * non-supported platforms(i.e System-Z). */
-			fail("Error: getProcessCpuTimeByNS() returned -1, API failed!!"+ "processCpuTime_old is:"+processCpuTime_old);
+			fail("Error: getProcessCpuTime() returned -1, API failed!!"+ "processCpuTime_old is:"+processCpuTime_old);
 		}
 	}
 
 	/**
-	 * Function tests the MemoryUsage retrieval functionality for sanity conditions as also prints 
+	 * Function tests the MemoryUsage retrieval functionality for sanity conditions as also prints
 	 * out some basic memory usage statistics retrieved using the MXBean.
 	 *
 	 */
@@ -292,7 +292,7 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 			if (-1 == buffered) {
 
 				if(OSNAME.contains("windows") || OSNAME.contains("aix")){
-					//ok 
+					//ok
 				} else {
 					fail("Size of buffered memory: <undefined for platform>"+" memUsage.getBuffered() : "+ buffered);
 				}
@@ -308,7 +308,7 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 			}
 		} catch(MemoryUsageRetrievalException mu) {
 			fail("Exception occurred while retrieving memory usage:" + mu.getMessage());
-		} catch(Exception e) {	
+		} catch(Exception e) {
 			e.printStackTrace();
 			fail("Unknown exception occurred:" + e.getMessage());
 
@@ -316,11 +316,11 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 	}
 
 	/**
-	 * Function tests the ProcessorUsage retrieval functionality for sanity conditions as also prints 
+	 * Function tests the ProcessorUsage retrieval functionality for sanity conditions as also prints
 	 * out processor usage statistics retrieved using the MBean.
 	 */
 	public void test_processorInfo() {
-		if(OSNAME.equalsIgnoreCase("z/OS")){ 
+		if(OSNAME.equalsIgnoreCase("z/OS")){
 			//ok
 		} else {
 			ProcessorUsage procUsage = null;
@@ -400,7 +400,7 @@ public class TestOperatingSystemMXBean_Remote extends junit.framework.TestCase{
 						int id = procUsageArr[i].getId();
 					}
 					Thread.sleep(300);
-				}  
+				}
 			} catch(ProcessorUsageRetrievalException pu) {
 				fail("Exception occurred retrieving processor usage: " + pu.getMessage());
 			} catch(java.lang.InterruptedException ie) {

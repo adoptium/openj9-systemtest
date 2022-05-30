@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2017, 2019 IBM Corp. and others
+* Copyright (c) 2017, 2022 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -70,7 +70,7 @@ public class OperatingSystemExtensionCommand extends IBMBeanExtension {
             com.ibm.lang.management.OperatingSystemMXBean ibmOsb = (com.ibm.lang.management.OperatingSystemMXBean) osBean;
             
             long free_physical_memory =  ibmOsb.getFreePhysicalMemorySize();
-            long process_virtual_memory =  ibmOsb.getProcessVirtualMemorySize();
+            long process_virtual_memory =  ibmOsb.getCommittedVirtualMemorySize();
             long process_private_memory =  ibmOsb.getProcessPrivateMemorySize();
             long process_physical_memory =  ibmOsb.getProcessPhysicalMemorySize();
             long process_cpu_time =  ibmOsb.getProcessCpuTime();
@@ -89,7 +89,7 @@ public class OperatingSystemExtensionCommand extends IBMBeanExtension {
 					                com.ibm.lang.management.OperatingSystemMXBean.class);
 					
 	                long free_physical_memory_size =  ibmOsb.getFreePhysicalMemorySize();
-	                long process_virtual_memory_size =  ibmOsb.getProcessVirtualMemorySize();
+	                long process_virtual_memory_size =  ibmOsb.getCommittedVirtualMemorySize();
 	                long process_private_memory_size =  ibmOsb.getProcessPrivateMemorySize();
 	                long process_physical_memory_size =  ibmOsb.getProcessPhysicalMemorySize();
 	                long process_cpu_time =  ibmOsb.getProcessCpuTime();
@@ -105,7 +105,7 @@ public class OperatingSystemExtensionCommand extends IBMBeanExtension {
             	try {
             		ObjectName srvOSBeanName = new ObjectName(ManagementFactory.OPERATING_SYSTEM_MXBEAN_NAME);
             		long free_physical_memory_size =  (long)mbs.getAttribute(srvOSBeanName, "FreePhysicalMemorySize");
-                    long process_virtual_memory_size =  (long)mbs.getAttribute(srvOSBeanName, "ProcessVirtualMemorySize");
+                    long process_virtual_memory_size =  (long)mbs.getAttribute(srvOSBeanName, "CommittedVirtualMemorySize");
                     long process_private_memory_size =  (long)mbs.getAttribute(srvOSBeanName, "ProcessPrivateMemorySize");
                     long process_physical_memory_size =  (long)mbs.getAttribute(srvOSBeanName, "ProcessPhysicalMemorySize");
                     long process_cpu_time =  (long)mbs.getAttribute(srvOSBeanName, "ProcessCpuTime");
