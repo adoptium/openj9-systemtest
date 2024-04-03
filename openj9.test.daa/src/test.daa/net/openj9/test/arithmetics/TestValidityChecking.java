@@ -759,42 +759,39 @@ public class TestValidityChecking extends TestArithmeticComparisonBase
         result = ExternalDecimal.checkExternalDecimal(a, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, -5);
         Assert.assertEquals("bytesWithSpaces < 0 should result in return code of 3", 3, result);
 
-        result = ExternalDecimal.checkExternalDecimal(a, 2, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 1);
-        Assert.assertEquals("bytesWithSpaces < 0 should result in return code of 3", 2, result);
-
         try {
             ExternalDecimal.checkExternalDecimal(a, 0, -5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 5);
         }
         catch (IllegalArgumentException e) {
-            e.getMessage().contains("Precision must be greater than 0");
+            Assert.assertTrue(e.getMessage().contains("Precision must be greater than 0"));
         }
 
         try {
             ExternalDecimal.checkExternalDecimal(a, 0, 0, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 5);
         }
         catch (IllegalArgumentException e) {
-            e.getMessage().contains("Precision must be greater than 0");
+            Assert.assertTrue(e.getMessage().contains("Precision must be greater than 0"));
         }
 
         try {
             ExternalDecimal.checkExternalDecimal(a, -1, 3, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 5);
         }
         catch (IllegalArgumentException e) {
-            e.getMessage().contains("Offset must be non-negative integer");
+            Assert.assertTrue(e.getMessage().contains("Offset must be non-negative integer"));
         }
 
         try {
             ExternalDecimal.checkExternalDecimal(a, 0, 3, 23, 5);
         }
         catch (IllegalArgumentException e) {
-            e.getMessage().contains("Invalid decimalType");
+            Assert.assertTrue(e.getMessage().contains("Invalid decimalType"));
         }
 
         try {
             ExternalDecimal.checkExternalDecimal(a, 0, 9, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 5);
         }
         catch (ArrayIndexOutOfBoundsException e) {
-            e.getMessage().contains("Array access index out of bounds");
+            Assert.assertTrue(e.getMessage().contains("Array access index out of bounds"));
         }
     }
 
@@ -802,56 +799,49 @@ public class TestValidityChecking extends TestArithmeticComparisonBase
     public void testExternalDecimalWithSpace()
     {
         final byte[] a = new byte[] {(byte) 0x40, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xC3};
-        int result = ExternalDecimal.checkExternalDecimal(a, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 1); // rc = 2
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(a) should have been 0", 0, result); // hardware returns 2
-
-        // Debugging - Start
-        result = ExternalDecimal.checkExternalDecimal(a, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 2); // rc = 0
-        // it honors DSC < DC but maybe it needs it to be +1 than actual value?
-        // bytes with spaces set to 2 instead of 1 is considered valid external decimal
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(a) should have been 0", 0, result); // hardware returns 2
-
-        final byte[] a1 = new byte[] {(byte) 0xF1, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xC3};
-        result = ExternalDecimal.checkExternalDecimal(a, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 1); // rc = ?
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(a) should have been 0", 0, result);
-
-        final byte[] a2 = new byte[] {(byte) 0x40, (byte) 0x40, (byte) 0xF1, (byte) 0xF2, (byte) 0xC3};
-        result = ExternalDecimal.checkExternalDecimal(a, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 2); // rc = ?
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(a) should have been 0", 0, result);
-        // Debugging - End
+        int result = ExternalDecimal.checkExternalDecimal(a, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 1);
+        // Test valid external decimal sign embedded trailing with single space
+        Assert.assertEquals("Expected a valid external decimal with single leading space", 0, result);
 
         final byte[] b = new byte[] {(byte) 0x40, (byte) 0x40, (byte) 0x40, (byte) 0x40, (byte) 0x40,
                                      (byte) 0x40, (byte) 0x40, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2,
                                      (byte) 0xC3};
         result = ExternalDecimal.checkExternalDecimal(b, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 7);
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(b) should have been 0", 0, result); // hardware returns 2
+        // Test valid external decimal sign embedded trailing with multiple leading spaces
+        Assert.assertEquals("Expected a valid external decimal with multiple leading spaces", 0, result);
 
         result = ExternalDecimal.checkExternalDecimal(b, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 5);
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(b) should have been 2", 2, result);
+        // Test invalid external decimal sign embedded with space byte in place of a numeric byte (F[0-9])
+        Assert.assertEquals("Expected invalid digit with space byte instead of a numeric byte (F[0-9])", 2, result);
 
         final byte[] c = new byte[] {(byte) 0x40, (byte) 0xC9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF3};
         result = ExternalDecimal.checkExternalDecimal(c, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 1);
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(c) should have been 2", 2, result);
+        Assert.assertEquals("Expected invalid zone code", 2, result);
 
+        // Fails with 3 because space byte was present in place of the sign byte
         result = ExternalDecimal.checkExternalDecimal(c, 0, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING, 0);
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(c) should have been 3", 3, result);
+        Assert.assertEquals("Expected invalid sign code for external decimal with leading embedded sign", 3, result);
 
         final byte[] d = new byte[] {(byte) 0x40, (byte) 0x40, (byte) 0x40, (byte) 0x40, (byte) 0x40,
                                      (byte) 0x40, (byte) 0x40, (byte) 0xC9, (byte) 0xF1, (byte) 0xF2,
                                      (byte) 0xF3};
+
+        // Fails because spaces are valid only if sign is embedded and trailing
         result = ExternalDecimal.checkExternalDecimal(d, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING, 7);
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(d) should have been 3", 3, result);
+        Assert.assertEquals("Expected invalid external decimal as spaces are valid only if sign is embedded and trailing", 3, result);
 
+        // Fails with 3 because space byte was present in place of a sign byte
         result = ExternalDecimal.checkExternalDecimal(d, 0, 11, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING, 5);
-        // hardware returned 2, so need to double check what is expected here
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(d) should have been 3", 3, result);
+        Assert.assertEquals("Expected invalid sign code", 3, result);
 
+        // Fails with 3 because number of spaces is greater than precision
         result = ExternalDecimal.checkExternalDecimal(d, 0, 9, DecimalData.EBCDIC_SIGN_EMBEDDED_LEADING, 10);
-        Assert.assertEquals("Result code for signEmbeddedTrailingPrefered(d) should have been 3", 3, result);
+        Assert.assertEquals("Expected invalid digit as space digit count is greater than precision", 3, result);
 
         final byte[] e = new byte[] {(byte) 0x40, (byte) 0xF9, (byte) 0xF1, (byte) 0xF2, (byte) 0xF2, (byte) 0xF2, (byte) 0xC3};
+        // Test offset greater than number of spaces
         result = ExternalDecimal.checkExternalDecimal(e, 2, 5, DecimalData.EBCDIC_SIGN_EMBEDDED_TRAILING, 1);
-        Assert.assertEquals("Result code for valid external decimal with offset > bytesWithSpaces", 0, result);
+        Assert.assertEquals("Expected valid digit", 0, result);
     }
 
     @Test
@@ -942,7 +932,7 @@ public class TestValidityChecking extends TestArithmeticComparisonBase
     }
 
     @Test
-    public void testCheckExternalDecimal32Digits()
+    public void testCheckExternalDecimal31Digits()
     {
         // Test max both vector registers maxed out
         final byte[] signEmbeddedTrailing = new byte[] {(byte) 0xF6, (byte) 0xF3, (byte) 0xF9, (byte) 0xF1, (byte) 0xF3,
@@ -1185,7 +1175,7 @@ public class TestValidityChecking extends TestArithmeticComparisonBase
     }
 
     @Test
-    public void testCheckExternalDecimal32DigitsWithOffset()
+    public void testCheckExternalDecimal31DigitsWithOffset()
     {
         // Test max both vector registers maxed out
         final byte[] signEmbeddedTrailing = new byte[] {(byte) 0xF6, (byte) 0xF3, (byte) 0xF9, (byte) 0xF1, (byte) 0xF3,
