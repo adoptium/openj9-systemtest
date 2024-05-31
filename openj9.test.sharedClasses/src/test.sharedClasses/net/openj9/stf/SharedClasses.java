@@ -187,21 +187,19 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		// If not, create them in the first -systemtest-prereqs directory (or the default location if no -systemtest-prereqs were supplied).
 		DirectoryRef sharedClassesDataDir = null;   // This will be initialised when we find it.
 		String dataSubdir = "sharedClassesTestData/v1";
-		ArrayList<DirectoryRef> prereqRoots = test.env().getPrereqRoots();
+		DirectoryRef prereqRoots = test.env().getResultsDir();
 		int found = 0;
-		for (int i = 0 ; (i < prereqRoots.size()) && ( found == 0 ); i++ ) {
-			sharedClassesDataDir = prereqRoots.get(i).childDirectory(dataSubdir);
-			if (!sharedClassesDataDir.exists()) {
-				System.out.println(sharedClassesDataDir.getSpec() + " does not exist");
-			}
-			else {
-				System.out.println(sharedClassesDataDir.getSpec() + " exists");
-				found = 1;
-			}
+		sharedClassesDataDir = prereqRoots.childDirectory(dataSubdir);
+		if (!sharedClassesDataDir.exists()) {
+			System.out.println(sharedClassesDataDir.getSpec() + " does not exist");
+		}
+		else {
+			System.out.println(sharedClassesDataDir.getSpec() + " exists");
+			found = 1;
 		}
 
 		if ( found == 0 ) {
-			sharedClassesDataDir = prereqRoots.get(0).childDirectory(dataSubdir);
+			sharedClassesDataDir = prereqRoots.childDirectory(dataSubdir);
 			test.doRunForegroundProcess("Create Shared Classes jars",
 					"CSC",
 					ECHO_ON,
