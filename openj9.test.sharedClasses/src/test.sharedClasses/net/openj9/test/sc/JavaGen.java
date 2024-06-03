@@ -3,16 +3,16 @@
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
-* and is available at http://eclipse.org/legal/epl-2.0 or the Apache License, 
-* Version 2.0 which accompanies this distribution and is available at 
+* and is available at http://eclipse.org/legal/epl-2.0 or the Apache License,
+* Version 2.0 which accompanies this distribution and is available at
 * https://www.apache.org/licenses/LICENSE-2.0.
-* 
+*
 * This Source Code may also be made available under the following Secondary
-* Licenses when the conditions for such availability set forth in the 
+* Licenses when the conditions for such availability set forth in the
 * Eclipse Public License, v. 2.0 are satisfied: GNU General Public License,
 * version 2 with the GNU Classpath Exception [1] and GNU General Public License,
 * version 2 with the OpenJDK Assembly Exception [2].
-* 
+*
 * [1] https://www.gnu.org/software/classpath/license.html
 * [2] https://openjdk.org/legal/assembly-exception.html
 *
@@ -48,9 +48,9 @@ import javax.tools.JavaCompiler.CompilationTask;
 public class JavaGen
 {
 	static SimpleDateFormat dateFormatter = new SimpleDateFormat("dd/MM/yy HH:mm:ss");
-	
+
 	List<String> fileNames = new ArrayList<String>();
-	
+
 	static final int COMPILE_BATCH_SIZE = 100;
 
 	public static void main(String[] args)
@@ -59,9 +59,10 @@ public class JavaGen
 		// arg 2 number of files
 		String path = args[0];
 		String num  = args[1];
-		
+		int javaVersion = Integer.parseInt(args[2]);
+
 		log("Generating jar files in " + path);
-		
+
 		int numArg = 0;
 		try
 		{
@@ -73,7 +74,7 @@ public class JavaGen
 		}
 
 		File destination = new File(path);
-		
+
 		if (!destination.exists())
 		{
 			boolean b = destination.mkdirs();
@@ -91,31 +92,31 @@ public class JavaGen
 
 
 		JavaGen generator = new JavaGen();
-		generator.go(path, numArg);
-	 
+		generator.go(path, numArg, javaVersion);
+
 	}
-	
-	void go(String path, int numArg) {
+
+	void go(String path, int numArg, int javaVersion) {
 		log("Creating source files");
 		makeJavas(path, numArg); //Make java source files
 		log("Compiling java files");
 		compileJavas(path); //Compile Source to .class files
 		log("Source files compiled, creating jar files");
-		makeJars(path, numArg); //Create jar files
+		makeJars(path, numArg,javaVersion); //Create jar files
 		log("Jar files created");
 		return;
 	}
-	
+
 	/**
 	 * Prints a message to stdout with a timestamp
 	 */
 	public static void log(String message) {
 		System.out.println(dateFormatter.format(new Date()) + ": " + message);
 	}
-	
+
 	/**
 	 * Creates a large number of java files.
-	 * 
+	 *
 	 * @param directory String, the directory to write them into.
 	 * @param count int, the number of tests to generate.
 	 */
@@ -123,17 +124,24 @@ public class JavaGen
 	{
 		String sl = System.getProperty("file.separator");
 		String directory = dir + sl + "net" + sl + "openj9" + sl + "sc" + sl + "classes";
-		
+
 		File fileDir = new File(directory);
+		if (fileDir.exists()) {
+			try {
+				deleteDirectory(fileDir);
+			} catch (IOException e) {
+				throw new RuntimeException("Failed to delete existing directory: " + e.getMessage());
+			}
+		}
 		boolean mkDirBool = fileDir.mkdirs();
-		
+
 		if (!mkDirBool)
 		{
 			throw new RuntimeException("Failed to create destination directory for source files");
 		}
-		 
+
 		int nameLen;
-		
+
 		if (("" + (count-1)).length() < ("" + count).length())
 		{
 			nameLen = ("" + (count-1)).length();
@@ -141,14 +149,14 @@ public class JavaGen
 		{
 			nameLen = ("" + count).length();
 		}
-		
+
 		String format = new String("");
 		while (nameLen > 0)
 		{
 			format = format + "0";
 			nameLen--;
 		}
-		
+
 		// Create Init class for locking the large jar files
 		try
 		{
@@ -174,26 +182,26 @@ public class JavaGen
 			bWrite.write("}");
 			bWrite.newLine();
 
-		
+
 			for (int j = 0; j < 100; j++)
 			{
 				writeFunc(j,bWrite);
 			}
-		
+
 			bWrite.write("public int getID(){");
 			bWrite.newLine();
 			bWrite.write("return id;");
 			bWrite.newLine();
 			bWrite.write("}");
 			bWrite.newLine();
-			
+
 			bWrite.write("public String getName(){");
 			bWrite.newLine();
 			bWrite.write("return name;");
 			bWrite.newLine();
 			bWrite.write("}");
 			bWrite.newLine();
-			
+
 			bWrite.write("}");
 			bWrite.flush();
 			bWrite.close();
@@ -204,7 +212,7 @@ public class JavaGen
 		}
 
 		DecimalFormat nameFormat = new DecimalFormat(format);
-		
+
 		try
 		{
 			for (int i = 0; i < count; i++)
@@ -215,8 +223,8 @@ public class JavaGen
 				//log("Creating " + fName);
 				BufferedWriter bWrite = new BufferedWriter(new FileWriter(fName));
 				bWrite.write("package net.openj9.sc.classes;");
-				bWrite.newLine();				
-				
+				bWrite.newLine();
+
 				// *****************************************************
 				// This writes code which generates a random string when the code is executed.
 				// This increases the length of the test case execution dramatically, so
@@ -236,7 +244,7 @@ public class JavaGen
 //				bWrite.write("myString = makeString(500);");
 //				bWrite.newLine();
 				// *************************************************
-				
+
 				// *****************************************************
 				// Use the same string each time.
 				// The string length has been chosen so that we can fit more classes into the shared class cache.
@@ -251,7 +259,7 @@ public class JavaGen
 				//bWrite.write("\"w1UrYHQ149753246J3tNgm9hNOsY8cbn6s12N74s7KGknU7C9071531IbQblk9bsYnQ1ZbKP2hk9A0NT19dn03r8K0jX6xr76HamH4X9gQ1uwusEllk9sN57R8rbiIt2F2t1jr254q4e7Nq0\" +");
 				//bWrite.newLine();
 				//bWrite.write("\"ZRp5rYkSXnt3btmW16e8pV6tPHt1f44Bem486PpS3XksQ8QK4127E4831odDLoZWZh8FH3621gy7O20JRDrOMLTmMd9gIb593zgGw6W12yRlgvbd724M5tfpZlF897qoVwC1J8ilLn1DqZ8u\";");
-				//bWrite.newLine();			
+				//bWrite.newLine();
 				bWrite.write("public Test_Init_" + nameFormat.format(i) + "(){}");
 				bWrite.newLine();
 				bWrite.write("public int getID(){return " + (0-i) + ";}");
@@ -259,10 +267,10 @@ public class JavaGen
 				bWrite.write("public String getName(){");
 				bWrite.newLine();
 				// *************************************************
-				
+
 				// This writes the rest of the class out
 				writeStringFunctions(bWrite);
-				
+
 				bWrite.flush();
 				bWrite.close();
 			}
@@ -271,7 +279,7 @@ public class JavaGen
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
+
 		try
 		{
 			for (int i = 0; i < count; i++)
@@ -283,7 +291,7 @@ public class JavaGen
 				BufferedWriter bWrite = new BufferedWriter(new FileWriter(fName));
 				bWrite.write("package net.openj9.sc.classes;");
 				bWrite.newLine();
-				
+
 				// *****************************************************
 				// This writes code which generates a random string when the code is executed.
 				// This increases the length of the test case execution dramatically, so
@@ -303,13 +311,13 @@ public class JavaGen
 //				bWrite.write("myString = makeString(50);");
 //				bWrite.newLine();
 				// *************************************************
-				
+
 				// *****************************************************
 				// Use the same string each time
 				bWrite.write("public class TestClass_" + nameFormat.format(i) + " implements net.openj9.test.sc.classes.Dummy{");
 				bWrite.newLine();
 				bWrite.write("private String myString = \"ZRp5rYkSXnt3btmW16e8pV6tPHt1f44Bem486PpS3XksQ8QK4127E4831odDLoZWZh8FH3621gy7O20JRDrOMLTmMd9gIb593zgGw6W12yRlgvbd724M5tfpZlF897qoVwC1J8ilLn1DqZ8u\";");
-				bWrite.newLine();			
+				bWrite.newLine();
 				bWrite.write("public TestClass_" + nameFormat.format(i) + "(){}");
 				bWrite.newLine();
 				bWrite.write("public int getID(){return " + (0-i) + ";}");
@@ -318,10 +326,10 @@ public class JavaGen
 				bWrite.newLine();
 				//
 				// *************************************************
-				
+
 				// this writes the rest of the class out
 				writeStringFunctions(bWrite);
-				
+
 				bWrite.flush();
 				bWrite.close();
 			}
@@ -330,14 +338,14 @@ public class JavaGen
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
+
 	}
-	
+
 	private void compileJavas(String dir)
 	{
 
 		Iterator<String> iFnames = fileNames.iterator();
-		
+
 		int count = 0;
 		int logCount = 0;
 		while (iFnames.hasNext())
@@ -347,9 +355,9 @@ public class JavaGen
 			}
 			JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
 			StandardJavaFileManager fileManager = compiler.getStandardFileManager(null, null, null);
-			
+
 			List<File> sourceFiles = new ArrayList<File>();
-			
+
 			while ((count < COMPILE_BATCH_SIZE) && iFnames.hasNext())
 			{
 				File f = new File(iFnames.next() + ".java");
@@ -358,7 +366,7 @@ public class JavaGen
 				count++;
 				logCount++;
 			}
-			
+
 			ArrayList<String> javacOptions = new ArrayList<String>();
 			String javacOutDirOption = "-d";
 			javacOptions.add(javacOutDirOption);
@@ -370,16 +378,16 @@ public class JavaGen
 				javacOptions.add(dir);
 			}
 
-			
+
 			Iterable<? extends JavaFileObject> compileList = fileManager.getJavaFileObjectsFromFiles(sourceFiles);
 			CompilationTask compileTask = compiler.getTask(null, fileManager, null, javacOptions, null, compileList);
 			boolean result = compileTask.call();
-			
+
 			if (!result)
 			{
 				System.out.println("Compilation failed");
-				
-				try 
+
+				try
 				{
 					fileManager.close();
 				} catch (IOException e)
@@ -387,11 +395,11 @@ public class JavaGen
 					e.printStackTrace();
 					System.exit(1);
 				}
-				
+
 				System.exit(1);
 			}
-			
-			try 
+
+			try
 			{
 				fileManager.close();
 			} catch (IOException e)
@@ -403,22 +411,22 @@ public class JavaGen
 
 			count = 0;
 		}
-		
-		
+
+
 	}
-	
-	private void makeJars(String directory, int numJars)
+
+	private void makeJars(String directory, int numJars, int javaVersion)
 	{
 		String sl = System.getProperty("file.separator");
 		Iterator<String> fNomIt = fileNames.iterator();
-		
+
 		boolean isWindows = (System.getProperty("os.name").toLowerCase().indexOf("win")) > -1;
-		
+
 		// Make one big jar file
-		try 
+		try
 		{
 			log("Creating one large jar file");
-			String jarFileName = directory + sl + "classes.jar";
+			String jarFileName = directory + sl + "classes_jdk" + javaVersion + ".jar";
 			FileOutputStream fOutStr = new FileOutputStream(jarFileName);
 			JarOutputStream jOutStr = new JarOutputStream(fOutStr);
 
@@ -433,50 +441,58 @@ public class JavaGen
 				{
 					entryName = entryName.replace('\\', '/');
 				}
-				
+
 				JarEntry clasJE = new JarEntry(entryName + ".class");
 				jOutStr.putNextEntry(clasJE);
-				
+
 				FileInputStream fIn = new FileInputStream(name + ".class");
 				BufferedInputStream bIn = new BufferedInputStream(fIn);
-				
+
 				byte[] buffer = new byte[8192];
 				int dataLength = 0;
 				while ((dataLength = bIn.read(buffer)) != -1)
 				{
 					jOutStr.write(buffer, 0, dataLength);
 				}
-				
+
 				jOutStr.flush();
 				jOutStr.closeEntry();
 				bIn.close();
 			}
-			
+
 			jOutStr.close();
-			
+
 		} catch (IOException e)
 		{
 			System.out.println("Failed making one big jar");
 			e.printStackTrace();
 			System.exit(1);
 		}
-		
 
-		
+
+
 		// Make individual jar files
-		try 
+		try
 		{
 			File jarDir = new File(directory + sl + "jars");
+			if (jarDir.exists()) {
+				// Attempt to delete it
+				try {
+					deleteDirectory(jarDir);
+				} catch (IOException e) {
+					throw new RuntimeException("Failed to delete existing directory: " + e.getMessage());
+				}
+			}
 			boolean mkDirBool = jarDir.mkdirs();
-		
+
 			if (!mkDirBool)
 			{
 				System.out.println("Failed to create destination directory for jar files");
 				System.exit(1);
 			}
-			
+
 			int nameLen;
-			
+
 			if (("" + (numJars-1)).length() < ("" + numJars).length())
 			{
 				nameLen = ("" + (numJars-1)).length();
@@ -484,20 +500,20 @@ public class JavaGen
 			{
 				nameLen = ("" + numJars).length();
 			}
-			
+
 			String format = new String("");
 			while (nameLen > 0)
 			{
 				format = format + "0";
 				nameLen--;
 			}
-			
+
 			DecimalFormat nameFormat = new DecimalFormat(format);
-		
+
 			int count = 0;
 			fNomIt = fileNames.iterator();
 			int total = 0;
-			
+
 			while (fNomIt.hasNext())
 			{
 				count = 0;
@@ -505,7 +521,7 @@ public class JavaGen
 				while ((count < 100) && fNomIt.hasNext())
 				{
 					String name = fNomIt.next();
-					
+
 					if (name.contains("Init"))
 					{
 						continue;
@@ -515,7 +531,7 @@ public class JavaGen
 						log("Created " + myCount + " individual jar files");
 					}
 					myCount++;
-					
+
 					String jarFileName = jarDir + sl + name.substring(name.lastIndexOf(sl)) + ".jar";
 					//log("Adding " + name + " to " + jarFileName);
 					File jarFile = new File(jarFileName);
@@ -523,36 +539,36 @@ public class JavaGen
 					JarOutputStream jOutStr = new JarOutputStream(fOutStr);
 
 					String entryName = name.substring(name.indexOf("net"));  // Start of net/openj9 or net\openj9
-					
+
 					if (isWindows)
 					{
 						entryName = entryName.replace('\\', '/');
 					}
-				
+
 					// Insert Named Class
 					JarEntry clasJE = new JarEntry(entryName + ".class");
 					jOutStr.putNextEntry(clasJE);
-			
+
 					File clsFile = new File(name + ".class");
 					clsFile.deleteOnExit();
 					FileInputStream fIn = new FileInputStream(clsFile);
 					BufferedInputStream bIn = new BufferedInputStream(fIn);
-			
+
 					byte[] buffer = new byte[8192];
 					int dataLength = 0;
 					while ((dataLength = bIn.read(buffer)) != -1)
 					{
 						jOutStr.write(buffer, 0, dataLength);
 					}
-				
+
 					jOutStr.flush();
 					jOutStr.closeEntry();
 					fIn.close();
-				
+
 					// Insert Init class
 					JarEntry clasJInit = new JarEntry(entryName.substring(0, entryName.lastIndexOf('/') + 1) + "Test_Init_" + nameFormat.format(total) + ".class");
 					jOutStr.putNextEntry(clasJInit);
-				
+
 					File initClass = new File(name.substring(0, name.lastIndexOf(sl) + 1) + "Test_Init_" + nameFormat.format(total) + ".class");
 					initClass.deleteOnExit();
 					FileInputStream fInInit = new FileInputStream(initClass);
@@ -562,21 +578,21 @@ public class JavaGen
 					{
 						jOutStr.write(buffer, 0, dataLength);
 					}
-				
+
 					jOutStr.flush();
 					jOutStr.closeEntry();
 					fInInit.close();
 					bInInit.close();
-			
+
 					jOutStr.close();
 					fOutStr.close();
 					bIn.close();
-					
+
 					total++;
- 
+
 				}
 			}
-			
+
 		} catch (IOException e)
 		{
 			System.out.println("Failed making individual jar files");
@@ -584,7 +600,21 @@ public class JavaGen
 			System.exit(1);
 		}
 	}
-	
+
+	public static void deleteDirectory(File directory) throws IOException {
+		if (directory.isDirectory()) {
+			File[] entries = directory.listFiles();
+			if (entries != null) {
+				for (File entry : entries) {
+					deleteDirectory(entry);
+				}
+			}
+		}
+		if (!directory.delete()) {
+			throw new IOException("Failed to delete " + directory);
+		}
+	}
+
 	private void writeStringFunctions(BufferedWriter bWrite) throws IOException
 	{
 		bWrite.write("if(Math.random() > 0.5){stringCopyAndChangeTest();}");
@@ -646,7 +676,7 @@ public class JavaGen
 		bWrite.newLine();
 		bWrite.write("private char selectLowercaseCharacter(){return (char)(Math.random() * 26 + 97);}");
 		bWrite.newLine();
-		bWrite.write("private char selectDigit(){return (char)(Math.random() * 10 + 48);}"); 
+		bWrite.write("private char selectDigit(){return (char)(Math.random() * 10 + 48);}");
 		bWrite.newLine();
 		bWrite.write("private String makeString(int length){");
 		bWrite.newLine();
@@ -666,10 +696,10 @@ public class JavaGen
 		bWrite.newLine();
 		bWrite.write("}");
 	}
-	
+
 	private void writeFunc(int num, BufferedWriter bWriter)
 	{
-		try 
+		try
 		{
 			bWriter.write("public int getMe" + num + "(){");
 			bWriter.newLine();
@@ -684,7 +714,7 @@ public class JavaGen
 			System.exit(1);
 		}
 	}
-	
+
 	static boolean isWindows() {
 		return ((System.getProperty("os.name").toLowerCase().indexOf("win")) > -1);
 	}

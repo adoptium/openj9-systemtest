@@ -186,16 +186,20 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		// See whether the test data (20000 classes and jars) already exist.
 		// If not, create them in the first -systemtest-prereqs directory (or the default location if no -systemtest-prereqs were supplied).
 		DirectoryRef sharedClassesDataDir = null;   // This will be initialised when we find it.
+		int javaVersion = test.env().primaryJvm().getJavaVersion();
 		String dataSubdir = "sharedClassesTestData/v1";
 		ArrayList<DirectoryRef> prereqRoots = test.env().getPrereqRoots();
+		String classFileName = "classes_jdk" + javaVersion + ".jar";
+		FileRef sharedClassesJar = null;
 		int found = 0;
 		for (int i = 0 ; (i < prereqRoots.size()) && ( found == 0 ); i++ ) {
 			sharedClassesDataDir = prereqRoots.get(i).childDirectory(dataSubdir);
-			if (!sharedClassesDataDir.exists()) {
-				System.out.println(sharedClassesDataDir.getSpec() + " does not exist");
+			sharedClassesJar = sharedClassesDataDir.childFile(classFileName);
+			if (!sharedClassesJar.exists()) {
+				System.out.println(sharedClassesJar.getSpec() + " does not exist");
 			}
 			else {
-				System.out.println(sharedClassesDataDir.getSpec() + " exists");
+				System.out.println(sharedClassesJar.getSpec() + " exists");
 				found = 1;
 			}
 		}
@@ -211,7 +215,8 @@ public class SharedClasses implements SharedClassesPluginInterface {
 						.addProjectToClasspath("openj9.test.sharedClasses")
 						.runClass(JavaGen.class)
 						.addArg(sharedClassesDataDir.getSpec())
-						.addArg("10000"));
+						.addArg("10000")
+						.addArg(String.valueOf(javaVersion)));
 		}
 
 		// Copy the shared classes jar/s from the systemtest_prereqs directory to /tmp.
@@ -221,7 +226,7 @@ public class SharedClasses implements SharedClassesPluginInterface {
 			DirectoryRef localSharedClassesJarsDir = test.doCpDir("Copy sharedClasses jars", appsSharedClassesJarsDir, test.env().getTmpDir().childDirectory("jars"));
 			localSharedClassesResources = localSharedClassesJarsDir.getSpec();
 		} else {
-			FileRef sharedClassesJar = sharedClassesDataDir.childFile("classes.jar");
+			sharedClassesJar = sharedClassesDataDir.childFile(classFileName);
 			FileRef localSharedClassesJar = test.doCp("Copy sharedClasses jar", sharedClassesJar, test.env().getTmpDir());
 			localSharedClassesResources = localSharedClassesJar.getSpec();
 		}
