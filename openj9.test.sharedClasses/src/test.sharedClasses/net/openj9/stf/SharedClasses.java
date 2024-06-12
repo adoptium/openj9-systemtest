@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2023 IBM Corp. and others
+* Copyright (c) 2016, 2024 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -186,7 +186,8 @@ public class SharedClasses implements SharedClassesPluginInterface {
 		// See whether the test data (20000 classes and jars) already exist.
 		// If not, create them in the first -systemtest-prereqs directory (or the default location if no -systemtest-prereqs were supplied).
 		DirectoryRef sharedClassesDataDir = null;   // This will be initialised when we find it.
-		String dataSubdir = "sharedClassesTestData/v1";
+		int javaVersion = test.env().primaryJvm().getJavaVersion();
+		String dataSubdir = "sharedClassesTestData/v1/jdk" + javaVersion;
 		ArrayList<DirectoryRef> prereqRoots = test.env().getPrereqRoots();
 		int found = 0;
 		for (int i = 0 ; (i < prereqRoots.size()) && ( found == 0 ); i++ ) {
