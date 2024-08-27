@@ -1,0 +1,6 @@
+<inventory>
+	<include inventory="/openj9.test.load/config/inventories/daa/daaAll.xml"/>
+	<include inventory="/openjdk.test.load/config/inventories/lambdasAndStreams/lambda.xml"/>
+	<include inventory="/openjdk.test.load/config/inventories/math/math.xml"/>
+	<include inventory="/openjdk.test.load/config/inventories/classloading/classloading.xml"/>
+</inventory>
