@@ -71,13 +71,8 @@ SPDX-License-Identifier: EPL-2.0 OR Apache-2.0 OR GPL-2.0-only WITH Classpath-ex
 	<target name="build-no-natives" depends="check-prereqs, build-dependencies, check-prereqs, build-archives">
 	</target>
 
-	<!--Temporarily excluding the native tests from building on Windows 
-			 due to : https://github.com/eclipse-openj9/openj9-systemtest/issues/38 --> 
 	<target name="build-natives" depends="check-prereqs, setup-native-build-command, build-natives-windows, build-natives-unix">
 	</target>
-	
-	<!-- <target name="build-natives" depends="check-prereqs, setup-native-build-command, build-natives-unix">
-	</target> -->
 
 	<target name="setup-native-build-command">
 		<echo message="building natives for java-platform ${java_platform}"/>

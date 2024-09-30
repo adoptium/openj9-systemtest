@@ -209,28 +209,24 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 							.addProjectToClasspath("openj9.test.sharedClasses.jvmti")
 							.runClass(SharedClassesCacheChecker.class));
 			} else {
-				// Temporarily excluding the native tests from running on Windows 
-				//    due to: https://github.com/eclipse-openj9/openj9-systemtest/issues/38 
-				if ( !PlatformFinder.isWindows() ) {
-					// Verify caches using a JVMTI native agent
-					String nativeExt    =  PlatformFinder.isWindows() ? ".dll" : ".so";
-					String nativePrefix =  PlatformFinder.isWindows() ? "" : "lib";
-					FileRef agent = test.env().findTestDirectory("openj9.test.sharedClasses.jvmti/bin/native")
-							.childDirectory(test.env().getPlatformSimple())
-							.childFile(nativePrefix + "sharedClasses" + nativeExt);
-					
-					if (!cacheDir.isEmpty()) {
-						cacheDir = "," + cacheDir;
-					}
-					String agentOptions = "expectedCacheCount=" + apiTest.expectedCacheCount + ","
-							+ "deleteCaches=true,"
-							+ "cachePrefix=" + apiTest.name() + cacheDir;
-					
-					sharedClasses.doVerifyCachesUsingJVMTI(commentPrefix + "Verify caches using JVMTI",
-							apiTest.name(), 
-							sharedClassesOption,
-							"-agentpath:" + agent + "=" + agentOptions);
+				// Verify caches using a JVMTI native agent
+				String nativeExt    =  PlatformFinder.isWindows() ? ".dll" : ".so";
+				String nativePrefix =  PlatformFinder.isWindows() ? "" : "lib";
+				FileRef agent = test.env().findTestDirectory("openj9.test.sharedClasses.jvmti/bin/native")
+						.childDirectory(test.env().getPlatformSimple())
+						.childFile(nativePrefix + "sharedClasses" + nativeExt);
+				
+				if (!cacheDir.isEmpty()) {
+					cacheDir = "," + cacheDir;
 				}
+				String agentOptions = "expectedCacheCount=" + apiTest.expectedCacheCount + ","
+						+ "deleteCaches=true,"
+						+ "cachePrefix=" + apiTest.name() + cacheDir;
+				
+				sharedClasses.doVerifyCachesUsingJVMTI(commentPrefix + "Verify caches using JVMTI",
+						apiTest.name(), 
+						sharedClassesOption,
+						"-agentpath:" + agent + "=" + agentOptions);
 			}
 		}
 	}
