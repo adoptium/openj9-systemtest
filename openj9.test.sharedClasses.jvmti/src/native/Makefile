@@ -1,14 +1,14 @@
 #################################################################################
-# Copyright (c) 2017, 2023 IBM Corp.
+# Copyright (c) 2017, 2024 IBM Corp.
 #
 # This program and the accompanying materials are made available under the
 # terms of the Eclipse Public License 2.0 which accompanies this distribution
-# and is available at http://eclipse.org/legal/epl-2.0 or the Apache License, 
-# Version 2.0 which accompanies this distribution and is available at 
+# and is available at http://eclipse.org/legal/epl-2.0 or the Apache License,
+# Version 2.0 which accompanies this distribution and is available at
 # https://www.apache.org/licenses/LICENSE-2.0.
 #
 # This Source Code may also be made available under the following Secondary
-# Licenses when the conditions for such availability set forth in the 
+# Licenses when the conditions for such availability set forth in the
 # Eclipse Public License, v. 2.0 are satisfied: GNU General Public License,
 # version 2 with the GNU Classpath Exception [1] and GNU General Public License,
 # version 2 with the OpenJDK Assembly Exception [2].
@@ -21,15 +21,15 @@
 
 #
 # Usage: gmake [target] [OUTDIR=destdir] [JAVA_HOME=javadir] [SRCDIR=srcdir]
-#        target -   The make target valid values for this makefile are build and clean
+#        target -   The make target valid values for this makefile are build and clean.
 #                   If no target is supplied the build target is used.
 #        platform - The platform to build for.  The valid values for this argument are
 #                   aix_ppc-32, aix_ppc-64, linux_390-32, linux_390-64, linux_ppc-32
 #                   linux_ppc-64, linux_x86-32, linux_x86-64, win_x86-32, win_x86-64
-#                   zos_390-32, zos_390-64,osx_x86-64
-#        outdir  - The directory where a platform directory will be created and the lib will be place
-#        javadir  - The java.home property directory (ie c:\sdk\jre)
-#        srcdir   - Where the source files are located
+#                   zos_390-32, zos_390-64, osx_x86-64.
+#        outdir  - The directory where a platform directory will be created and the lib will be placed.
+#        javadir  - The java.home property directory (ie c:\sdk\jre).
+#        srcdir   - Where the source files are located.
 #
 
 # Assign OUTDIR, JAVA_HOME and SRCDIR to temporary variables so we can change to forward slashes or backslashes
@@ -37,9 +37,8 @@
 # We can't change the variables directly because they may be supplied on the command line and changes in makefiles
 # would therefore be ignored.
 
-
 ###
-# Figure out current platform
+# Figure out current platform.
 ###
 OS:=$(shell uname -s | tr "[:upper:]" "[:lower:]")
 
@@ -65,19 +64,19 @@ D=/
 P=:
 
 ifneq (,$(findstring cygwin,$(OS)))
-	OS:=win
+    OS:=win
 endif
 
 ifneq (,$(findstring darwin,$(OS)))
-	OS:=osx
+    OS:=osx
 endif
 
 ifeq ($(OS),os/390)
-	OS:=zos
-endif 
+    OS:=zos
+endif
 
 ifneq (,$(findstring win,$(OS)))
-	OS:=win
+    OS:=win
 endif
 
 $(info OS is $(OS))
@@ -85,10 +84,10 @@ $(info OS is $(OS))
 DESTDIR=$(OUTDIR)/$(OS)
 OBJDIR=$(OUTDIR)/$(OS)
 
-# AIX requires bitmode value to be passed into compilar flags
+# AIX requires bitmode value to be passed into compiler flags.
 ifeq ($(OS),aix)
-	BitMode:=$(shell getconf KERNEL_BITMODE)
-endif 
+    BitMode:=$(shell getconf KERNEL_BITMODE)
+endif
 
 CFLAGS:=-D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -O0 -g3 -pedantic -c -Wall -std=c99 -fPIC -fno-omit-frame-pointer -static-libgcc -o $(OBJDIR)/sharedClasses$(OSUFFIX)
 LFLAGS:=-shared $(LFLAGS) -o
@@ -106,16 +105,17 @@ ifeq ($(OS),aix)
     CC=xlC
     LD=xlC
     CFLAGS=-D_JNI_IMPLEMENTATION -D_TRIVIAL_AGENT -qnooptimize -g -qlanglvl=stdc99 -q$(BitMode) -c -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-G -q$(BitMode) -o 
+    LFLAGS=-G -q$(BitMode) -o
     IFLAGS=-I. -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/../include/aix -I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/aix -I/usr/include
 endif
 
 ifeq ($(OS),osx)
+    SUFFIX=.dylib
     CFLAGS=-fPIC -fno-omit-frame-pointer -O0 -g3 -pedantic -Wall -std=c99 -c -D_JNI_IMPLEMENTATION_ -D_TRIVIAL_AGENT -DOS64 -o $(OBJDIR)/sharedClasses$(OSUFFIX)
-    LFLAGS=-shared -o 
+    LFLAGS=-shared -o
     IFLAGS=-I. -I$(JAVA_HOME)/include -I$(JAVA_HOME)/../include -I$(JAVA_HOME)/include/darwin -I$(JAVA_HOME)/../include/darwin -I/usr/include
 endif
- 
+
 ifeq ($(OS),win)
     # Environment variable OSTYPE is set to cygwin if running under cygwin.
     # Set our own macro to indicate we're running under cygwin.
@@ -160,7 +160,7 @@ ifeq ($(OS),win)
 
     CC=cl
     LD=link
-    
+
     PREFIX=
     SUFFIX=.dll
     OSUFFIX=.obj
@@ -168,28 +168,25 @@ ifeq ($(OS),win)
 
     CFLAGS=/DWIN32 /D_WINDOWS -Gy /LD /Zi /Odi /c /RTC1 /Fo"$(OBJDIR)/sharedClasses$(OSUFFIX)" /Fd"$(OBJDIR)"
     LFLAGS=/NOLOGO /DLL /INCREMENTAL:NO /NODEFAULTLIB:LIBCMTD /OUT:
-	# Cater for JAVA_HOME being set either to the jre dir or the parent directory
+    # Cater for JAVA_HOME being set either to the jre dir or the parent directory.
     IFLAGS=/I. /I"../../../lib/native/jvmti" /I"$(_JAVA_HOME)/../include" /I"$(_JAVA_HOME)/../include/win32" /I"$(_JAVA_HOME)/include" /I"$(_JAVA_HOME)/include/win32"
-
 endif
-
-.PHONY: $(OUTDIR) $(DESTDIR)
 
 build: $(_OUTDIR) $(DESTDIR) $(DESTDIR)/$(PREFIX)sharedClasses$(SUFFIX)
 
-######################
-# Build shared library
-######################
+#######################
+# Build shared library.
+#######################
 
 $(DESTDIR)/$(PREFIX)sharedClasses$(SUFFIX) : $(OBJDIR)/sharedClasses$(OSUFFIX)
 	$(CMD_PREFIX) $(LD) $(LFLAGS)$@ $<
-ifneq ($(OS), Win)
+ifneq ($(OS), win)
 	$(CHMOD) 755 $@
 endif
 
-######################
-# Build an object file
-######################
+#######################
+# Build an object file.
+#######################
 
 $(OBJDIR)/sharedClasses$(OSUFFIX): $(_SRCDIR)/sharedClasses.c
 	$(CMD_PREFIX) $(CC) $(CFLAGS) $(IFLAGS) $<

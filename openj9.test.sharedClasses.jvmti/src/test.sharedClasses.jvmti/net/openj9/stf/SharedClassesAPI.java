@@ -1,5 +1,5 @@
 /*******************************************************************************
-* Copyright (c) 2016, 2023 IBM Corp. and others
+* Copyright (c) 2016, 2024 IBM Corp. and others
 *
 * This program and the accompanying materials are made available under the
 * terms of the Eclipse Public License 2.0 which accompanies this distribution
@@ -209,8 +209,15 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 							.addProjectToClasspath("openj9.test.sharedClasses.jvmti")
 							.runClass(SharedClassesCacheChecker.class));
 			} else {
-				// Verify caches using a JVMTI native agent
-				String nativeExt    =  PlatformFinder.isWindows() ? ".dll" : ".so";
+				// Verify caches using a JVMTI native agent.
+				String nativeExt;
+				if (PlatformFinder.isOSX()) {
+					nativeExt = ".dylib";
+				} else if (PlatformFinder.isWindows()) {
+					nativeExt = ".dll";
+				} else {
+					nativeExt = ".so";
+				}
 				String nativePrefix =  PlatformFinder.isWindows() ? "" : "lib";
 				FileRef agent = test.env().findTestDirectory("openj9.test.sharedClasses.jvmti/bin/native")
 						.childDirectory(test.env().getPlatformSimple())
