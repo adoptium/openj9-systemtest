@@ -213,8 +213,15 @@ public class SharedClassesAPI implements SharedClassesPluginInterface {
 				//    due to: https://github.com/eclipse-openj9/openj9-systemtest/issues/38 
 				if ( !PlatformFinder.isWindows() ) {
 					// Verify caches using a JVMTI native agent
-					String nativeExt    =  PlatformFinder.isWindows() ? ".dll" : ".so";
-					String nativePrefix =  PlatformFinder.isWindows() ? "" : "lib";
+					String nativeExt;
+					if (PlatformFinder.isOSX()) {
+						nativeExt = ".dylib";
+					} else if (PlatformFinder.isWindows()) {
+						nativeExt = ".dll";
+					} else {
+						nativeExt = ".so";
+					}
+					String nativePrefix = PlatformFinder.isWindows() ? "" : "lib";
 					FileRef agent = test.env().findTestDirectory("openj9.test.sharedClasses.jvmti/bin/native")
 							.childDirectory(test.env().getPlatformSimple())
 							.childFile(nativePrefix + "sharedClasses" + nativeExt);
